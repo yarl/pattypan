@@ -21,24 +21,48 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package pattypan;
+package pattypan.stages;
 
-import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import pattypan.stages.StartStage;
+import pattypan.Util;
+import pattypan.elements.WikiButton;
+import pattypan.elements.WikiLabel;
 
-public class Main extends Application {
+public class StartStage {
   
-  @Override
-  public void start(Stage stage) {
-    new StartStage().getStage().show();
+  String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
+  Stage stage = new Stage();
+  
+  public StartStage() {
+    Scene scene = new Scene(createScene(), Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
+    stage.setTitle("Hello World!");
+    stage.setScene(scene);
   }
+  
+  public Stage getStage() {
+    return stage;
+  };
 
-  /**
-   * @param args the command line arguments
-   */
-  public static void main(String[] args) {
-    launch(args);
+  private GridPane createScene() {
+    GridPane grid = new GridPane();
+    grid.getStylesheets().add(css);
+    grid.setAlignment(Pos.CENTER);
+    grid.setHgap(20);
+    grid.setVgap(10);
+    grid.getStyleClass().add("background");
+
+    grid.addColumn(0,
+            new WikiButton("Generate Spreadsheet", "primary"),
+            new WikiLabel("Generate Spreadsheet by selecting a directory on your hard drive.")
+    );
+    grid.addColumn(1,
+            new WikiButton("Validate & Upload"),
+            new WikiLabel("Check correctness of your spreadsheet and upload files.")
+    );
+    
+    return grid;
   }
-  
 }

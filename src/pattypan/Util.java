@@ -23,22 +23,9 @@
  */
 package pattypan;
 
-import javafx.application.Application;
-import javafx.stage.Stage;
-import pattypan.stages.StartStage;
-
-public class Main extends Application {
-  
-  @Override
-  public void start(Stage stage) {
-    new StartStage().getStage().show();
-  }
-
-  /**
-   * @param args the command line arguments
-   */
-  public static void main(String[] args) {
-    launch(args);
-  }
-  
+public final class Util {
+    private Util() {}
+    
+    public static int WINDOW_WIDTH = 600;
+    public static int WINDOW_HEIGHT = 400;
 }
