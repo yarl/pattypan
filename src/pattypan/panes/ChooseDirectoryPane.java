@@ -21,48 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package pattypan.stages;
+package pattypan.panes;
 
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 
-public class StartStage {
-  
+public class ChooseDirectoryPane extends GridPane {
+
   String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
-  Stage stage = new Stage();
+  Stage stage;
   
-  public StartStage() {
-    Scene scene = new Scene(createScene(), Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
-    stage.setTitle("Hello World!");
-    stage.setScene(scene);
+  public ChooseDirectoryPane(Stage stage) {
+    this.stage = stage;
+    createContent();
   }
   
-  public Stage getStage() {
-    return stage;
-  };
+  public GridPane getContent() {
+    return this;
+  }
 
-  private GridPane createScene() {
-    GridPane grid = new GridPane();
-    grid.getStylesheets().add(css);
-    grid.setAlignment(Pos.CENTER);
-    grid.setHgap(20);
-    grid.setVgap(10);
-    grid.getStyleClass().add("background");
+  private GridPane createContent() {
+    this.getStylesheets().add(css);
+    this.setAlignment(Pos.CENTER);
+    this.setHgap(20);
+    this.setVgap(10);
+    this.getStyleClass().add("background");
 
-    grid.addColumn(0,
-            new WikiButton("Generate Spreadsheet", "primary"),
-            new WikiLabel("Generate Spreadsheet by selecting a directory on your hard drive.")
+    this.addColumn(0,
+            new WikiButton("Test 1"),
+            new WikiLabel("Test 2")
     );
-    grid.addColumn(1,
-            new WikiButton("Validate & Upload"),
-            new WikiLabel("Check correctness of your spreadsheet and upload files.")
+    this.addColumn(1,
+            new WikiButton("Test 3"),
+            new WikiLabel("Test 4")
     );
-    
-    return grid;
+
+    return this;
   }
 }

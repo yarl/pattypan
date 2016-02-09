@@ -21,28 +21,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package pattypan;
+package pattypan.panes;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
+import javafx.geometry.Pos;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import pattypan.panes.StartPane;
+import pattypan.elements.WikiButton;
+import pattypan.elements.WikiLabel;
 
-public class Main extends Application {
+public class StartPane extends GridPane {
   
-  @Override
-  public void start(Stage stage) {
-    Scene scene = new Scene(new StartPane(stage), Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
-    stage.setTitle("Hello World!");
-    stage.setScene(scene);
-    stage.show();
-  }
-
-  /**
-   * @param args the command line arguments
-   */
-  public static void main(String[] args) {
-    launch(args);
+  String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
+  Stage stage;
+  
+  public StartPane(Stage stage) {
+    this.stage = stage;
+    createContent();
   }
   
+  public GridPane getContent() {
+    return this;
+  }
+
+  private GridPane createContent() {
+    this.getStylesheets().add(css);
+    this.setAlignment(Pos.CENTER);
+    this.setHgap(20);
+    this.setVgap(10);
+    this.getStyleClass().add("background");
+
+    this.addColumn(0,
+            new WikiButton("Generate Spreadsheet", "primary").linkTo("ChooseDirectoryPane", stage),
+            new WikiLabel("Generate Spreadsheet by selecting a directory on your hard drive.")
+    );
+    this.addColumn(1,
+            new WikiButton("Validate & Upload"),
+            new WikiLabel("Check correctness of your spreadsheet and upload files.")
+    );
+    
+    return this;
+  }
 }
