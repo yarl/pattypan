@@ -23,19 +23,55 @@
  */
 package pattypan.elements;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import pattypan.Util;
 
 public class WikiButton extends Button {
 
   public WikiButton(String name) {
     this(name, "");
   }
-  
+
   public WikiButton(String name, String type) {
     super(name);
     this.getStyleClass().addAll("mw-ui-button", type.isEmpty() ? "" : "mw-ui-" + type);
-    
+
     this.wrapTextProperty().setValue(true);
     this.setMaxWidth(200);
+  }
+
+  private Pane getPaneByPaneName(String name, Stage stage) {
+    try {
+      Class<?> paneClass = Class.forName("pattypan.panes." + name);
+      Constructor<?> constructor = paneClass.getConstructor(Stage.class);
+      Object instance = constructor.newInstance(stage);
+      Method content = instance.getClass().getMethod("getContent");
+
+      return (Pane) content.invoke(instance);
+    } catch (ClassNotFoundException | NoSuchMethodException | SecurityException |InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+      Logger.getLogger(WikiButton.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return new Pane();
+  }
+
+  public WikiButton linkTo(String paneName, Stage stage) {
+    this.setOnAction(new EventHandler<ActionEvent>() {
+      @Override
+      public void handle(ActionEvent event) {
+        Scene scene = new Scene(getPaneByPaneName(paneName, stage), Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
+        stage.setScene(scene);
+      }
+    });
+    return this;
   }
 }
