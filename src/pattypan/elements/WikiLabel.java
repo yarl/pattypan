@@ -23,6 +23,7 @@
  */
 package pattypan.elements;
 
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.text.TextAlignment;
 
@@ -34,5 +35,21 @@ public class WikiLabel extends Label {
     this.wrapTextProperty().setValue(true);
     this.setTextAlignment(TextAlignment.CENTER);
     this.setMaxWidth(200);
+  }
+  
+  public Label setAlign(String position) {
+    if(position.equals("left")) {
+      this.setAlignment(Pos.CENTER_LEFT);
+      this.setTextAlignment(TextAlignment.LEFT);
+    }
+    else if(position.equals("right")) {
+      this.setAlignment(Pos.CENTER_RIGHT);
+      this.setTextAlignment(TextAlignment.RIGHT);
+    }
+    else if(position.equals("center")) {
+      this.setAlignment(Pos.CENTER);
+      this.setTextAlignment(TextAlignment.CENTER);
+    }
+    return this;
   }
 }
