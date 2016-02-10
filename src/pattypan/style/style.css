@@ -53,4 +53,15 @@ THE SOFTWARE.
   -fx-border-color: #347bff;
 }
 
+.mw-ui-progressbar .track {
+  -fx-box-border: 0;
+  -fx-background-color: #dddddd;
+  -fx-background-insets: 0;
+}
 
+.mw-ui-progressbar .bar {
+  -fx-background-color: #000000;
+  -fx-background-radius: 1 0 0 1;
+  -fx-background-insets: 0;
+  -fx-padding: 2px;
+}
