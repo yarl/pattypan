@@ -48,6 +48,7 @@ public class WikiButton extends Button {
 
     this.wrapTextProperty().setValue(true);
     this.setMaxWidth(200);
+    this.setMinWidth(200);
   }
 
   private Pane getPaneByPaneName(String name, Stage stage) {
