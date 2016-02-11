@@ -24,9 +24,7 @@
 package pattypan.panes;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
@@ -48,12 +46,19 @@ public class ChooseDirectoryPane extends GridPane {
 
   private GridPane createContent() {
     this.getStylesheets().add(css);
-    this.setAlignment(Pos.CENTER);
+    this.setAlignment(Pos.TOP_CENTER);
     this.setHgap(20);
     this.setVgap(10);
     this.getStyleClass().add("background");
-       
-    this.add(new WikiProgressBar(0.3), 0, 0, 2, 1);
+    
+    WikiProgressBar pb = new WikiProgressBar(0.0,
+            new String[] {
+              "Choose directory",
+              "Choose columns",
+              "Create file"     
+            });
+    
+    this.add(pb, 0, 0, 2, 1);
     this.addColumn(0,
             new WikiButton("Test 1"),
             new WikiLabel("Test 2")

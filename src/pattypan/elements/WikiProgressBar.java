@@ -26,16 +26,33 @@ package pattypan.elements;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 
 public class WikiProgressBar extends GridPane {
-
-  public WikiProgressBar(double progress) {
+  String[] labels;
+  
+  public WikiProgressBar(double progress, String... labels) {
     super();
+    this.labels = labels;
     createContent(progress);
+  }
+
+  private Pane createDot(double number, double progress, int translateX) {
+    boolean isActive = progress >= (number / 2.0);
+
+    Circle c = new Circle(5);
+    c.getStyleClass().add("mw-ui-progressbar-dot" + (isActive ? "-active" : ""));
+
+    Pane p = new Pane(c);
+    p.setTranslateX(translateX);
+    p.setTranslateY(-2);
+    return p;
   }
 
   private GridPane createContent(double progress) {
     this.setMinWidth(420);
+    this.getStyleClass().add("mw-ui-progressbar-container");
 
     ColumnConstraints col = new ColumnConstraints();
     col.setPercentWidth(33);
@@ -47,12 +64,17 @@ public class WikiProgressBar extends GridPane {
     pb.getStyleClass().addAll("mw-ui-progressbar");
     pb.setMinWidth(420);
     pb.setMaxHeight(5);
-
     this.add(pb, 0, 0, 3, 1);
+
     this.addRow(1,
-            new WikiLabel("Choose directory"),
-            new WikiLabel("Choose columns").setAlign("center"),
-            new WikiLabel("Create file").setAlign("right")
+            createDot(0.0, progress, 1),
+            createDot(1.0, progress, 70),
+            createDot(2.0, progress, 140));
+
+    this.addRow(2,
+            new WikiLabel(labels[0]).setTranslateByHalf(false),
+            new WikiLabel(labels[1]).setAlign("center"),
+            new WikiLabel(labels[2]).setAlign("right").setTranslateByHalf(true)
     );
     return this;
   }

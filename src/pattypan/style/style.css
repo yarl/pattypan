@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 .background {
   -fx-background-color: #fff;
+  -fx-padding: 40px;
 }
 
 .mw-ui-button {
@@ -53,6 +54,10 @@ THE SOFTWARE.
   -fx-border-color: #347bff;
 }
 
+.mw-ui-progressbar-container {
+  -fx-padding: 0 0 40px 0;
+}
+
 .mw-ui-progressbar .track {
   -fx-box-border: 0;
   -fx-background-color: #dddddd;
@@ -64,4 +69,12 @@ THE SOFTWARE.
   -fx-background-radius: 1 0 0 1;
   -fx-background-insets: 0;
   -fx-padding: 2px;
+}
+
+.mw-ui-progressbar-dot {
+  -fx-fill: #ddd;
+}
+
+.mw-ui-progressbar-dot-active {
+  -fx-fill: #000;
 }
