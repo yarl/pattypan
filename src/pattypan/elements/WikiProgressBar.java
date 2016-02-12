@@ -23,6 +23,7 @@
  */
 package pattypan.elements;
 
+import javafx.geometry.HPos;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -63,9 +64,10 @@ public class WikiProgressBar extends GridPane {
     this.setMaxWidth(420);
     this.getStyleClass().add("mw-ui-progressbar-container");
 
-    for (int i = 0; i < 3; i++) {
-      this.getColumnConstraints().add(Util.newColumn(33));
-    }
+    this.getColumnConstraints().addAll(
+            Util.newColumn(33, "%", HPos.LEFT),
+            Util.newColumn(33, "%", HPos.CENTER),
+            Util.newColumn(33, "%", HPos.RIGHT));
 
     ProgressBar pb = new ProgressBar(progress);
     pb.getStyleClass().addAll("mw-ui-progressbar");
@@ -81,8 +83,8 @@ public class WikiProgressBar extends GridPane {
 
     this.addRow(2,
             createLabel(0.0, labels[0]).setTranslateByHalf(false),
-            createLabel(1.0, labels[0]).setAlign("center"),
-            createLabel(2.0, labels[0]).setAlign("right").setTranslateByHalf(true)     
+            createLabel(1.0, labels[0]),
+            createLabel(2.0, labels[0]).setTranslateByHalf(true)     
     );
     return this;
   }

@@ -36,7 +36,6 @@ public class WikiLabel extends Label {
     this.getStyleClass().addAll("mw-ui-text");
     this.wrapTextProperty().setValue(true);
     this.setTextAlignment(TextAlignment.CENTER);
-    this.setMaxWidth(200);
   }
   
   public WikiLabel setAlign(String position) {
@@ -64,6 +63,17 @@ public class WikiLabel extends Label {
     FontLoader fontLoader = Toolkit.getToolkit().getFontLoader();
     double textWidth = fontLoader.computeStringWidth(this.getText(), this.getFont());
     this.setTranslateX(textWidth * 0.5 * (right ? 1 : -1));
+    return this;
+  }
+  
+  public WikiLabel setWidth(int width) {
+    this.setMaxWidth(width);
+    this.setMinWidth(width);
+    return this;
+  }
+  
+  public WikiLabel setWrapped(boolean wrap) {
+    this.setWrapText(wrap);
     return this;
   }
 }

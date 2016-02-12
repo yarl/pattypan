@@ -22,10 +22,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+.root {
+    -fx-accent: #bbb;
+    -fx-focus-color: #347bff;
+}
+
 .background {
   -fx-background-color: #fff;
-  -fx-padding: 40px;
+  -fx-padding: 30px 40px 0 40px;
+/*  -fx-grid-lines-visible: true;*/
 }
+
+/* INPUT
+ ******************************************************************************/
+
+.mw-ui-input {
+  -fx-padding: .3em .3em .3em .6em;
+  -fx-border-width: 2px;
+  -fx-border-color: #ccc;
+  -fx-background-color: #fff;
+  -fx-border-insets: 0;
+  -fx-border-radius: 2px;
+  -fx-font-size: 13px;
+  -fx-font-family: "Helvetica";
+}
+
+.mw-ui-input:focused {
+  -fx-border-color: #347bff;
+}
+
+/* BUTTONS
+ ******************************************************************************/
 
 .mw-ui-button {
   -fx-font-family: "Helvetica";
@@ -53,6 +80,15 @@ THE SOFTWARE.
   -fx-border-width: 1px;
   -fx-border-color: #347bff;
 }
+
+.mw-ui-button.mw-ui-small {
+  -fx-font-size: 13px;
+  -fx-font-weight: normal;
+  -fx-padding: .3em 1em .3em 1em;
+}
+
+/* PROGRESS BAR
+ ******************************************************************************/
 
 .mw-ui-progressbar-container {
   -fx-padding: 0 0 40px 0;

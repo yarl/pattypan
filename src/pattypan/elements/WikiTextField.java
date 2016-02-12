@@ -21,40 +21,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package pattypan;
+package pattypan.elements;
 
-import javafx.geometry.HPos;
-import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.control.TextField;
 
-public final class Util {
-
-  private Util() {
-  }
-
-  public static int WINDOW_WIDTH = 600;
-  public static int WINDOW_HEIGHT = 400;
-
-  public static ColumnConstraints newColumn(int value) {
-    return newColumn(value, "%", HPos.CENTER);
-  }
+public class WikiTextField extends TextField {
   
-  public static ColumnConstraints newColumn(int value, String unit) {
-    return newColumn(value, unit, HPos.CENTER);
-  }
-  
-  public static ColumnConstraints newColumn(int value, String unit, HPos position) {
-    ColumnConstraints col = new ColumnConstraints();
-    if(unit.equals("%")) {
-      col.setPercentWidth(value);
-    }
-    if(unit.equals("px")) {
-      col.setMaxWidth(value);
-      col.setMinWidth(value);
-    }
-    
-    if(position != null) {
-      col.setHalignment(position);
-    }
-    return col;
+  public WikiTextField(String text) {
+    super(text);
+    this.getStyleClass().addAll("mw-ui-input");
   }
 }
