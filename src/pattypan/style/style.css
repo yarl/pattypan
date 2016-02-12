@@ -78,3 +78,11 @@ THE SOFTWARE.
 .mw-ui-progressbar-dot-active {
   -fx-fill: #000;
 }
+
+.mw-ui-progressbar-text {
+  -fx-text-fill: #bbb;
+}
+
+.mw-ui-progressbar-text-active {
+  -fx-text-fill: #000;
+}

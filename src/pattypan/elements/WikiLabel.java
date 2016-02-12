@@ -55,6 +55,11 @@ public class WikiLabel extends Label {
     return this;
   }
   
+  public WikiLabel setClass(String cssClass) {
+    this.getStyleClass().add(cssClass);
+    return this;
+  }
+  
   public WikiLabel setTranslateByHalf(boolean right) {
     FontLoader fontLoader = Toolkit.getToolkit().getFontLoader();
     double textWidth = fontLoader.computeStringWidth(this.getText(), this.getFont());

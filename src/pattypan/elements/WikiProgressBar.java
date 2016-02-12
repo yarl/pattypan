@@ -31,6 +31,7 @@ import javafx.scene.shape.Circle;
 
 public class WikiProgressBar extends GridPane {
   String[] labels;
+  double progress;
   
   public WikiProgressBar(double progress, String... labels) {
     super();
@@ -38,19 +39,26 @@ public class WikiProgressBar extends GridPane {
     createContent(progress);
   }
 
-  private Pane createDot(double number, double progress, int translateX) {
-    boolean isActive = progress >= (number / 2.0);
-
+  private Pane createDot(double number, int translateX) {
     Circle c = new Circle(5);
-    c.getStyleClass().add("mw-ui-progressbar-dot" + (isActive ? "-active" : ""));
+    c.getStyleClass().add("mw-ui-progressbar-dot" + (isActive(number) ? "-active" : ""));
 
     Pane p = new Pane(c);
     p.setTranslateX(translateX);
     p.setTranslateY(-2);
     return p;
   }
+  
+  private WikiLabel createLabel(double number, String label) {
+    return new WikiLabel(label).setClass("mw-ui-progressbar-text" + (isActive(number) ? "-active" : ""));
+  }
+  
+  private boolean isActive(double number) {
+    return progress >= (number / 2.0);
+  }
 
   private GridPane createContent(double progress) {
+    this.progress = progress;
     this.setMinWidth(420);
     this.getStyleClass().add("mw-ui-progressbar-container");
 
@@ -67,14 +75,14 @@ public class WikiProgressBar extends GridPane {
     this.add(pb, 0, 0, 3, 1);
 
     this.addRow(1,
-            createDot(0.0, progress, 1),
-            createDot(1.0, progress, 70),
-            createDot(2.0, progress, 140));
+            createDot(0.0, 1),
+            createDot(1.0, 70),
+            createDot(2.0, 140));
 
     this.addRow(2,
-            new WikiLabel(labels[0]).setTranslateByHalf(false),
-            new WikiLabel(labels[1]).setAlign("center"),
-            new WikiLabel(labels[2]).setAlign("right").setTranslateByHalf(true)
+            createLabel(0.0, labels[0]).setTranslateByHalf(false),
+            createLabel(1.0, labels[0]).setAlign("center"),
+            createLabel(2.0, labels[0]).setAlign("right").setTranslateByHalf(true)     
     );
     return this;
   }
