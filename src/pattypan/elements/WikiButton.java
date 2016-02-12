@@ -39,12 +39,21 @@ import pattypan.Util;
 public class WikiButton extends Button {
 
   public WikiButton(String name) {
-    this(name, "");
+    this(name, "large");
   }
 
   public WikiButton(String name, String type) {
+    this(name, type, "large");
+  }
+
+  public WikiButton(String name, String... types) {
     super(name);
-    this.getStyleClass().addAll("mw-ui-button", type.isEmpty() ? "" : "mw-ui-" + type);
+
+    for (int i = 0; i < types.length; i++) {
+      types[i] = types[i].isEmpty() ? "" : "mw-ui-" + types[i];
+    }
+    this.getStyleClass().add("mw-ui-button");
+    this.getStyleClass().addAll(types);
 
     this.wrapTextProperty().setValue(true);
     this.setMaxWidth(200);
@@ -59,7 +68,7 @@ public class WikiButton extends Button {
       Method content = instance.getClass().getMethod("getContent");
 
       return (Pane) content.invoke(instance);
-    } catch (ClassNotFoundException | NoSuchMethodException | SecurityException |InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+    } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
       Logger.getLogger(WikiButton.class.getName()).log(Level.SEVERE, null, ex);
     }
     return new Pane();
@@ -73,6 +82,12 @@ public class WikiButton extends Button {
         stage.setScene(scene);
       }
     });
+    return this;
+  }
+  
+  public WikiButton setWidth(int width) {
+    this.setMaxWidth(width);
+    this.setMinWidth(width);
     return this;
   }
 }
