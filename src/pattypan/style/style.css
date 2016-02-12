@@ -33,6 +33,16 @@ THE SOFTWARE.
 /*  -fx-grid-lines-visible: true;*/
 }
 
+.mw-ui-scrollpane {
+  -fx-background-color: #fff;
+  -fx-border-width: 0;
+  -fx-border-insets: 0;
+}
+
+.mw-ui-scrollpane > .viewport {
+   -fx-background-color: transparent;
+}
+
 /* INPUT
  ******************************************************************************/
 
@@ -58,11 +68,11 @@ THE SOFTWARE.
   -fx-font-family: "Helvetica";
   -fx-font-size: 16px;
   -fx-font-weight: bold;
-  -fx-text-fill: #555555;
-  -fx-background-color: #dddddd;
+  -fx-text-fill: #555;
+  -fx-background-color: #ddd;
   -fx-padding: .5em 1em .5em 1em;
   -fx-border-width: 1px;
-  -fx-border-color: #dddddd;
+  -fx-border-color: #ddd;
   -fx-border-insets: 0;
   -fx-border-radius: 2px;
   -fx-text-alignment: center;
@@ -79,6 +89,16 @@ THE SOFTWARE.
   -fx-text-fill: #fff;
   -fx-border-width: 1px;
   -fx-border-color: #347bff;
+}
+
+.mw-ui-button.mw-ui-inversed {
+  -fx-border-color: #fff;
+  -fx-background-color: #fff;
+}
+
+.mw-ui-button.mw-ui-inversed:hover {
+  -fx-background-color: #ddd;
+  -fx-border-color: #ddd;
 }
 
 .mw-ui-button.mw-ui-small {

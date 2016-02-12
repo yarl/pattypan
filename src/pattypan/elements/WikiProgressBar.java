@@ -83,8 +83,8 @@ public class WikiProgressBar extends GridPane {
 
     this.addRow(2,
             createLabel(0.0, labels[0]).setTranslateByHalf(false),
-            createLabel(1.0, labels[0]),
-            createLabel(2.0, labels[0]).setTranslateByHalf(true)     
+            createLabel(1.0, labels[1]),
+            createLabel(2.0, labels[2]).setTranslateByHalf(true)     
     );
     return this;
   }

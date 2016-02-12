@@ -26,6 +26,7 @@ package pattypan.panes;
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 
@@ -50,15 +51,17 @@ public class StartPane extends GridPane {
     this.setVgap(10);
     this.getStyleClass().add("background");
 
-    this.addColumn(0,
-            new WikiButton("Generate Spreadsheet", "primary").linkTo("ChooseDirectoryPane", stage),
-            new WikiLabel("Generate Spreadsheet by selecting a directory on your hard drive.")
-    );
-    this.addColumn(1,
-            new WikiButton("Validate & Upload"),
-            new WikiLabel("Check correctness of your spreadsheet and upload files.")
-    );
+    this.getColumnConstraints().add(Util.newColumn(200, "px"));
+    this.getColumnConstraints().add(Util.newColumn(200, "px"));
     
+    this.addRow(0,
+            new WikiButton("Generate Spreadsheet", "primary").linkTo("ChooseDirectoryPane", stage),
+            new WikiButton("Validate & Upload"));
+    
+    this.addRow(1,
+            new WikiLabel("Generate Spreadsheet by selecting a directory on your hard drive."),
+            new WikiLabel("Check correctness of your spreadsheet and upload files."));
+
     return this;
   }
 }
