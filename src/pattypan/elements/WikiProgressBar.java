@@ -24,7 +24,6 @@
 package pattypan.elements;
 
 import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
@@ -61,6 +60,7 @@ public class WikiProgressBar extends GridPane {
   private GridPane createContent(double progress) {
     this.progress = progress;
     this.setMinWidth(420);
+    this.setMaxWidth(420);
     this.getStyleClass().add("mw-ui-progressbar-container");
 
     for (int i = 0; i < 3; i++) {
@@ -70,6 +70,7 @@ public class WikiProgressBar extends GridPane {
     ProgressBar pb = new ProgressBar(progress);
     pb.getStyleClass().addAll("mw-ui-progressbar");
     pb.setMinWidth(420);
+    pb.setMaxWidth(420);
     pb.setMaxHeight(5);
     this.add(pb, 0, 0, 3, 1);
 

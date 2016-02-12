@@ -33,9 +33,19 @@ public final class Util {
   public static int WINDOW_WIDTH = 600;
   public static int WINDOW_HEIGHT = 400;
 
-  public static ColumnConstraints newColumn(int percentage) {
+  public static ColumnConstraints newColumn(int value) {
+    return newColumn(value, "");
+  }
+  
+  public static ColumnConstraints newColumn(int value, String unit) {
     ColumnConstraints col = new ColumnConstraints();
-    col.setPercentWidth(percentage);
+    if(unit.isEmpty()) {
+      col.setPercentWidth(value);
+    }
+    if(unit.equals("px")) {
+      col.setMaxWidth(value);
+      col.setMinWidth(value);
+    }
     return col;
   }
 }
