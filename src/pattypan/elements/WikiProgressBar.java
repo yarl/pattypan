@@ -28,6 +28,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
+import pattypan.Util;
 
 public class WikiProgressBar extends GridPane {
   String[] labels;
@@ -62,10 +63,8 @@ public class WikiProgressBar extends GridPane {
     this.setMinWidth(420);
     this.getStyleClass().add("mw-ui-progressbar-container");
 
-    ColumnConstraints col = new ColumnConstraints();
-    col.setPercentWidth(33);
     for (int i = 0; i < 3; i++) {
-      this.getColumnConstraints().add(col);
+      this.getColumnConstraints().add(Util.newColumn(33));
     }
 
     ProgressBar pb = new ProgressBar(progress);

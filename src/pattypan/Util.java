@@ -23,9 +23,19 @@
  */
 package pattypan;
 
+import javafx.scene.layout.ColumnConstraints;
+
 public final class Util {
-    private Util() {}
-    
-    public static int WINDOW_WIDTH = 600;
-    public static int WINDOW_HEIGHT = 400;
+
+  private Util() {
+  }
+
+  public static int WINDOW_WIDTH = 600;
+  public static int WINDOW_HEIGHT = 400;
+
+  public static ColumnConstraints newColumn(int percentage) {
+    ColumnConstraints col = new ColumnConstraints();
+    col.setPercentWidth(percentage);
+    return col;
+  }
 }
