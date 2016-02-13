@@ -23,75 +23,35 @@
  */
 package pattypan.panes;
 
-import java.io.File;
-import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import pattypan.Session;
 import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiProgressBar;
-import pattypan.elements.WikiTextField;
 
-public class ChooseDirectoryPane extends GridPane {
+public class ChooseColumnsPane extends GridPane {
 
   String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
   Stage stage;
   
   WikiLabel descLabel;
-  WikiTextField browsePath;
-  WikiButton browseButton;
-  ScrollPane scrollText = new ScrollPane();
+  WikiButton prevButton;
   WikiButton nextButton;
-
-  public ChooseDirectoryPane(Stage stage) {
+  
+  public ChooseColumnsPane(Stage stage) {
     this.stage = stage;
     setContent();
-    
-    if(Session.DIRECTORY != null) {
-      browsePath.setText(Session.DIRECTORY.getAbsolutePath());
-      getFileListByDirectory(Session.DIRECTORY);
-    }
-  }
-
-  private void chooseAndSetDirectory() {
-    DirectoryChooser fileChooser = new DirectoryChooser();
-    fileChooser.setTitle("Choose directory");
-    if(Session.DIRECTORY != null) {
-      fileChooser.setInitialDirectory(Session.DIRECTORY);
-    }
-
-    File file = fileChooser.showDialog(stage);
-    if (file != null) {
-      Session.DIRECTORY = file;
-      browsePath.setText(file.getAbsolutePath());
-      getFileListByDirectory(file);
-    }
   }
   
   public GridPane getContent() {
     return this;
-  }
-  
-  private void getFileListByDirectory(File directory) {
-    File[] files = directory.listFiles();
-    Session.FILES = files;
-    VBox content = new VBox();
-    
-    for (File f : files) {
-      if (f.isFile()) {
-        content.getChildren().add(new WikiLabel(f.getName()));
-      }
-    }
-    scrollText.setContent(content);
-    nextButton.setDisable(files.length == 0);
   }
   
   private GridPane setContent() {
@@ -101,10 +61,10 @@ public class ChooseDirectoryPane extends GridPane {
     this.setVgap(10);
     this.getStyleClass().add("background");
 
-    this.getColumnConstraints().add(Util.newColumn(300, "px", HPos.LEFT));
-    this.getColumnConstraints().add(Util.newColumn(100, "px"));
-
-    WikiProgressBar progressBar = new WikiProgressBar(0.0,
+    this.getColumnConstraints().add(Util.newColumn(200, "px", HPos.LEFT));
+    this.getColumnConstraints().add(Util.newColumn(200, "px", HPos.RIGHT));
+    
+    WikiProgressBar progressBar = new WikiProgressBar(0.5,
             new String[]{
               "Choose directory",
               "Choose columns",
@@ -113,26 +73,24 @@ public class ChooseDirectoryPane extends GridPane {
     
     descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
-        
-    browsePath = new WikiTextField("");
-    browseButton = new WikiButton("Browse", "small").setWidth(100);
-    browseButton.setOnAction((ActionEvent e) -> {
-      chooseAndSetDirectory();
-    });
     
-    scrollText.getStyleClass().add("mw-ui-scrollpane");
-    scrollText.setMaxHeight(100);
-    scrollText.setMinHeight(100);
-    
-    nextButton = new WikiButton("Next", "inversed").linkTo("ChooseColumnsPane", stage).setWidth(100);
-    //nextButton.setDisable(true);
-    
-    this.addRow(0, progressBar);
-    this.add(descLabel, 0, 1, 2, 1);
-    this.addRow(2, browsePath, browseButton);
-    this.add(scrollText, 0, 3, 2, 1);
-    this.add(nextButton, 1, 4, 1, 1);
+    WikiButton a = new WikiButton("Columns", "group-left").setWidth(150);
+    WikiButton b = new WikiButton("Wikicode", "group-right", "inversed").setWidth(150);
+    b.setDisable(true);
+            
+    HBox tabs = new HBox(0);
+    tabs.getChildren().addAll(a,b);
+    tabs.setAlignment(Pos.BOTTOM_LEFT);
 
+    prevButton = new WikiButton("Back", "inversed").linkTo("ChooseDirectoryPane", stage).setWidth(100);
+    nextButton = new WikiButton("Next", "inversed").setWidth(100);
+    
+    this.add(progressBar, 0, 0, 2, 1);
+    this.add(descLabel, 0, 1, 2, 1);
+    this.add(tabs, 0, 2, 2, 1);
+    //this.addRow(1, a, b);
+    this.addRow(3, prevButton, nextButton);
+    
     return this;
   }
 }
