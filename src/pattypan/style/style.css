@@ -23,8 +23,8 @@ THE SOFTWARE.
 */
 
 .root {
-    -fx-accent: #bbb;
-    -fx-focus-color: #347bff;
+  -fx-accent: #bbb;
+  -fx-focus-color: #347bff;
 }
 
 .background {
@@ -40,7 +40,7 @@ THE SOFTWARE.
 }
 
 .mw-ui-scrollpane > .viewport {
-   -fx-background-color: transparent;
+  -fx-background-color: transparent;
 }
 
 /* INPUT
@@ -92,7 +92,8 @@ THE SOFTWARE.
 }
 
 .mw-ui-button.mw-ui-inversed {
-  -fx-border-color: #fff;
+  -fx-border-width: 1px;
+  -fx-border-color: #ddd;
   -fx-background-color: #fff;
 }
 
@@ -105,6 +106,14 @@ THE SOFTWARE.
   -fx-font-size: 13px;
   -fx-font-weight: normal;
   -fx-padding: .3em 1em .3em 1em;
+}
+
+.mw-ui-button.mw-ui-group-right {
+  -fx-border-radius: 0 2px 2px 0;
+}
+
+.mw-ui-button.mw-ui-group-left {
+  -fx-border-radius: 2px 0 0 2px;
 }
 
 /* PROGRESS BAR
@@ -142,3 +151,48 @@ THE SOFTWARE.
 .mw-ui-progressbar-text-active {
   -fx-text-fill: #000;
 }
+
+/* TABS
+ ******************************************************************************/
+
+.mw-ui-tabs {
+  -fx-border-width: 0;
+  -fx-background-insets: 0;
+}
+
+.mw-ui-tabs .tab-header-area,
+.mw-ui-tabs .headers-region,
+.mw-ui-tabs .tab-header-background {
+  -fx-background-color: transparent;
+}
+
+.mw-ui-tabs .tab {
+  /*  -fx-padding: .3em .3em .3em .6em;*/
+  -fx-border-width: 2px 2px 0 2px;
+  -fx-border-color: #ccc;
+  -fx-border-radius: 2px 2px 0 0;
+  -fx-background-insets: 0;
+  -fx-background-color: transparent;
+}
+
+.mw-ui-tabs .tab-label {
+  -fx-border-width: 0;
+  -fx-background-insets: 0;
+}
+
+.mw-ui-tabs .tab-content-area {
+  -fx-padding: .3em .3em .3em .6em;
+  -fx-border-width: 2px;
+  -fx-border-color: #ccc;
+}
+
+/*
+  -fx-padding: .3em .3em .3em .6em;
+  -fx-border-width: 2px;
+  -fx-border-color: #ccc;
+  -fx-background-color: #fff;
+  -fx-border-insets: 0;
+
+  -fx-font-size: 13px;
+  -fx-font-family: "Helvetica";
+*/
