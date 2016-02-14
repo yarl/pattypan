@@ -33,7 +33,8 @@ public class Main extends Application {
   @Override
   public void start(Stage stage) {
     Scene scene = new Scene(new StartPane(stage), Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
-    stage.setTitle("Hello World!");
+    stage.setResizable(false);
+    stage.setTitle("pattypan");
     stage.setScene(scene);
     stage.show();
   }

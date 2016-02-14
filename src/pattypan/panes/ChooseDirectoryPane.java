@@ -29,11 +29,13 @@ import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import pattypan.Session;
+import pattypan.Settings;
 import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
@@ -100,9 +102,10 @@ public class ChooseDirectoryPane extends GridPane {
     this.setHgap(20);
     this.setVgap(10);
     this.getStyleClass().add("background");
-
-    this.getColumnConstraints().add(Util.newColumn(300, "px", HPos.LEFT));
-    this.getColumnConstraints().add(Util.newColumn(100, "px"));
+    
+    this.setHeight(Settings.WINDOW_HEIGHT);
+    this.getColumnConstraints().add(Util.newColumn(80, "%", HPos.LEFT));
+    this.getColumnConstraints().add(Util.newColumn(20, "%", HPos.RIGHT));
 
     WikiProgressBar progressBar = new WikiProgressBar(0.0,
             new String[]{
@@ -110,6 +113,10 @@ public class ChooseDirectoryPane extends GridPane {
               "Choose columns",
               "Create file"
             });
+    
+    HBox progressBarContainer = new HBox();
+    progressBarContainer.setAlignment(Pos.CENTER);
+    progressBarContainer.getChildren().add(progressBar);
     
     descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
@@ -127,7 +134,7 @@ public class ChooseDirectoryPane extends GridPane {
     nextButton = new WikiButton("Next", "inversed").linkTo("ChooseColumnsPane", stage).setWidth(100);
     //nextButton.setDisable(true);
     
-    this.addRow(0, progressBar);
+    this.add(progressBarContainer, 0, 0, 2, 1);
     this.add(descLabel, 0, 1, 2, 1);
     this.addRow(2, browsePath, browseButton);
     this.add(scrollText, 0, 3, 2, 1);

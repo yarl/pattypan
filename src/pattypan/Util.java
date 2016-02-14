@@ -30,8 +30,8 @@ public final class Util {
 
   private Util() {}
 
-  public static int WINDOW_WIDTH = 600;
-  public static int WINDOW_HEIGHT = 400;
+  public static int WINDOW_WIDTH = 750;
+  public static int WINDOW_HEIGHT = 550;
 
   public static ColumnConstraints newColumn(int value) {
     return newColumn(value, "%", HPos.CENTER);

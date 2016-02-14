@@ -29,7 +29,7 @@ THE SOFTWARE.
 
 .background {
   -fx-background-color: #fff;
-  -fx-padding: 30px 40px 0 40px;
+  -fx-padding: 50px;
 /*  -fx-grid-lines-visible: true;*/
 }
 

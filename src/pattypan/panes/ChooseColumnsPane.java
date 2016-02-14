@@ -23,10 +23,11 @@
  */
 package pattypan.panes;
 
+import javafx.event.Event;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.TextAlignment;
@@ -42,8 +43,11 @@ public class ChooseColumnsPane extends GridPane {
   Stage stage;
   
   WikiLabel descLabel;
+  ScrollPane scrollText = new ScrollPane();
   WikiButton prevButton;
   WikiButton nextButton;
+  
+  String template = "";
   
   public ChooseColumnsPane(Stage stage) {
     this.stage = stage;
@@ -61,8 +65,8 @@ public class ChooseColumnsPane extends GridPane {
     this.setVgap(10);
     this.getStyleClass().add("background");
 
-    this.getColumnConstraints().add(Util.newColumn(200, "px", HPos.LEFT));
-    this.getColumnConstraints().add(Util.newColumn(200, "px", HPos.RIGHT));
+    this.getColumnConstraints().add(Util.newColumn(50, "%", HPos.LEFT));
+    this.getColumnConstraints().add(Util.newColumn(50, "%", HPos.RIGHT));
     
     WikiProgressBar progressBar = new WikiProgressBar(0.5,
             new String[]{
@@ -71,25 +75,42 @@ public class ChooseColumnsPane extends GridPane {
               "Create file"
             });
     
+    HBox progressBarContainer = new HBox();
+    progressBarContainer.setAlignment(Pos.CENTER);
+    progressBarContainer.getChildren().add(progressBar);
+    
     descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
-    
-    WikiButton a = new WikiButton("Columns", "group-left").setWidth(150);
-    WikiButton b = new WikiButton("Wikicode", "group-right", "inversed").setWidth(150);
-    b.setDisable(true);
-            
+
+    WikiButton templateButton = new WikiButton("Use template", "group-left").setWidth(150);
+    WikiButton wikicodeButton = new WikiButton("Write wikicode", "group-right", "inversed").setWidth(150);
+    wikicodeButton.setDisable(true);
+
     HBox tabs = new HBox(0);
-    tabs.getChildren().addAll(a,b);
+    tabs.getChildren().addAll(templateButton,wikicodeButton);
     tabs.setAlignment(Pos.BOTTOM_LEFT);
 
+    final ComboBox templateBox = new ComboBox();
+    templateBox.getItems().addAll(
+            "Artwork", "Book", "Photograph", "Map"
+    );
+    templateBox.setOnAction((Event ev) -> {
+      template = templateBox.getSelectionModel().getSelectedItem().toString();
+    });
+    
+    scrollText.getStyleClass().add("mw-ui-scrollpane");
+    scrollText.setMaxHeight(100);
+    scrollText.setMinHeight(100);
+    
     prevButton = new WikiButton("Back", "inversed").linkTo("ChooseDirectoryPane", stage).setWidth(100);
     nextButton = new WikiButton("Next", "inversed").setWidth(100);
     
-    this.add(progressBar, 0, 0, 2, 1);
+    this.add(progressBarContainer, 0, 0, 2, 1);
     this.add(descLabel, 0, 1, 2, 1);
     this.add(tabs, 0, 2, 2, 1);
-    //this.addRow(1, a, b);
-    this.addRow(3, prevButton, nextButton);
+    this.addRow(3, templateBox);
+    this.addRow(4, scrollText);
+    this.addRow(5, prevButton, nextButton);
     
     return this;
   }
