@@ -23,6 +23,9 @@
  */
 package pattypan;
 
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.geometry.HPos;
 import javafx.scene.layout.ColumnConstraints;
 
@@ -55,5 +58,16 @@ public final class Util {
       col.setHalignment(position);
     }
     return col;
+  }
+  
+  public static ArrayList<String> getVariablesFromString(String text) {
+    final Pattern pattern = Pattern.compile("\\%(.*?)\\%");
+    Matcher m = pattern.matcher(text);
+    ArrayList<String> results = new ArrayList<>();
+
+    while (m.find()) {
+      results.add(m.group(1));
+    }
+    return results;
   }
 }

@@ -31,4 +31,6 @@ public final class Session {
   
   public static File DIRECTORY;
   public static File[] FILES;
+  
+  public static String METHOD;
 }
