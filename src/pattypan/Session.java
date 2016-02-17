@@ -24,13 +24,18 @@
 package pattypan;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public final class Session {
   
   private Session() {};
   
   public static File DIRECTORY;
-  public static File[] FILES;
+  public static ArrayList<File> FILES = new ArrayList<>();
   
-  public static String METHOD;
+  public static String METHOD = "template";
+  public static String TEMPLATE = "Book";
+  public static String WIKICODE = "";
+  public static ArrayList<String> VARIABLES = new ArrayList<>(Arrays.asList("Path", "Name"));
 }
