@@ -84,12 +84,12 @@ public class ChooseDirectoryPane extends GridPane {
   
   private void getFileListByDirectory(File directory) {
     File[] files = directory.listFiles();
-    Session.FILES = files;
     VBox content = new VBox();
     
     for (File f : files) {
       if (f.isFile()) {
         content.getChildren().add(new WikiLabel(f.getName()));
+        Session.FILES.add(f);
       }
     }
     scrollText.setContent(content);

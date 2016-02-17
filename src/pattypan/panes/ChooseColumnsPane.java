@@ -47,6 +47,8 @@ public class ChooseColumnsPane extends GridPane {
   Stage stage;
   
   WikiLabel descLabel;
+  WikiButton templateButton;
+  WikiButton wikicodeButton;
   ScrollPane scrollText = new ScrollPane();
   WikiButton prevButton;
   WikiButton nextButton;
@@ -54,7 +56,10 @@ public class ChooseColumnsPane extends GridPane {
   public ChooseColumnsPane(Stage stage) {
     this.stage = stage;
     setContent();
-    Session.METHOD = "template";
+    
+    if(Session.METHOD.equals("wikicode")) {
+      wikicodeButton.fire();
+    }
   }
   
   public GridPane getContent() {
@@ -87,8 +92,8 @@ public class ChooseColumnsPane extends GridPane {
 
     /* buttons */
     
-    WikiButton templateButton = new WikiButton("Use template", "group-left").setWidth(150);
-    WikiButton wikicodeButton = new WikiButton("Write wikicode", "group-right", "inversed").setWidth(150);
+    templateButton = new WikiButton("Use template", "group-left").setWidth(150);
+    wikicodeButton = new WikiButton("Write wikicode", "group-right", "inversed").setWidth(150);
     HBox tabs = new HBox(0);
     tabs.getChildren().addAll(templateButton, wikicodeButton);
     tabs.setAlignment(Pos.BOTTOM_LEFT);
@@ -99,6 +104,7 @@ public class ChooseColumnsPane extends GridPane {
     templateBox.getItems().addAll(
             "Artwork", "Book", "Photograph", "Map"
     );
+    templateBox.getSelectionModel().select(Session.TEMPLATE);
     templateBox.setOnAction((Event ev) -> {
       String template = templateBox.getSelectionModel().getSelectedItem().toString();
     });
@@ -108,11 +114,12 @@ public class ChooseColumnsPane extends GridPane {
     
     /* wiki code pane */
     TextArea wikicodeText = new TextArea();
+    wikicodeText.setText(Session.WIKICODE);
     
     GridPane wikicodePane = new GridPane();
     wikicodePane.add(wikicodeText, 0, 0);
     
-    templateButton.setOnAction((ActionEvent ev) -> {
+    templateButton.setOnAction(event -> {
       templateButton.getStyleClass().remove("mw-ui-inversed");
       wikicodeButton.getStyleClass().add("mw-ui-inversed");
       if(this.getChildren().remove(wikicodePane)) {
@@ -121,7 +128,7 @@ public class ChooseColumnsPane extends GridPane {
       Session.METHOD = "template";
     });
     
-    wikicodeButton.setOnAction((ActionEvent ev) -> {
+    wikicodeButton.setOnAction(event -> {
       wikicodeButton.getStyleClass().remove("mw-ui-inversed");
       templateButton.getStyleClass().add("mw-ui-inversed");
       
@@ -133,11 +140,13 @@ public class ChooseColumnsPane extends GridPane {
     
     prevButton = new WikiButton("Back", "inversed").linkTo("ChooseDirectoryPane", stage).setWidth(100);
     nextButton = new WikiButton("Next", "inversed").setWidth(100);
-    nextButton.setOnAction((ActionEvent ev) -> {
+    nextButton.setOnAction(event -> {
       if(Session.METHOD.equals("wikicode")) {
         ArrayList<String> vars = Util.getVariablesFromString(wikicodeText.getText());
-        System.out.println(vars.toString());
+        Session.VARIABLES.addAll(vars);
       }
+      Session.WIKICODE = wikicodeText.getText();
+      nextButton.goTo("CreateFilePane", stage);
     });
     
     this.add(progressBarContainer, 0, 0, 2, 1);

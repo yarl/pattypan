@@ -29,7 +29,6 @@ import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
@@ -75,14 +74,15 @@ public class WikiButton extends Button {
   }
 
   public WikiButton linkTo(String paneName, Stage stage) {
-    this.setOnAction(new EventHandler<ActionEvent>() {
-      @Override
-      public void handle(ActionEvent event) {
-        Scene scene = new Scene(getPaneByPaneName(paneName, stage), Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
-        stage.setScene(scene);
-      }
+    this.setOnAction((ActionEvent event) -> {
+      goTo(paneName, stage);
     });
     return this;
+  }
+  
+  public void goTo(String paneName, Stage stage) {
+    Scene scene = new Scene(getPaneByPaneName(paneName, stage), Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
+    stage.setScene(scene);
   }
   
   public WikiButton setWidth(int width) {
