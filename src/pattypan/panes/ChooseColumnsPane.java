@@ -114,6 +114,7 @@ public class ChooseColumnsPane extends GridPane {
     
     /* wiki code pane */
     TextArea wikicodeText = new TextArea();
+    wikicodeText.getStyleClass().add("mw-ui-input");
     wikicodeText.setText(Session.WIKICODE);
     
     GridPane wikicodePane = new GridPane();
@@ -123,7 +124,7 @@ public class ChooseColumnsPane extends GridPane {
       templateButton.getStyleClass().remove("mw-ui-inversed");
       wikicodeButton.getStyleClass().add("mw-ui-inversed");
       if(this.getChildren().remove(wikicodePane)) {
-        this.addRow(3, templatePane);
+        this.add(templatePane, 0, 3, 2, 1);
       }
       Session.METHOD = "template";
     });
@@ -133,7 +134,7 @@ public class ChooseColumnsPane extends GridPane {
       templateButton.getStyleClass().add("mw-ui-inversed");
       
       if(this.getChildren().remove(templatePane)) {
-        this.addRow(3, wikicodePane);
+        this.add(wikicodePane, 0, 3, 2, 1);
       }
       Session.METHOD = "wikicode";
     });
