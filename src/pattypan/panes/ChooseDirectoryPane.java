@@ -28,8 +28,10 @@ import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.DirectoryChooser;
@@ -42,7 +44,7 @@ import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiProgressBar;
 import pattypan.elements.WikiTextField;
 
-public class ChooseDirectoryPane extends GridPane {
+public class ChooseDirectoryPane extends BorderPane {
 
   String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
   Stage stage;
@@ -78,7 +80,7 @@ public class ChooseDirectoryPane extends GridPane {
     }
   }
   
-  public GridPane getContent() {
+  public BorderPane getContent() {
     return this;
   }
   
@@ -96,16 +98,10 @@ public class ChooseDirectoryPane extends GridPane {
     nextButton.setDisable(files.length == 0);
   }
   
-  private GridPane setContent() {
+  private BorderPane setContent() {
     this.getStylesheets().add(css);
-    this.setAlignment(Pos.TOP_CENTER);
-    this.setHgap(20);
-    this.setVgap(10);
     this.getStyleClass().add("background");
-    
     this.setHeight(Settings.WINDOW_HEIGHT);
-    this.getColumnConstraints().add(Util.newColumn(80, "%", HPos.LEFT));
-    this.getColumnConstraints().add(Util.newColumn(20, "%", HPos.RIGHT));
 
     WikiProgressBar progressBar = new WikiProgressBar(0.0,
             new String[]{
@@ -114,32 +110,40 @@ public class ChooseDirectoryPane extends GridPane {
               "Create file"
             });
     
-    HBox progressBarContainer = new HBox();
-    progressBarContainer.setAlignment(Pos.CENTER);
-    progressBarContainer.getChildren().add(progressBar);
+    HBox topContainer = new HBox();
+    topContainer.setAlignment(Pos.CENTER);
+    topContainer.getChildren().add(progressBar);
+    
+    VBox centerContainer = new VBox(15);
+    centerContainer.setAlignment(Pos.TOP_CENTER);
     
     descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
-        
+    centerContainer.getChildren().add(descLabel);
+    
     browsePath = new WikiTextField("");
     browseButton = new WikiButton("Browse", "small").setWidth(100);
     browseButton.setOnAction((ActionEvent e) -> {
       chooseAndSetDirectory();
     });
     
+    HBox hb = new HBox(8);
+    HBox.setHgrow(browsePath, Priority.ALWAYS);
+    hb.getChildren().addAll(browsePath, browseButton);
+    centerContainer.getChildren().add(hb);
+    
     scrollText.getStyleClass().add("mw-ui-scrollpane");
     scrollText.setMaxHeight(100);
     scrollText.setMinHeight(100);
+    centerContainer.getChildren().add(scrollText);
     
-    nextButton = new WikiButton("Next", "inversed").linkTo("ChooseColumnsPane", stage).setWidth(100);
-    //nextButton.setDisable(true);
+    HBox bottomContainer = new HBox();
+    bottomContainer.setAlignment(Pos.CENTER_RIGHT);
+    bottomContainer.getChildren().add(new WikiButton("Next", "inversed").linkTo("ChooseColumnsPane", stage).setWidth(100));
     
-    this.add(progressBarContainer, 0, 0, 2, 1);
-    this.add(descLabel, 0, 1, 2, 1);
-    this.addRow(2, browsePath, browseButton);
-    this.add(scrollText, 0, 3, 2, 1);
-    this.add(nextButton, 1, 4, 1, 1);
-
+    this.setTop(topContainer);
+    this.setCenter(centerContainer);
+    this.setBottom(bottomContainer);
     return this;
   }
 }
