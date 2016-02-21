@@ -113,7 +113,7 @@ public class ChooseDirectoryPane extends WikiPane {
     scrollText.setMinHeight(100);
     addElement(scrollText);
     
-    prevButton.setVisible(false);
+    prevButton.linkTo("StartPane", stage);
     nextButton.linkTo("ChooseColumnsPane", stage);
     
     return this;
