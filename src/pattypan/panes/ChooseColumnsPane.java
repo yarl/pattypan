@@ -24,37 +24,35 @@
 package pattypan.panes;
 
 import java.util.ArrayList;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import pattypan.Session;
 import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
-import pattypan.elements.WikiProgressBar;
+import pattypan.elements.WikiPane;
 
-public class ChooseColumnsPane extends GridPane {
+public class ChooseColumnsPane extends WikiPane {
 
-  String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
   Stage stage;
   
   WikiLabel descLabel;
   WikiButton templateButton;
   WikiButton wikicodeButton;
+  ComboBox templateBox = new ComboBox();
   ScrollPane scrollText = new ScrollPane();
-  WikiButton prevButton;
-  WikiButton nextButton;
   
   public ChooseColumnsPane(Stage stage) {
+    super(stage, 0.5);
     this.stage = stage;
+
     setContent();
     
     if(Session.METHOD.equals("wikicode")) {
@@ -62,45 +60,24 @@ public class ChooseColumnsPane extends GridPane {
     }
   }
   
-  public GridPane getContent() {
+  public WikiPane getContent() {
     return this;
   }
   
-  private GridPane setContent() {
-    this.getStylesheets().add(css);
-    this.setAlignment(Pos.TOP_CENTER);
-    this.setHgap(20);
-    this.setVgap(10);
-    this.getStyleClass().add("background");
-
-    this.getColumnConstraints().add(Util.newColumn(50, "%", HPos.LEFT));
-    this.getColumnConstraints().add(Util.newColumn(50, "%", HPos.RIGHT));
-    
-    WikiProgressBar progressBar = new WikiProgressBar(0.5,
-            new String[]{
-              "Choose directory",
-              "Choose columns",
-              "Create file"
-            });
-    
-    HBox progressBarContainer = new HBox();
-    progressBarContainer.setAlignment(Pos.CENTER);
-    progressBarContainer.getChildren().add(progressBar);
-    
+  private WikiPane setContent() {
     descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
-
-    /* buttons */
+    addElement(descLabel);
     
+    /* buttons */
     templateButton = new WikiButton("Use template", "group-left").setWidth(150);
     wikicodeButton = new WikiButton("Write wikicode", "group-right", "inversed").setWidth(150);
-    HBox tabs = new HBox(0);
-    tabs.getChildren().addAll(templateButton, wikicodeButton);
-    tabs.setAlignment(Pos.BOTTOM_LEFT);
-
-    /* templates pane */
+    addElementRow(0,
+            new Node[]{templateButton, wikicodeButton},
+            new Priority[]{Priority.NEVER, Priority.NEVER}
+    );
     
-    final ComboBox templateBox = new ComboBox();
+    /* templates pane */
     templateBox.getItems().addAll(
             "Artwork", "Book", "Photograph", "Map"
     );
@@ -111,9 +88,10 @@ public class ChooseColumnsPane extends GridPane {
     
     GridPane templatePane = new GridPane();
     templatePane.add(templateBox, 0, 0);
+    addElement(templatePane);
     
     /* wiki code pane */
-    TextArea wikicodeText = new TextArea();
+    TextArea wikicodeText = new TextArea("");
     wikicodeText.getStyleClass().add("mw-ui-input");
     wikicodeText.setText(Session.WIKICODE);
     
@@ -123,8 +101,8 @@ public class ChooseColumnsPane extends GridPane {
     templateButton.setOnAction(event -> {
       templateButton.getStyleClass().remove("mw-ui-inversed");
       wikicodeButton.getStyleClass().add("mw-ui-inversed");
-      if(this.getChildren().remove(wikicodePane)) {
-        this.add(templatePane, 0, 3, 2, 1);
+      if(removeElement(wikicodePane)) {
+        addElement(templatePane);
       }
       Session.METHOD = "template";
     });
@@ -133,14 +111,13 @@ public class ChooseColumnsPane extends GridPane {
       wikicodeButton.getStyleClass().remove("mw-ui-inversed");
       templateButton.getStyleClass().add("mw-ui-inversed");
       
-      if(this.getChildren().remove(templatePane)) {
-        this.add(wikicodePane, 0, 3, 2, 1);
+      if(removeElement(templatePane)) {
+        addElement(wikicodePane);
       }
       Session.METHOD = "wikicode";
     });
     
-    prevButton = new WikiButton("Back", "inversed").linkTo("ChooseDirectoryPane", stage).setWidth(100);
-    nextButton = new WikiButton("Next", "inversed").setWidth(100);
+    prevButton.linkTo("ChooseDirectoryPane", stage);
     nextButton.setOnAction(event -> {
       if(Session.METHOD.equals("wikicode")) {
         ArrayList<String> vars = Util.getVariablesFromString(wikicodeText.getText());
@@ -149,12 +126,6 @@ public class ChooseColumnsPane extends GridPane {
       Session.WIKICODE = wikicodeText.getText();
       nextButton.goTo("CreateFilePane", stage);
     });
-    
-    this.add(progressBarContainer, 0, 0, 2, 1);
-    this.add(descLabel, 0, 1, 2, 1);
-    this.add(tabs, 0, 2, 2, 1);
-    this.addRow(3, templatePane);
-    this.addRow(4, prevButton, nextButton);
     
     return this;
   }

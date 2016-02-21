@@ -25,41 +25,36 @@ package pattypan.panes;
 
 import java.io.File;
 import javafx.event.ActionEvent;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import pattypan.Session;
-import pattypan.Settings;
-import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
-import pattypan.elements.WikiProgressBar;
+import pattypan.elements.WikiPane;
 import pattypan.elements.WikiTextField;
 
-public class ChooseDirectoryPane extends BorderPane {
+public class ChooseDirectoryPane extends WikiPane {
 
-  String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
   Stage stage;
-  
+
   WikiLabel descLabel;
   WikiTextField browsePath;
   WikiButton browseButton;
   ScrollPane scrollText = new ScrollPane();
-  WikiButton nextButton;
 
   public ChooseDirectoryPane(Stage stage) {
+    super(stage, 0.0);
     this.stage = stage;
+
     setContent();
     
-    if(Session.DIRECTORY != null) {
+    if (Session.DIRECTORY != null) {
       browsePath.setText(Session.DIRECTORY.getAbsolutePath());
       getFileListByDirectory(Session.DIRECTORY);
     }
@@ -68,7 +63,7 @@ public class ChooseDirectoryPane extends BorderPane {
   private void chooseAndSetDirectory() {
     DirectoryChooser fileChooser = new DirectoryChooser();
     fileChooser.setTitle("Choose directory");
-    if(Session.DIRECTORY != null) {
+    if (Session.DIRECTORY != null) {
       fileChooser.setInitialDirectory(Session.DIRECTORY);
     }
 
@@ -79,15 +74,15 @@ public class ChooseDirectoryPane extends BorderPane {
       getFileListByDirectory(file);
     }
   }
-  
+
   public BorderPane getContent() {
     return this;
   }
-  
+
   private void getFileListByDirectory(File directory) {
     File[] files = directory.listFiles();
     VBox content = new VBox();
-    
+
     for (File f : files) {
       if (f.isFile()) {
         content.getChildren().add(new WikiLabel(f.getName()));
@@ -97,53 +92,30 @@ public class ChooseDirectoryPane extends BorderPane {
     scrollText.setContent(content);
     nextButton.setDisable(files.length == 0);
   }
-  
-  private BorderPane setContent() {
-    this.getStylesheets().add(css);
-    this.getStyleClass().add("background");
-    this.setHeight(Settings.WINDOW_HEIGHT);
 
-    WikiProgressBar progressBar = new WikiProgressBar(0.0,
-            new String[]{
-              "Choose directory",
-              "Choose columns",
-              "Create file"
-            });
-    
-    HBox topContainer = new HBox();
-    topContainer.setAlignment(Pos.CENTER);
-    topContainer.getChildren().add(progressBar);
-    
-    VBox centerContainer = new VBox(15);
-    centerContainer.setAlignment(Pos.TOP_CENTER);
-    
+  private BorderPane setContent() {
     descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
-    centerContainer.getChildren().add(descLabel);
-    
+    addElement(descLabel);
+
     browsePath = new WikiTextField("");
     browseButton = new WikiButton("Browse", "small").setWidth(100);
     browseButton.setOnAction((ActionEvent e) -> {
       chooseAndSetDirectory();
     });
-    
-    HBox hb = new HBox(8);
-    HBox.setHgrow(browsePath, Priority.ALWAYS);
-    hb.getChildren().addAll(browsePath, browseButton);
-    centerContainer.getChildren().add(hb);
-    
+    addElementRow(
+            new Node[]{browsePath, browseButton},
+            new Priority[]{Priority.ALWAYS, Priority.NEVER}
+    );
+
     scrollText.getStyleClass().add("mw-ui-scrollpane");
     scrollText.setMaxHeight(100);
     scrollText.setMinHeight(100);
-    centerContainer.getChildren().add(scrollText);
+    addElement(scrollText);
     
-    HBox bottomContainer = new HBox();
-    bottomContainer.setAlignment(Pos.CENTER_RIGHT);
-    bottomContainer.getChildren().add(new WikiButton("Next", "inversed").linkTo("ChooseColumnsPane", stage).setWidth(100));
+    prevButton.setVisible(false);
+    nextButton.linkTo("ChooseColumnsPane", stage);
     
-    this.setTop(topContainer);
-    this.setCenter(centerContainer);
-    this.setBottom(bottomContainer);
     return this;
   }
 }
