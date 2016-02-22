@@ -25,6 +25,8 @@ THE SOFTWARE.
 .root {
   -fx-accent: #bbb;
   -fx-focus-color: #347bff;
+  -fx-font-size: 12px;
+  -fx-font-family: "Helvetica";
 }
 
 .background {
