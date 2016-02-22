@@ -90,4 +90,9 @@ public class WikiButton extends Button {
     this.setMinWidth(width);
     return this;
   }
+  
+  public WikiButton setLabel(String text) {
+    this.setText(text);
+    return this;
+  }
 }

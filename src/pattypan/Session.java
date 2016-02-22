@@ -38,4 +38,6 @@ public final class Session {
   public static String TEMPLATE = "Book";
   public static String WIKICODE = "";
   public static ArrayList<String> VARIABLES = new ArrayList<>(Arrays.asList("Path", "Name"));
+  
+  public static File FILE;
 }

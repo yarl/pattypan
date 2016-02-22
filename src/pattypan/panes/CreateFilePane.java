@@ -23,14 +23,12 @@
  */
 package pattypan.panes;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.geometry.HPos;
-import javafx.geometry.Pos;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.Node;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import jxl.Workbook;
@@ -40,69 +38,62 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import pattypan.Session;
-import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
-import pattypan.elements.WikiProgressBar;
+import pattypan.elements.WikiPane;
 
-public class CreateFilePane extends GridPane {
+public class CreateFilePane extends WikiPane {
 
-  String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
   Stage stage;
 
   WikiLabel descLabel;
-  WikiButton prevButton;
   WikiButton createButton;
 
   public CreateFilePane(Stage stage) {
+    super(stage, 1.0);
     this.stage = stage;
+
     setContent();
   }
 
-  public GridPane getContent() {
+  public WikiPane getContent() {
     return this;
   }
-
-  private GridPane setContent() {
-    this.getStylesheets().add(css);
-    this.setAlignment(Pos.TOP_CENTER);
-    this.setHgap(20);
-    this.setVgap(10);
-    this.getStyleClass().add("background");
-
-    this.getColumnConstraints().add(Util.newColumn(50, "%", HPos.LEFT));
-    this.getColumnConstraints().add(Util.newColumn(50, "%", HPos.RIGHT));
-
-    WikiProgressBar progressBar = new WikiProgressBar(1.0,
-            new String[]{
-              "Choose directory",
-              "Choose columns",
-              "Create file"
-            });
-
-    HBox progressBarContainer = new HBox();
-    progressBarContainer.setAlignment(Pos.CENTER);
-    progressBarContainer.getChildren().add(progressBar);
-
+  
+  private WikiPane setContent() {
     descLabel = new WikiLabel("You will create spreadsheet with " + Session.FILES.size()
             + " files from directory " + Session.DIRECTORY.getName() + ".").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
-
-    prevButton = new WikiButton("Back", "inversed").linkTo("ChooseColumnsPane", stage).setWidth(100);
+    addElement(descLabel);
+    
     createButton = new WikiButton("Create", "inversed").setWidth(100);
     createButton.setOnAction(event -> {
       try {
         createSpreadsheet();
+        addElement(new WikiLabel("Spreadsheet created."));
+        addElement(getOpenFileButton());
       } catch (IOException | BiffException | WriteException ex) {
         Logger.getLogger(CreateFilePane.class.getName()).log(Level.SEVERE, null, ex);
       }
     });
-    
-    this.add(progressBarContainer, 0, 0, 2, 1);
-    this.add(descLabel, 0, 1, 2, 1);
-    this.addRow(2, prevButton, createButton);
+    addElement(createButton);
 
+    prevButton.linkTo("ChooseColumnsPane", stage);
+    nextButton.setVisible(false);
+    
     return this;
+  }
+  
+  private Node getOpenFileButton() {
+    WikiButton button = new WikiButton("Open file");
+    button.setOnAction(event -> {
+      try {
+        Desktop.getDesktop().open(Session.FILE);
+      } catch (IOException ex) {
+        Logger.getLogger(CreateFilePane.class.getName()).log(Level.SEVERE, null, ex);
+      }
+    });
+    return button;
   }
   
   private void createSpreadsheet() throws IOException, BiffException, WriteException {
@@ -121,7 +112,11 @@ public class CreateFilePane extends GridPane {
       sheet.addCell(new Label(1, num++, file.getName()));
     }
     
+    WritableSheet templateSheet = workbook.createSheet("Template", 1);
+    templateSheet.addCell(new Label(0, 0, Session.WIKICODE));
+    
     workbook.write(); 
     workbook.close();
+    Session.FILE = f;
   }
 }
