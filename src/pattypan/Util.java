@@ -23,7 +23,9 @@
  */
 package pattypan;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.geometry.HPos;
@@ -69,5 +71,20 @@ public final class Util {
       results.add(m.group(1));
     }
     return results;
+  }
+  
+  public static String getExtFromFilename(String filename) {
+    String extension = "";
+
+    int i = filename.lastIndexOf('.');
+    if (i >= 0) {
+      extension = filename.substring(i + 1);
+    }
+    return extension;
+  }
+  
+  private final static ArrayList<String> allowedExtention = new ArrayList<>(Arrays.asList("jpg", "png"));
+  public static boolean isFileAllowedToUpload(File file) {
+    return allowedExtention.indexOf(getExtFromFilename(file.getName())) > -1;
   }
 }

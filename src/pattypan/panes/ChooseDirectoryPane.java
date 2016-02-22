@@ -34,6 +34,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import pattypan.Session;
+import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
@@ -81,16 +82,18 @@ public class ChooseDirectoryPane extends WikiPane {
 
   private void getFileListByDirectory(File directory) {
     File[] files = directory.listFiles();
+    int counter = 0;
     VBox content = new VBox();
 
     for (File f : files) {
-      if (f.isFile()) {
+      if (f.isFile() && Util.isFileAllowedToUpload(f)) {
         content.getChildren().add(new WikiLabel(f.getName()));
+        ++counter;
         Session.FILES.add(f);
       }
     }
     scrollText.setContent(content);
-    nextButton.setDisable(files.length == 0);
+    nextButton.setDisable(counter == 0);
   }
 
   private BorderPane setContent() {
@@ -109,12 +112,11 @@ public class ChooseDirectoryPane extends WikiPane {
     );
 
     scrollText.getStyleClass().add("mw-ui-scrollpane");
-    scrollText.setMaxHeight(100);
-    scrollText.setMinHeight(100);
     addElement(scrollText);
     
     prevButton.linkTo("StartPane", stage);
     nextButton.linkTo("ChooseColumnsPane", stage);
+    nextButton.setDisable(true);
     
     return this;
   }
