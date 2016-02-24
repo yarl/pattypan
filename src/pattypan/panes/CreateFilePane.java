@@ -103,7 +103,7 @@ public class CreateFilePane extends WikiPane {
     WritableSheet sheet = workbook.createSheet("Data", 0);
     int num = 0;
     for(String var : Session.VARIABLES) {
-      sheet.addCell(new Label(num++, 0, "%" + var + "%"));
+      sheet.addCell(new Label(num++, 0, var));
     }
     
     num = 1;

@@ -63,7 +63,7 @@ public final class Util {
   }
   
   public static ArrayList<String> getVariablesFromString(String text) {
-    final Pattern pattern = Pattern.compile("\\%(.*?)\\%");
+    final Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
     Matcher m = pattern.matcher(text);
     ArrayList<String> results = new ArrayList<>();
 
