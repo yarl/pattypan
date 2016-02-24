@@ -32,6 +32,8 @@ public final class Session {
   private Session() {};
   
   public static File DIRECTORY;
+  public static File FILE;
+  
   public static ArrayList<File> FILES = new ArrayList<>();
   
   public static String METHOD = "template";
@@ -39,5 +41,5 @@ public final class Session {
   public static String WIKICODE = "";
   public static ArrayList<String> VARIABLES = new ArrayList<>(Arrays.asList("Path", "Name"));
   
-  public static File FILE;
+  
 }
