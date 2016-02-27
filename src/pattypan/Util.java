@@ -24,8 +24,11 @@
 package pattypan;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.geometry.HPos;
@@ -38,6 +41,8 @@ public final class Util {
   public static int WINDOW_WIDTH = 750;
   public static int WINDOW_HEIGHT = 550;
 
+  /* row and column utils */
+  
   public static ColumnConstraints newColumn(int value) {
     return newColumn(value, "%", HPos.CENTER);
   }
@@ -62,6 +67,10 @@ public final class Util {
     return col;
   }
   
+  /* file utils */
+  private final static ArrayList<String> allowedExtentionImage =
+          new ArrayList<>(Arrays.asList("png", "gif", "jpg", "jpeg", "tiff", "tif", "xcf"));
+  
   public static ArrayList<String> getVariablesFromString(String text) {
     final Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
     Matcher m = pattern.matcher(text);
@@ -78,13 +87,42 @@ public final class Util {
 
     int i = filename.lastIndexOf('.');
     if (i >= 0) {
-      extension = filename.substring(i + 1);
+      extension = filename.substring(i + 1).toLowerCase();
     }
     return extension;
   }
+   
+  public static File[] getFilesAllowedToUpload(File directory) {
+      return directory.listFiles(new FilenameFilter() {
+        @Override
+        public boolean accept(File directory, String name) {
+          return isFileAllowedToUpload(name);
+        }
+      });
+  }
   
-  private final static ArrayList<String> allowedExtention = new ArrayList<>(Arrays.asList("jpg", "png"));
-  public static boolean isFileAllowedToUpload(File file) {
-    return allowedExtention.indexOf(getExtFromFilename(file.getName())) > -1;
+  public static File[] getFilesAllowedToUpload(File directory, String ext) {
+      return directory.listFiles((File dir, String name)
+              -> name.toLowerCase().endsWith(ext)
+      );
+  }
+  
+  public static Map<String, Integer> getFilesByExtention(File[] files) {
+    Map<String, Integer> map = new HashMap<>();
+
+    for(File file : files) {
+      String ext = getExtFromFilename(file.getName());
+      if (map.containsKey(ext)) {
+        int count = map.get(ext);
+        map.replace(ext, ++count);
+      } else {
+        map.put(ext, 1);
+      }
+    }
+    return map;
+  }
+  
+  public static boolean isFileAllowedToUpload(String name) {
+    return allowedExtentionImage.indexOf(getExtFromFilename(name)) > -1;
   }
 }

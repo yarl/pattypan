@@ -24,10 +24,13 @@
 package pattypan.panes;
 
 import java.io.File;
+import java.util.Map;
+import java.util.Map.Entry;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
@@ -47,7 +50,7 @@ public class ChooseDirectoryPane extends WikiPane {
   WikiLabel descLabel;
   WikiTextField browsePath;
   WikiButton browseButton;
-  ScrollPane scrollText = new ScrollPane();
+  VBox checkBoxContainer = new VBox();
 
   public ChooseDirectoryPane(Stage stage) {
     super(stage, 0.0);
@@ -81,19 +84,22 @@ public class ChooseDirectoryPane extends WikiPane {
   }
 
   private void getFileListByDirectory(File directory) {
-    File[] files = directory.listFiles();
-    int counter = 0;
-    VBox content = new VBox();
-
-    for (File f : files) {
-      if (f.isFile() && Util.isFileAllowedToUpload(f)) {
-        content.getChildren().add(new WikiLabel(f.getName()));
-        ++counter;
-        Session.FILES.add(f);
-      }
+    checkBoxContainer.getChildren().clear();
+    File[] files = Util.getFilesAllowedToUpload(directory);
+    
+    Map<String, Integer> filesByExt = Util.getFilesByExtention(files);
+    for(Entry<String, Integer> e : filesByExt.entrySet()) {
+      CheckBox checkbox = new CheckBox("." + e.getKey() + " (" + e.getValue() + ")");
+      checkbox.setSelected(true);
+      checkbox.setDisable(true);
+      checkBoxContainer.getChildren().add(checkbox);
     }
-    scrollText.setContent(content);
-    nextButton.setDisable(counter == 0);
+    
+    if(files.length == 0) {
+      checkBoxContainer.getChildren().add(new WikiLabel("No files suitable for upload."));
+    }
+    
+    nextButton.setDisable(files.length == 0);
   }
 
   private BorderPane setContent() {
@@ -111,8 +117,8 @@ public class ChooseDirectoryPane extends WikiPane {
             new Priority[]{Priority.ALWAYS, Priority.NEVER}
     );
 
-    scrollText.getStyleClass().add("mw-ui-scrollpane");
-    addElement(scrollText);
+    //scrollText.getStyleClass().add("mw-ui-scrollpane");
+    addElement(checkBoxContainer);
     
     prevButton.linkTo("StartPane", stage);
     nextButton.linkTo("ChooseColumnsPane", stage);
