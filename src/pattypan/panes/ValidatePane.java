@@ -31,7 +31,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +40,6 @@ import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import jxl.Sheet;
@@ -62,7 +60,7 @@ public class ValidatePane extends WikiPane {
   WikiButton browseButton;
 
   public ValidatePane(Stage stage) {
-    super(stage, 0.0);
+    super(stage, 1.01);
     this.stage = stage;
 
     try {
@@ -125,6 +123,9 @@ public class ValidatePane extends WikiPane {
         template.process(description, new OutputStreamWriter(System.out));
       }
       
+      if(descriptions.size() > 0) {
+        nextButton.setDisable(false);
+      }
       return new WikiLabel(descriptions.size() + " files loaded successfully!");
       
     } catch (IOException | BiffException ex) {
@@ -151,9 +152,11 @@ public class ValidatePane extends WikiPane {
             new Node[]{browsePath, browseButton},
             new Priority[]{Priority.ALWAYS, Priority.NEVER}
     );
-
+    
     prevButton.linkTo("StartPane", stage);
-
+    nextButton.linkTo("LoginPane", stage);
+    nextButton.setDisable(true);
+    
     return this;
   }
 
