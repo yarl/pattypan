@@ -44,18 +44,19 @@ public class WikiPane extends BorderPane {
   public WikiButton prevButton = new WikiButton("Back", "inversed").setWidth(100);
   public WikiButton nextButton = new WikiButton("Next", "inversed").setWidth(100);
 
+  private final String[] progressBarLabels = { "Choose directory", "Choose columns", "Create file" };
+  private final String[] progressBarLabels2 = { "Validation", "Login", "Upload" };
+  
   public WikiPane(Stage stage, double value) {
     this.stage = stage;
     this.getStylesheets().add(css);
     this.getStyleClass().add("background");
 
     topContainer.setAlignment(Pos.CENTER);
-    topContainer.getChildren().add(new WikiProgressBar(value,
-            new String[]{
-              "Choose directory",
-              "Choose columns",
-              "Create file"
-            }));
+    topContainer.getChildren().add(new WikiProgressBar(
+            value > 1.0 ? value - 1.0 : value,
+            value > 1.0 ? progressBarLabels2 : progressBarLabels)
+    );
 
     centerContainer.setAlignment(Pos.TOP_CENTER);
 

@@ -23,21 +23,20 @@
  */
 package pattypan.elements;
 
-import javafx.scene.control.TextField;
+import javafx.scene.control.PasswordField;
 
-public class WikiTextField extends TextField {
+public class WikiPasswordField extends PasswordField {
   
-  public WikiTextField(String text) {
-    super(text);
+  public WikiPasswordField() {
     this.getStyleClass().addAll("mw-ui-input");
   }
   
-  public WikiTextField setPlaceholder(String text) {
-    this.setPromptText(text);
+  public WikiPasswordField setPlaceholder(String text) {
+    setPromptText(text);
     return this;
   }
   
-  public WikiTextField setWidth(int width) {
+  public WikiPasswordField setWidth(int width) {
     this.setMaxWidth(width);
     this.setMinWidth(width);
     return this;
