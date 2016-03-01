@@ -157,6 +157,12 @@ public class ValidatePane extends WikiPane {
     nextButton.linkTo("LoginPane", stage);
     nextButton.setDisable(true);
     
+    if (Session.FILE != null) {
+      browsePath.setText(Session.FILE.getAbsolutePath());
+      WikiLabel result = loadFile();
+      addElement(result);
+    }
+    
     return this;
   }
 
