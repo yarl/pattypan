@@ -26,6 +26,7 @@ package pattypan;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.wikipedia.Wiki;
 
 public final class Session {
   
@@ -41,5 +42,5 @@ public final class Session {
   public static String WIKICODE = "";
   public static ArrayList<String> VARIABLES = new ArrayList<>(Arrays.asList("Path", "Name"));
   
-  
+  public static Wiki WIKI = new Wiki("commons.wikimedia.org");
 }
