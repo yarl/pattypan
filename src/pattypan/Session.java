@@ -40,7 +40,8 @@ public final class Session {
   public static String METHOD = "template";
   public static String TEMPLATE = "Book";
   public static String WIKICODE = "";
-  public static ArrayList<String> VARIABLES = new ArrayList<>(Arrays.asList("Path", "Name"));
+  public static ArrayList<String> VARIABLES = new ArrayList<>(Arrays.asList("path", "name"));
   
   public static Wiki WIKI = new Wiki("commons.wikimedia.org");
+  public static ArrayList<UploadElement> FILES_TO_UPLOAD = new ArrayList<>();
 }

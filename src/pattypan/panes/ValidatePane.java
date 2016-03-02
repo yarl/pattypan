@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,6 +47,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import pattypan.Session;
+import pattypan.UploadElement;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
@@ -102,6 +104,7 @@ public class ValidatePane extends WikiPane {
       Sheet templateSheet = workbook.getSheet(1);
 
       ArrayList<Map<String, String>> descriptions = new ArrayList<>();
+      Session.FILES_TO_UPLOAD = new ArrayList<>();
       
       int rows = dataSheet.getRows();
       int columns = dataSheet.getColumns();
@@ -116,17 +119,21 @@ public class ValidatePane extends WikiPane {
         descriptions.add(description);
       }
       
-      String wikicode = templateSheet.getCell(0, 0).getContents();
-      Template template = new Template("name", new StringReader(wikicode), cfg);
+      String wikitemplate = templateSheet.getCell(0, 0).getContents();
+      Template freemarkerTemplate = new Template("name", new StringReader(wikitemplate), cfg);
 
       for(Map<String, String> description : descriptions) {
-        template.process(description, new OutputStreamWriter(System.out));
+        StringWriter writer = new StringWriter();
+        freemarkerTemplate.process(description, writer);
+        String wikicode = writer.getBuffer().toString();
+        
+        Session.FILES_TO_UPLOAD.add(new UploadElement(description, wikicode));
       }
       
       if(descriptions.size() > 0) {
         nextButton.setDisable(false);
       }
-      return new WikiLabel(descriptions.size() + " files loaded successfully!");
+      return new WikiLabel(Session.FILES_TO_UPLOAD.size() + " files loaded successfully!");
       
     } catch (IOException | BiffException ex) {
       Logger.getLogger(ValidatePane.class.getName()).log(Level.SEVERE, null, ex);
