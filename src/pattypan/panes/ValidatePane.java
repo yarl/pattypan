@@ -40,11 +40,13 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.WorkbookSettings;
 import jxl.read.biff.BiffException;
 import pattypan.Session;
 import pattypan.UploadElement;
@@ -56,26 +58,31 @@ import pattypan.elements.WikiTextField;
 public class ValidatePane extends WikiPane {
 
   Stage stage;
-
+  Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
+  
   WikiLabel descLabel;
   WikiTextField browsePath;
   WikiButton browseButton;
+  VBox infoContainer = new VBox(2);
 
   public ValidatePane(Stage stage) {
     super(stage, 1.01);
     this.stage = stage;
-
-    try {
-      setContent();
-    } catch (IOException ex) {
-      Logger.getLogger(ValidatePane.class.getName()).log(Level.SEVERE, null, ex);
-    }
+  
+    cfg.setDefaultEncoding("UTF-8");
+    cfg.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
+    
+    setContent();
   }
 
   public WikiPane getContent() {
     return this;
   }
 
+  private void addInfo(String text) {
+    infoContainer.getChildren().add(new WikiLabel(text).setAlign("left"));
+  }
+  
   private void selectFile() {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Choose file");
@@ -84,67 +91,103 @@ public class ValidatePane extends WikiPane {
 
     File file = fileChooser.showOpenDialog(stage);
     if (file != null) {
-      Session.DIRECTORY = file.getParentFile();
-      Session.FILE = file;
-      browsePath.setText(file.getAbsolutePath());
-      
-      WikiLabel result = loadFile();
-      addElement(result);
+      loadFile(file);
+    }
+  }
+  
+  private void loadFile(File file) {
+    Session.DIRECTORY = file.getParentFile();
+    Session.FILE = file;
+    browsePath.setText(file.getAbsolutePath());
+
+    int result = readFile();
+    switch (result) {
+      case -1:
+        addInfo("Something is wrong with file!");
+        break;
+      case -2:
+        addInfo("Errors in template!");
+        break;
+      case 0:
+        addInfo("No files in spreadsheet!");
+        break;
+      default:
+        addInfo(result + " files loaded successfully!");
+        nextButton.setDisable(false);
+        break;
     }
   }
 
-  private WikiLabel loadFile() {
-    Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
-    cfg.setDefaultEncoding("UTF-8");
-    cfg.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
+  private ArrayList<Map<String, String>> readDescriptions(Sheet sheet) {
+    ArrayList<Map<String, String>> descriptions = new ArrayList<>();
+    int rows = sheet.getRows();
+    int columns = sheet.getColumns();
 
-    try {
-      Workbook workbook = Workbook.getWorkbook(Session.FILE);
-      Sheet dataSheet = workbook.getSheet(0);
-      Sheet templateSheet = workbook.getSheet(1);
-
-      ArrayList<Map<String, String>> descriptions = new ArrayList<>();
-      Session.FILES_TO_UPLOAD = new ArrayList<>();
-      
-      int rows = dataSheet.getRows();
-      int columns = dataSheet.getColumns();
-
-      for (int row = 1; row < rows; row++) {
-        Map<String, String> description = new HashMap();
-        for (int column = 0; column < columns; column++) {
-          String label = dataSheet.getCell(column, 0).getContents();
-          String value = dataSheet.getCell(column, row).getContents();
-          description.put(label, value);
-        }
-        descriptions.add(description);
+    for (int row = 1; row < rows; row++) {
+      Map<String, String> description = new HashMap();
+      for (int column = 0; column < columns; column++) {
+        String label = sheet.getCell(column, 0).getContents();
+        if(label.isEmpty()) continue;
+        String value = sheet.getCell(column, row).getContents();
+        description.put(label, value);
       }
-      
-      String wikitemplate = templateSheet.getCell(0, 0).getContents();
-      Template freemarkerTemplate = new Template("name", new StringReader(wikitemplate), cfg);
+      descriptions.add(description);
+    }
+    return descriptions;
+  }
 
-      for(Map<String, String> description : descriptions) {
-        StringWriter writer = new StringWriter();
-        freemarkerTemplate.process(description, writer);
-        String wikicode = writer.getBuffer().toString();
+  private Template readTemplate(Sheet sheet) throws IOException {
+    String text = sheet.getCell(0, 0).getContents();
+    return new Template("wikitemplate", new StringReader(text), cfg);
+  }
+  
+  private int addFilesToUpload(ArrayList<Map<String, String>> descriptions, Template template) {
+    Session.FILES_TO_UPLOAD = new ArrayList<>();
+    
+    for (Map<String, String> description : descriptions) {
+      try {
+        addInfo("Loading '" + description.get("path") + "'");
         
+        if(description.get("path").isEmpty() || description.get("name").isEmpty()) {
+          addInfo("Essential parametes are missing!");
+          continue;
+        }
+        
+        if (description.containsValue("")) {
+          addInfo("Warning: some parameters are empty!");
+        }
+        
+        StringWriter writer = new StringWriter();
+        template.process(description, writer);
+        String wikicode = writer.getBuffer().toString();
         Session.FILES_TO_UPLOAD.add(new UploadElement(description, wikicode));
+        addInfo("OK");
+      } catch (TemplateException | IOException ex) {
+        Logger.getLogger(ValidatePane.class.getName()).log(Level.SEVERE, null, ex);
+        return -2;
       }
+    }
+    
+    return Session.FILES_TO_UPLOAD.size();
+  }
+  
+  private int readFile() {
+    try {
+      WorkbookSettings ws = new WorkbookSettings();
+      ws.setEncoding("Cp1252");
       
-      if(descriptions.size() > 0) {
-        nextButton.setDisable(false);
-      }
-      return new WikiLabel(Session.FILES_TO_UPLOAD.size() + " files loaded successfully!");
+      Workbook workbook = Workbook.getWorkbook(Session.FILE, ws);
+      ArrayList<Map<String, String>> descriptions = readDescriptions(workbook.getSheet(0));
+      Template template = readTemplate(workbook.getSheet(1));
       
+      return addFilesToUpload(descriptions, template);
     } catch (IOException | BiffException ex) {
       Logger.getLogger(ValidatePane.class.getName()).log(Level.SEVERE, null, ex);
-      return new WikiLabel("Something is wrong with file!");
-    } catch (TemplateException ex) {
-      Logger.getLogger(ValidatePane.class.getName()).log(Level.SEVERE, null, ex);
-      return new WikiLabel("Errors in template!");
+      return -1;
     }
   }
 
-  private WikiPane setContent() throws IOException {
+  private WikiPane setContent() {
 
     descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
@@ -160,14 +203,14 @@ public class ValidatePane extends WikiPane {
             new Priority[]{Priority.ALWAYS, Priority.NEVER}
     );
     
+    addElement(infoContainer);
+    
     prevButton.linkTo("StartPane", stage);
     nextButton.linkTo("LoginPane", stage);
     nextButton.setDisable(true);
     
     if (Session.FILE != null) {
-      browsePath.setText(Session.FILE.getAbsolutePath());
-      WikiLabel result = loadFile();
-      addElement(result);
+      loadFile(Session.FILE);
     }
     
     return this;
