@@ -83,7 +83,7 @@ public class ChooseColumnsPane extends WikiPane {
     );
     templateBox.getSelectionModel().select(Session.TEMPLATE);
     templateBox.setOnAction((Event ev) -> {
-      String template = templateBox.getSelectionModel().getSelectedItem().toString();
+      Session.TEMPLATE = templateBox.getSelectionModel().getSelectedItem().toString();
     });
     
     GridPane templatePane = new GridPane();

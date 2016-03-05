@@ -38,7 +38,7 @@ public final class Session {
   public static ArrayList<File> FILES = new ArrayList<>();
   
   public static String METHOD = "template";
-  public static String TEMPLATE = "Book";
+  public static String TEMPLATE = "Artwork";
   public static String WIKICODE = "";
   public static ArrayList<String> VARIABLES = new ArrayList<>(Arrays.asList("path", "name"));
   
