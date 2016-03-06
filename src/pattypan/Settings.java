@@ -29,4 +29,15 @@ public final class Settings {
   
   public static int WINDOW_WIDTH = 600;
   public static int WINDOW_HEIGHT = 400;
+  
+  public static TemplateField[] TEMPLATE_ARTWORK = {
+    new TemplateField("artist", "Artist"),
+    new TemplateField("author", "Author"),
+    new TemplateField("title", "Title"),
+    new TemplateField("description", "Description"),
+    new TemplateField("date", "Date"),
+    new TemplateField("medium", "Medium"),
+    new TemplateField("dimensions", "Dimensions"),
+    new TemplateField("institution", "Institution")
+  };
 }

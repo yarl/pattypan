@@ -26,6 +26,7 @@ package pattypan.panes;
 import java.util.ArrayList;
 import javafx.event.Event;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
@@ -34,6 +35,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import pattypan.Session;
+import pattypan.Settings;
+import pattypan.TemplateField;
 import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
@@ -77,6 +80,8 @@ public class ChooseColumnsPane extends WikiPane {
             new Priority[]{Priority.NEVER, Priority.NEVER}
     );
     
+    GridPane templatePane = new GridPane();
+    
     /* templates pane */
     templateBox.getItems().addAll(
             "Artwork", "Book", "Photograph", "Map"
@@ -84,9 +89,13 @@ public class ChooseColumnsPane extends WikiPane {
     templateBox.getSelectionModel().select(Session.TEMPLATE);
     templateBox.setOnAction((Event ev) -> {
       Session.TEMPLATE = templateBox.getSelectionModel().getSelectedItem().toString();
+      
+      int n = 1;
+      for(TemplateField tf : Settings.TEMPLATE_ARTWORK) {
+        templatePane.addRow(n++, tf.getCheckbox());
+      }
     });
     
-    GridPane templatePane = new GridPane();
     templatePane.add(templateBox, 0, 0);
     addElement(templatePane);
     
