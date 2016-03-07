@@ -23,18 +23,10 @@
  */
 package pattypan.panes;
 
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.scene.Node;
-import javafx.scene.layout.Priority;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
-import javax.security.auth.login.FailedLoginException;
-import org.wikipedia.Wiki;
 import pattypan.Session;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
@@ -78,20 +70,59 @@ public class LoginPane extends WikiPane {
     addElement(loginStatus);
 
     prevButton.linkTo("ValidatePane", stage);
-    nextButton.setVisible(false);
+    nextButton.linkTo("UploadPane", stage).setDisable(true);
 
     return this;
   }
 
+  private void setDisableForm(boolean state) {
+    loginText.setDisable(state);
+    passwordText.setDisable(state);
+    loginButton.setDisable(state);
+  }
+  
   private void logIn() {
-    loginStatus.setText("Logging in...");
-    Platform.runLater(() -> {
-      try {
-        Session.WIKI.login(loginText.getText(), passwordText.getText());
-        //loginStatus.setText("Logged in");
-      } catch (IOException | FailedLoginException ex) {
-        loginStatus.setText("Login error!");
+    Task<Integer> task = new Task<Integer>() {
+
+      private void setLoginSuccess() {
+        setDisableForm(false);
+        loginButton.setText("Login");
+        nextButton.setDisable(false);
+        nextButton.arm();
       }
-    });
+
+      private void setLoginFailed() {
+        setDisableForm(false);
+        loginButton.setText("Login");
+        loginStatus.setText("Login failed!");
+      }
+
+      @Override
+      protected Integer call() throws Exception {
+        Session.WIKI.login(loginText.getText(), passwordText.getText());
+        return 1;
+      }
+
+      @Override
+      protected void succeeded() {
+        super.succeeded();
+        setLoginSuccess();
+      }
+
+      @Override
+      protected void cancelled() {
+        super.cancelled();
+      }
+
+      @Override
+      protected void failed() {
+        super.failed();
+        setLoginFailed();
+      }
+    };
+    
+    setDisableForm(true);
+    loginButton.setText("Logging in...");
+    new Thread(task).start();
   }
 }
