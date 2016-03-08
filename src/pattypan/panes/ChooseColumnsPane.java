@@ -26,12 +26,14 @@ package pattypan.panes;
 import java.util.ArrayList;
 import javafx.event.Event;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import pattypan.Session;
@@ -45,33 +47,72 @@ import pattypan.elements.WikiPane;
 public class ChooseColumnsPane extends WikiPane {
 
   Stage stage;
-  
+
   WikiLabel descLabel;
   WikiButton templateButton;
   WikiButton wikicodeButton;
   ComboBox templateBox = new ComboBox();
   ScrollPane scrollText = new ScrollPane();
-  
+
+  GridPane templatePane = new GridPane();
+  VBox templateCheckboxContainer = new VBox(4);
+
   public ChooseColumnsPane(Stage stage) {
     super(stage, 0.5);
     this.stage = stage;
 
     setContent();
-    
-    if(Session.METHOD.equals("wikicode")) {
+
+    if (Session.METHOD.equals("wikicode")) {
       wikicodeButton.fire();
     }
   }
-  
+
   public WikiPane getContent() {
     return this;
   }
-  
+
+  private void addCheckboxes() {
+    templateCheckboxContainer.getChildren().clear();
+    if (Session.TEMPLATE.equals("Artwork")) {
+      for (TemplateField tf : Settings.TEMPLATE_ARTWORK) {
+        templateCheckboxContainer.getChildren().add(tf.getCheckbox());
+      }
+    }
+  }
+
+  private String getTemplateWikicode() {
+    if (Session.TEMPLATE.equals("Artwork")) {
+      ArrayList<String> vars = Util.getVariablesFromString(Settings.WIKICODE_ARTWORK);
+      vars.removeAll(Session.VARIABLES);
+
+      String wikicode = Settings.WIKICODE_ARTWORK;
+      for (String var : vars) {
+        wikicode = wikicode.replace("${" + var + "}", "");
+      }
+      return wikicode;
+    }
+    return "";
+  }
+
+  private ArrayList<String> getTemplateVariables() {
+    ArrayList<String> vars = new ArrayList<>();
+
+    for (Node n : templateCheckboxContainer.getChildren()) {
+      CheckBox cb = (CheckBox) n;
+      if (cb.isSelected()) {
+        vars.add(cb.getTooltip().getText());
+      }
+    }
+
+    return vars;
+  }
+
   private WikiPane setContent() {
     descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
     addElement(descLabel);
-    
+
     /* buttons */
     templateButton = new WikiButton("Use template", "group-left").setWidth(150);
     wikicodeButton = new WikiButton("Write wikicode", "group-right", "inversed").setWidth(150);
@@ -79,63 +120,64 @@ public class ChooseColumnsPane extends WikiPane {
             new Node[]{templateButton, wikicodeButton},
             new Priority[]{Priority.NEVER, Priority.NEVER}
     );
-    
-    GridPane templatePane = new GridPane();
-    
+
     /* templates pane */
     templateBox.getItems().addAll(
-            "Artwork", "Book", "Photograph", "Map"
+            "Book", "Artwork"
     );
     templateBox.getSelectionModel().select(Session.TEMPLATE);
     templateBox.setOnAction((Event ev) -> {
       Session.TEMPLATE = templateBox.getSelectionModel().getSelectedItem().toString();
-      
-      int n = 1;
-      for(TemplateField tf : Settings.TEMPLATE_ARTWORK) {
-        templatePane.addRow(n++, tf.getCheckbox());
-      }
+      addCheckboxes();
     });
-    
+
     templatePane.add(templateBox, 0, 0);
+    templatePane.add(templateCheckboxContainer, 0, 1);
     addElement(templatePane);
-    
+
     /* wiki code pane */
     TextArea wikicodeText = new TextArea("");
     wikicodeText.getStyleClass().add("mw-ui-input");
     wikicodeText.setText(Session.WIKICODE);
-    
+
     GridPane wikicodePane = new GridPane();
     wikicodePane.add(wikicodeText, 0, 0);
-    
+
     templateButton.setOnAction(event -> {
       templateButton.getStyleClass().remove("mw-ui-inversed");
       wikicodeButton.getStyleClass().add("mw-ui-inversed");
-      if(removeElement(wikicodePane)) {
+      if (removeElement(wikicodePane)) {
         addElement(templatePane);
       }
       Session.METHOD = "template";
     });
-    
+
     wikicodeButton.setOnAction(event -> {
       wikicodeButton.getStyleClass().remove("mw-ui-inversed");
       templateButton.getStyleClass().add("mw-ui-inversed");
-      
-      if(removeElement(templatePane)) {
+
+      if (removeElement(templatePane)) {
         addElement(wikicodePane);
       }
       Session.METHOD = "wikicode";
     });
-    
+
     prevButton.linkTo("ChooseDirectoryPane", stage);
     nextButton.setOnAction(event -> {
-      if(Session.METHOD.equals("wikicode")) {
+      if (Session.METHOD.equals("wikicode")) {
         ArrayList<String> vars = Util.getVariablesFromString(wikicodeText.getText());
         Session.VARIABLES.addAll(vars);
+        Session.WIKICODE = wikicodeText.getText();
       }
-      Session.WIKICODE = wikicodeText.getText();
+
+      if (Session.METHOD.equals("template")) {
+        Session.VARIABLES = getTemplateVariables();
+        Session.WIKICODE = getTemplateWikicode();
+      }
+
       nextButton.goTo("CreateFilePane", stage);
     });
-    
+
     return this;
   }
 }

@@ -24,6 +24,7 @@
 package pattypan;
 
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Tooltip;
 
 public class TemplateField {
   
@@ -32,11 +33,17 @@ public class TemplateField {
   public boolean isSelected;
   public String constant;
   
+  CheckBox cb;
+  
   public TemplateField(String name, String label, boolean isSelected, String constant) {
     this.name = name;
     this.label = label;
     this.isSelected = isSelected;
     this.constant = constant;
+    
+    cb = new CheckBox(label);
+    cb.setSelected(isSelected);
+    cb.setTooltip(new Tooltip(name));
   }
   
   public TemplateField(String name, String label) {
@@ -44,8 +51,6 @@ public class TemplateField {
   }
   
   public CheckBox getCheckbox() {
-    CheckBox cb = new CheckBox(label);
-    cb.setSelected(isSelected);
     return cb;
   }
 }
