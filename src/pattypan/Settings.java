@@ -40,4 +40,29 @@ public final class Settings {
     new TemplateField("dimensions", "Dimensions"),
     new TemplateField("institution", "Institution")
   };
+  
+  public static String WIKICODE_ARTWORK = "{{Artwork\n" +
+    " |artist             = ${artist}\n" +
+    " |author             = ${author}\n" +
+    " |title              = ${title}\n" +
+    " |description        = ${description}\n" +
+    " |date               = ${date}\n" +
+    " |medium             = ${medium}\n" +
+    " |dimensions         = ${dimensions}\n" +
+    " |institution        = ${institution}\n" +
+    " |department         = ${departament}\n" +
+    " |place of discovery = \n" +
+    " |object history     =\n" +
+    " |exhibition history =\n" +
+    " |credit line        =\n" +
+    " |inscriptions       =\n" +
+    " |notes              =\n" +
+    " |accession number   =\n" +
+    " |place of creation  =\n" +
+    " |source             =\n" +
+    " |permission         =\n" +
+    " |other_versions     =\n" +
+    " |references         =\n" +
+    " |wikidata           =\n" +
+    "}}";
 }
