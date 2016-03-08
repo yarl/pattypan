@@ -24,6 +24,8 @@
 package pattypan.panes;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 import javafx.event.ActionEvent;
@@ -86,6 +88,7 @@ public class ChooseDirectoryPane extends WikiPane {
   private void getFileListByDirectory(File directory) {
     checkBoxContainer.getChildren().clear();
     File[] files = Util.getFilesAllowedToUpload(directory);
+    Session.FILES = new ArrayList<>(Arrays.asList(files));
     
     Map<String, Integer> filesByExt = Util.getFilesByExtention(files);
     for(Entry<String, Integer> e : filesByExt.entrySet()) {
