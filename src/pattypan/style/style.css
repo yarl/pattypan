@@ -45,6 +45,15 @@ THE SOFTWARE.
   -fx-background-color: transparent;
 }
 
+.title {
+  -fx-font-size: 25px;
+  -fx-font-weight: bold;
+}
+
+.muted {
+  -fx-text-fill: #aaa;
+}
+
 /* INPUT
  ******************************************************************************/
 

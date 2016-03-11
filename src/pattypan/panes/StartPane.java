@@ -25,7 +25,9 @@ package pattypan.panes;
 
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import pattypan.Settings;
 import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
@@ -51,17 +53,18 @@ public class StartPane extends GridPane {
     this.setVgap(10);
     this.getStyleClass().add("background");
 
-    this.getColumnConstraints().add(Util.newColumn(200, "px"));
-    this.getColumnConstraints().add(Util.newColumn(200, "px"));
+    this.getColumnConstraints().add(Util.newColumn(400, "px"));
     
-    this.addRow(0,
-            new WikiButton("Generate Spreadsheet", "primary").linkTo("ChooseDirectoryPane", stage),
-            new WikiButton("Validate & Upload").linkTo("ValidatePane", stage));
+    this.addRow(0, new WikiLabel("pattypan").setClass("title"));
+    this.addRow(10, new HBox(20, 
+            new WikiButton("Generate Spreadsheet", "primary").setWidth(200).linkTo("ChooseDirectoryPane", stage),
+            new WikiButton("Validate & Upload").setWidth(200).linkTo("ValidatePane", stage)));
     
-    this.addRow(1,
-            new WikiLabel("Generate Spreadsheet by selecting a directory on your hard drive."),
-            new WikiLabel("Check correctness of your spreadsheet and upload files."));
-
+    this.addRow(11, new HBox(20,
+            new WikiLabel("Generate Spreadsheet by selecting a directory on your hard drive.").setWidth(200),
+            new WikiLabel("Check correctness of your spreadsheet and upload files.").setWidth(200)));
+    
+    this.addRow(20, new WikiLabel("2016 // Pawel Marynowski \n version "+ Settings.VERSION).setClass("muted"));    
     return this;
   }
 }
