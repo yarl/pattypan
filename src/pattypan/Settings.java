@@ -28,9 +28,11 @@ import java.util.Map;
 
 public final class Settings {
 
-  private Settings() {
-  }
-  ;
+  private Settings() {};
+  
+  public static final String NAME = "pattypan";
+  public static final String VERSION = "0.0.0";
+  public static final String USERAGENT = NAME + "/" + VERSION + " (https://github.com/yarl/pattypan)";
   
   public static int WINDOW_WIDTH = 600;
   public static int WINDOW_HEIGHT = 400;
@@ -49,7 +51,21 @@ public final class Settings {
                       new TemplateField("date", "Date"),
                       new TemplateField("medium", "Medium"),
                       new TemplateField("dimensions", "Dimensions"),
-                      new TemplateField("institution", "Institution")
+                      new TemplateField("institution", "Institution"),
+                      new TemplateField("departament", "Departament"),
+                      new TemplateField("place of discovery", "Place of discovery"),
+                      new TemplateField("object history", "Object history"),
+                      new TemplateField("exhibition history", "Exhibition history"),
+                      new TemplateField("credit line", "Credit line"),
+                      new TemplateField("inscriptions", "Inscriptions"),
+                      new TemplateField("notes", "Notes"),
+                      new TemplateField("accession number", "Accession number"),
+                      new TemplateField("place of creation", "Place of creation"),
+                      new TemplateField("source", "source"),
+                      new TemplateField("permission", "Permission"),
+                      new TemplateField("other_versions", "Other versions"),
+                      new TemplateField("references", "References"),
+                      new TemplateField("wikidata", "Wikidata"),
                     }, "{{Artwork\n"
                     + " |artist = ${artist}\n"
                     + " |author = ${author}\n"
@@ -60,19 +76,19 @@ public final class Settings {
                     + " |dimensions = ${dimensions}\n"
                     + " |institution = ${institution}\n"
                     + " |department = ${departament}\n"
-                    + " |place of discovery = \n"
-                    + " |object history =\n"
-                    + " |exhibition history =\n"
-                    + " |credit line =\n"
-                    + " |inscriptions =\n"
-                    + " |notes =\n"
-                    + " |accession number =\n"
-                    + " |place of creation =\n"
-                    + " |source =\n"
-                    + " |permission =\n"
-                    + " |other_versions =\n"
-                    + " |references =\n"
-                    + " |wikidata =\n"
+                    + " |place of discovery = ${place of discovery}\n"
+                    + " |object history = ${object history}\n"
+                    + " |exhibition history = ${exhibition history}\n"
+                    + " |credit line = ${credit line}\n"
+                    + " |inscriptions = ${inscriptions}\n"
+                    + " |notes = ${notes}\n"
+                    + " |accession number = ${accession number}\n"
+                    + " |place of creation = ${place of creation}\n"
+                    + " |source = ${source}\n"
+                    + " |permission = ${permission}\n"
+                    + " |other_versions = ${other_versions}\n"
+                    + " |references = ${references}\n"
+                    + " |wikidata = ${wikidata}\n"
                     + "}}"
             ));
   }

@@ -38,6 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
@@ -62,7 +63,7 @@ public class ValidatePane extends WikiPane {
   WikiLabel descLabel;
   WikiTextField browsePath;
   WikiButton browseButton;
-  VBox infoContainer = new VBox(2);
+  VBox infoContainer = new VBox(4);
 
   public ValidatePane(Stage stage) {
     super(stage, 1.01);
@@ -148,17 +149,22 @@ public class ValidatePane extends WikiPane {
         addInfo("Loading '" + description.get("path") + "'");
         
         if(description.get("path").isEmpty() || description.get("name").isEmpty()) {
-          //addInfo("Essential parametes are missing!");
+          addInfo("Essential parametes are missing!");
           continue;
         }
         
         if (description.containsValue("")) {
-          //addInfo("Warning: some parameters are empty!");
+          addInfo("Warning: some parameters are empty!");
         }
         
         StringWriter writer = new StringWriter();
         template.process(description, writer);
         String wikicode = writer.getBuffer().toString();
+        if(wikicode.isEmpty()) {
+          addInfo("Error: empty template!");
+          return -2;
+        }
+        
         Session.FILES_TO_UPLOAD.add(new UploadElement(description, wikicode));
         //addInfo("OK");
       } catch (TemplateException | IOException ex) {
@@ -202,7 +208,7 @@ public class ValidatePane extends WikiPane {
             new Priority[]{Priority.ALWAYS, Priority.NEVER}
     );
     
-    addElement(infoContainer);
+    addElement(new ScrollPane(infoContainer));
     
     prevButton.linkTo("StartPane", stage);
     nextButton.linkTo("LoginPane", stage);
