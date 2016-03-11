@@ -25,8 +25,8 @@ package pattypan.panes;
 
 import java.util.ArrayList;
 import javafx.event.Event;
+import javafx.event.EventType;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
@@ -51,34 +51,42 @@ public class ChooseColumnsPane extends WikiPane {
   WikiLabel descLabel;
   WikiButton templateButton;
   WikiButton wikicodeButton;
-  ComboBox templateBox = new ComboBox();
   ScrollPane scrollText = new ScrollPane();
 
   GridPane templatePane = new GridPane();
+  ComboBox templateBox = new ComboBox();
   VBox templateCheckboxContainer = new VBox(4);
+  
+  GridPane wikicodePane = new GridPane();
+  TextArea wikicodeText = new TextArea("");
 
   public ChooseColumnsPane(Stage stage) {
     super(stage, 0.5);
     this.stage = stage;
 
     setContent();
-
-    if (Session.METHOD.equals("wikicode")) {
-      wikicodeButton.fire();
-    }
+    setActions();
   }
 
   public WikiPane getContent() {
     return this;
   }
 
-  private void addCheckboxes() {
+  /**
+   * Adds checkboxes with wikitemplate fields.
+   * @param templateName name of wikitemplate
+   * @return true, if template exists
+   */
+  private boolean addCheckboxes(String templateName) {
     templateCheckboxContainer.getChildren().clear();
-    if (Session.TEMPLATE.equals("Artwork")) {
+    if (templateName.equals("Artwork")) {
       for (TemplateField tf : Settings.TEMPLATE_ARTWORK) {
         templateCheckboxContainer.getChildren().add(tf.getCheckbox());
       }
+      return true;
     }
+    
+    return false;
   }
 
   private String getTemplateWikicode() {
@@ -108,41 +116,12 @@ public class ChooseColumnsPane extends WikiPane {
     return vars;
   }
 
-  private WikiPane setContent() {
-    descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
-    descLabel.setTextAlignment(TextAlignment.LEFT);
-    addElement(descLabel);
-
-    /* buttons */
-    templateButton = new WikiButton("Use template", "group-left").setWidth(150);
-    wikicodeButton = new WikiButton("Write wikicode", "group-right", "inversed").setWidth(150);
-    addElementRow(0,
-            new Node[]{templateButton, wikicodeButton},
-            new Priority[]{Priority.NEVER, Priority.NEVER}
-    );
-
-    /* templates pane */
-    templateBox.getItems().addAll(
-            "Book", "Artwork"
-    );
-    templateBox.getSelectionModel().select(Session.TEMPLATE);
+  private WikiPane setActions() {
     templateBox.setOnAction((Event ev) -> {
       Session.TEMPLATE = templateBox.getSelectionModel().getSelectedItem().toString();
-      addCheckboxes();
+      addCheckboxes(Session.TEMPLATE);
     });
-
-    templatePane.add(templateBox, 0, 0);
-    templatePane.add(templateCheckboxContainer, 0, 1);
-    addElement(templatePane);
-
-    /* wiki code pane */
-    TextArea wikicodeText = new TextArea("");
-    wikicodeText.getStyleClass().add("mw-ui-input");
-    wikicodeText.setText(Session.WIKICODE);
-
-    GridPane wikicodePane = new GridPane();
-    wikicodePane.add(wikicodeText, 0, 0);
-
+    
     templateButton.setOnAction(event -> {
       templateButton.getStyleClass().remove("mw-ui-inversed");
       wikicodeButton.getStyleClass().add("mw-ui-inversed");
@@ -161,7 +140,7 @@ public class ChooseColumnsPane extends WikiPane {
       }
       Session.METHOD = "wikicode";
     });
-
+    
     prevButton.linkTo("ChooseDirectoryPane", stage);
     nextButton.setOnAction(event -> {
       if (Session.METHOD.equals("wikicode")) {
@@ -177,7 +156,35 @@ public class ChooseColumnsPane extends WikiPane {
 
       nextButton.goTo("CreateFilePane", stage);
     });
+    return this;
+  }
+  
+  private WikiPane setContent() {
+    descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
+    descLabel.setTextAlignment(TextAlignment.LEFT);
+    addElement(descLabel);
 
+    /* buttons */
+    templateButton = new WikiButton("Use template", "group-left").setWidth(150);
+    wikicodeButton = new WikiButton("Write wikicode", "group-right", "inversed").setWidth(150);
+    addElementRow(0,
+            new Node[]{templateButton, wikicodeButton},
+            new Priority[]{Priority.NEVER, Priority.NEVER}
+    );
+
+    /* templates pane */
+    templateBox.getItems().addAll("Artwork", "Book");
+    templateBox.getSelectionModel().select(Session.TEMPLATE);
+    addCheckboxes();
+
+    templatePane.add(templateBox, 0, 0);
+    templatePane.add(templateCheckboxContainer, 0, 1);
+    addElement(templatePane);
+
+    /* wiki code pane */
+    wikicodeText.getStyleClass().add("mw-ui-input");
+    wikicodeText.setText(Session.WIKICODE);
+    wikicodePane.add(wikicodeText, 0, 0);
     return this;
   }
 }

@@ -32,7 +32,6 @@ import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
@@ -59,11 +58,6 @@ public class ChooseDirectoryPane extends WikiPane {
     this.stage = stage;
 
     setContent();
-    
-    if (Session.DIRECTORY != null) {
-      browsePath.setText(Session.DIRECTORY.getAbsolutePath());
-      getFileListByDirectory(Session.DIRECTORY);
-    }
   }
 
   private void chooseAndSetDirectory() {

@@ -29,7 +29,6 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -149,19 +148,19 @@ public class ValidatePane extends WikiPane {
         addInfo("Loading '" + description.get("path") + "'");
         
         if(description.get("path").isEmpty() || description.get("name").isEmpty()) {
-          addInfo("Essential parametes are missing!");
+          //addInfo("Essential parametes are missing!");
           continue;
         }
         
         if (description.containsValue("")) {
-          addInfo("Warning: some parameters are empty!");
+          //addInfo("Warning: some parameters are empty!");
         }
         
         StringWriter writer = new StringWriter();
         template.process(description, writer);
         String wikicode = writer.getBuffer().toString();
         Session.FILES_TO_UPLOAD.add(new UploadElement(description, wikicode));
-        addInfo("OK");
+        //addInfo("OK");
       } catch (TemplateException | IOException ex) {
         Logger.getLogger(ValidatePane.class.getName()).log(Level.SEVERE, null, ex);
         return -2;
@@ -208,10 +207,6 @@ public class ValidatePane extends WikiPane {
     prevButton.linkTo("StartPane", stage);
     nextButton.linkTo("LoginPane", stage);
     nextButton.setDisable(true);
-    
-    if (Session.FILE != null) {
-      loadFile(Session.FILE);
-    }
     
     return this;
   }
