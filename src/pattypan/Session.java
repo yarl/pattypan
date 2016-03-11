@@ -26,11 +26,16 @@ package pattypan;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import javafx.scene.Scene;
 import org.wikipedia.Wiki;
 
 public final class Session {
   
   private Session() {};
+  
+  public static Map<String, Scene> SCENES = new HashMap<>();
   
   public static File DIRECTORY;
   public static File FILE;

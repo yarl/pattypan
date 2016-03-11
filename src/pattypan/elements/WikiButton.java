@@ -33,6 +33,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import pattypan.Session;
 import pattypan.Util;
 
 public class WikiButton extends Button {
@@ -79,18 +80,25 @@ public class WikiButton extends Button {
     });
     return this;
   }
-  
+
   public void goTo(String paneName, Stage stage) {
-    Scene scene = new Scene(getPaneByPaneName(paneName, stage), Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
+    Scene scene = Session.SCENES.containsKey(paneName)
+            ? Session.SCENES.get(paneName)
+            : new Scene(getPaneByPaneName(paneName, stage), Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
+
+    if(!Session.SCENES.containsKey(paneName)) {
+      Session.SCENES.put(paneName, scene);
+    }
+    
     stage.setScene(scene);
   }
-  
+
   public WikiButton setWidth(int width) {
     this.setMaxWidth(width);
     this.setMinWidth(width);
     return this;
   }
-  
+
   public WikiButton setLabel(String text) {
     this.setText(text);
     return this;
