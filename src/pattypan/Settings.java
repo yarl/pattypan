@@ -23,46 +23,57 @@
  */
 package pattypan;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public final class Settings {
-  
-  private Settings() {};
+
+  private Settings() {
+  }
+  ;
   
   public static int WINDOW_WIDTH = 600;
   public static int WINDOW_HEIGHT = 400;
-  
-  public static TemplateField[] TEMPLATE_ARTWORK = {
-    new TemplateField("artist", "Artist"),
-    new TemplateField("author", "Author"),
-    new TemplateField("title", "Title"),
-    new TemplateField("description", "Description"),
-    new TemplateField("date", "Date"),
-    new TemplateField("medium", "Medium"),
-    new TemplateField("dimensions", "Dimensions"),
-    new TemplateField("institution", "Institution")
-  };
-  
-  public static String WIKICODE_ARTWORK = "{{Artwork\n" +
-    " |artist             = ${artist}\n" +
-    " |author             = ${author}\n" +
-    " |title              = ${title}\n" +
-    " |description        = ${description}\n" +
-    " |date               = ${date}\n" +
-    " |medium             = ${medium}\n" +
-    " |dimensions         = ${dimensions}\n" +
-    " |institution        = ${institution}\n" +
-    " |department         = ${departament}\n" +
-    " |place of discovery = \n" +
-    " |object history     =\n" +
-    " |exhibition history =\n" +
-    " |credit line        =\n" +
-    " |inscriptions       =\n" +
-    " |notes              =\n" +
-    " |accession number   =\n" +
-    " |place of creation  =\n" +
-    " |source             =\n" +
-    " |permission         =\n" +
-    " |other_versions     =\n" +
-    " |references         =\n" +
-    " |wikidata           =\n" +
-    "}}";
+
+  public static final Map<String, Template> TEMPLATES = new HashMap<>();
+
+  static {
+    TEMPLATES.put(
+            "Artwork",
+            new Template("Artwork",
+                    new TemplateField[]{
+                      new TemplateField("artist", "Artist"),
+                      new TemplateField("author", "Author"),
+                      new TemplateField("title", "Title"),
+                      new TemplateField("description", "Description"),
+                      new TemplateField("date", "Date"),
+                      new TemplateField("medium", "Medium"),
+                      new TemplateField("dimensions", "Dimensions"),
+                      new TemplateField("institution", "Institution")
+                    }, "{{Artwork\n"
+                    + " |artist = ${artist}\n"
+                    + " |author = ${author}\n"
+                    + " |title = ${title}\n"
+                    + " |description = ${description}\n"
+                    + " |date = ${date}\n"
+                    + " |medium = ${medium}\n"
+                    + " |dimensions = ${dimensions}\n"
+                    + " |institution = ${institution}\n"
+                    + " |department = ${departament}\n"
+                    + " |place of discovery = \n"
+                    + " |object history =\n"
+                    + " |exhibition history =\n"
+                    + " |credit line =\n"
+                    + " |inscriptions =\n"
+                    + " |notes =\n"
+                    + " |accession number =\n"
+                    + " |place of creation =\n"
+                    + " |source =\n"
+                    + " |permission =\n"
+                    + " |other_versions =\n"
+                    + " |references =\n"
+                    + " |wikidata =\n"
+                    + "}}"
+            ));
+  }
 }
