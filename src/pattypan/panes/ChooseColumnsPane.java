@@ -53,13 +53,12 @@ public class ChooseColumnsPane extends WikiPane {
   WikiLabel descLabel;
   WikiButton templateButton;
   WikiButton wikicodeButton;
-  ScrollPane scrollText = new ScrollPane();
 
-  GridPane templatePane = new GridPane();
+  VBox templatePane = new VBox(10);
   ComboBox templateBox = new ComboBox();
   VBox templateCheckboxContainer = new VBox(4);
 
-  GridPane wikicodePane = new GridPane();
+  VBox wikicodePane = new VBox(10);
   TextArea wikicodeText = new TextArea("");
 
   public ChooseColumnsPane(Stage stage) {
@@ -191,14 +190,13 @@ public class ChooseColumnsPane extends WikiPane {
     templateBox.getSelectionModel().select(Session.TEMPLATE);
     addCheckboxes(Session.TEMPLATE);
 
-    templatePane.add(templateBox, 0, 0);
-    templatePane.add(templateCheckboxContainer, 0, 1);
+    templatePane.getChildren().addAll(templateBox, new ScrollPane(templateCheckboxContainer));
     addElement(templatePane);
 
     /* wiki code pane */
     wikicodeText.getStyleClass().add("mw-ui-input");
     wikicodeText.setText(Session.WIKICODE);
-    wikicodePane.add(wikicodeText, 0, 0);
+    wikicodePane.getChildren().addAll(wikicodeText);
     return this;
   }
 }

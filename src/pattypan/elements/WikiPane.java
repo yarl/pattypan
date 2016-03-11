@@ -23,6 +23,7 @@
  */
 package pattypan.elements;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
@@ -63,7 +64,8 @@ public class WikiPane extends BorderPane {
     Region region = new Region();
     HBox.setHgrow(region, Priority.ALWAYS);
     bottomContainer.getChildren().addAll(prevButton, region, nextButton);
-
+    BorderPane.setMargin(bottomContainer, new Insets(10, 0, 0, 0));
+    
     this.setTop(topContainer);
     this.setCenter(centerContainer);
     this.setBottom(bottomContainer);
