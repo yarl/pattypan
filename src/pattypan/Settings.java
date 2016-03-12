@@ -53,14 +53,14 @@ public final class Settings {
                       new TemplateField("dimensions", "Dimensions"),
                       new TemplateField("institution", "Institution"),
                       new TemplateField("departament", "Departament"),
-                      new TemplateField("place of discovery", "Place of discovery"),
-                      new TemplateField("object history", "Object history"),
-                      new TemplateField("exhibition history", "Exhibition history"),
-                      new TemplateField("credit line", "Credit line"),
+                      new TemplateField("place_of_discovery", "Place of discovery"),
+                      new TemplateField("object_history", "Object history"),
+                      new TemplateField("exhibition_history", "Exhibition history"),
+                      new TemplateField("credit_line", "Credit line"),
                       new TemplateField("inscriptions", "Inscriptions"),
                       new TemplateField("notes", "Notes"),
-                      new TemplateField("accession number", "Accession number"),
-                      new TemplateField("place of creation", "Place of creation"),
+                      new TemplateField("accession_number", "Accession number"),
+                      new TemplateField("place_of_creation", "Place of creation"),
                       new TemplateField("source", "source"),
                       new TemplateField("permission", "Permission"),
                       new TemplateField("other_versions", "Other versions"),
@@ -76,14 +76,14 @@ public final class Settings {
                     + " |dimensions = ${dimensions}\n"
                     + " |institution = ${institution}\n"
                     + " |department = ${departament}\n"
-                    + " |place of discovery = ${place of discovery}\n"
-                    + " |object history = ${object history}\n"
-                    + " |exhibition history = ${exhibition history}\n"
-                    + " |credit line = ${credit line}\n"
+                    + " |place of discovery = ${place_of_discovery}\n"
+                    + " |object history = ${object_history}\n"
+                    + " |exhibition history = ${exhibition_history}\n"
+                    + " |credit line = ${credit_line}\n"
                     + " |inscriptions = ${inscriptions}\n"
                     + " |notes = ${notes}\n"
-                    + " |accession number = ${accession number}\n"
-                    + " |place of creation = ${place of creation}\n"
+                    + " |accession number = ${accession_number}\n"
+                    + " |place of creation = ${place_of_creation}\n"
                     + " |source = ${source}\n"
                     + " |permission = ${permission}\n"
                     + " |other_versions = ${other_versions}\n"
