@@ -35,14 +35,14 @@ THE SOFTWARE.
 /*  -fx-grid-lines-visible: true;*/
 }
 
-.mw-ui-scrollpane {
+.scroll-pane {
   -fx-background-color: #fff;
   -fx-border-width: 0;
   -fx-border-insets: 0;
 }
 
-.mw-ui-scrollpane > .viewport {
-  -fx-background-color: transparent;
+.scroll-pane > .viewport {
+  -fx-background-color: #fff;
 }
 
 .title {
