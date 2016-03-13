@@ -23,6 +23,7 @@
  */
 package pattypan;
 
+import java.io.File;
 import java.util.Map;
 
 public class UploadElement {
@@ -40,6 +41,10 @@ public class UploadElement {
 
   public Map<String, String> getData() {
     return data;
+  }
+  
+  public File getFile() {
+    return new File(getData("path"));
   }
   
   public String getData(String key) {
