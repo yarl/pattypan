@@ -25,6 +25,8 @@ package pattypan.panes;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import pattypan.Session;
@@ -60,7 +62,13 @@ public class LoginPane extends WikiPane {
     descLabel.setTextAlignment(TextAlignment.LEFT);
     addElement(descLabel);
 
-    loginButton.setOnAction((ActionEvent e) -> {
+    passwordText.setOnKeyPressed((KeyEvent event) -> {
+      if (event.getCode().equals(KeyCode.ENTER)) {
+        logIn();
+      }
+    });
+    
+    loginButton.setOnAction((ActionEvent event) -> {
       logIn();
     });
 
@@ -81,6 +89,8 @@ public class LoginPane extends WikiPane {
     loginButton.setDisable(state);
   }
   
+  
+  
   private void logIn() {
     Task<Integer> task = new Task<Integer>() {
 
@@ -88,7 +98,7 @@ public class LoginPane extends WikiPane {
         setDisableForm(false);
         loginButton.setText("Login");
         nextButton.setDisable(false);
-        nextButton.arm();
+        nextButton.fire();
       }
 
       private void setLoginFailed() {
