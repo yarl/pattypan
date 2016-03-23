@@ -66,7 +66,8 @@ public final class Settings {
                       new TemplateField("other_versions", "Other versions"),
                       new TemplateField("references", "References"),
                       new TemplateField("wikidata", "Wikidata"),
-                    }, "{{Artwork\n"
+                      new TemplateField("license", "License"),
+                    }, "=={{int:filedesc}}==\n{{Artwork\n"
                     + " |artist = ${artist}\n"
                     + " |author = ${author}\n"
                     + " |title = ${title}\n"
@@ -89,7 +90,8 @@ public final class Settings {
                     + " |other_versions = ${other_versions}\n"
                     + " |references = ${references}\n"
                     + " |wikidata = ${wikidata}\n"
-                    + "}}"
+                    + "}}\n\n"
+                    + "=={{int:license-header}}==\n${license}"
             ));
   }
 }
