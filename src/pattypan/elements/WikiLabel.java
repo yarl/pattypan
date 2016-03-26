@@ -28,11 +28,14 @@ import com.sun.javafx.tk.Toolkit;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.text.TextAlignment;
+import pattypan.Util;
 
 public class WikiLabel extends Label {
   
   public WikiLabel(String text) {
-    super(text);
+    String locText = Util.text(text);
+    this.setText(locText.isEmpty() ? text : locText);
+    
     this.getStyleClass().addAll("mw-ui-text");
     this.wrapTextProperty().setValue(true);
     this.setTextAlignment(TextAlignment.CENTER);

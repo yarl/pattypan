@@ -173,20 +173,20 @@ public class ChooseColumnsPane extends WikiPane {
   }
 
   private WikiPane setContent() {
-    descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
+    descLabel = new WikiLabel("choose-columns-intro").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
     addElement(descLabel);
 
     /* buttons */
-    templateButton = new WikiButton("Use template", "group-left").setWidth(150);
-    wikicodeButton = new WikiButton("Write wikicode", "group-right", "inversed").setWidth(150);
+    templateButton = new WikiButton("choose-columns-template", "group-left").setWidth(150);
+    wikicodeButton = new WikiButton("choose-columns-wikicode", "group-right", "inversed").setWidth(150);
     addElementRow(0,
             new Node[]{templateButton, wikicodeButton},
             new Priority[]{Priority.NEVER, Priority.NEVER}
     );
 
     /* templates pane */
-    templateBox.getItems().addAll("Artwork", "Book");
+    templateBox.getItems().addAll("choose-columns-template-artwork", "choose-columns-template-book");
     templateBox.getSelectionModel().select(Session.TEMPLATE);
     addCheckboxes(Session.TEMPLATE);
 

@@ -57,12 +57,12 @@ public class StartPane extends GridPane {
     
     this.addRow(0, new WikiLabel("pattypan").setClass("title"));
     this.addRow(10, new HBox(20, 
-            new WikiButton("Generate Spreadsheet", "primary").setWidth(200).linkTo("ChooseDirectoryPane", stage),
-            new WikiButton("Validate & Upload").setWidth(200).linkTo("ValidatePane", stage)));
+            new WikiButton("start-generate-button", "primary").setWidth(200).linkTo("ChooseDirectoryPane", stage),
+            new WikiButton("start-validate-button").setWidth(200).linkTo("ValidatePane", stage)));
     
     this.addRow(11, new HBox(20,
-            new WikiLabel("Generate Spreadsheet by selecting a directory on your hard drive.").setWidth(200),
-            new WikiLabel("Check correctness of your spreadsheet and upload files.").setWidth(200)));
+            new WikiLabel("start-generate-description").setWidth(200),
+            new WikiLabel("start-validate-description").setWidth(200)));
     
     this.addRow(20, new WikiLabel("2016 // Pawel Marynowski \n version "+ Settings.VERSION).setClass("muted"));    
     return this;

@@ -47,8 +47,9 @@ public class WikiButton extends Button {
   }
 
   public WikiButton(String name, String... types) {
-    super(name);
-
+    String locName = Util.text(name);
+    this.setText(locName.isEmpty() ? name : locName);
+    
     for (int i = 0; i < types.length; i++) {
       types[i] = types[i].isEmpty() ? "" : "mw-ui-" + types[i];
     }

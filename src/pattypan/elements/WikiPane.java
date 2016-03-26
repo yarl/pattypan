@@ -32,6 +32,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import pattypan.Util;
 
 public class WikiPane extends BorderPane {
 
@@ -42,11 +43,19 @@ public class WikiPane extends BorderPane {
   public VBox centerContainer = new VBox(15);
   public HBox bottomContainer = new HBox();
 
-  public WikiButton prevButton = new WikiButton("Back", "inversed").setWidth(100);
-  public WikiButton nextButton = new WikiButton("Next", "inversed").setWidth(100);
+  public WikiButton prevButton = new WikiButton("generic-back", "inversed").setWidth(100);
+  public WikiButton nextButton = new WikiButton("generic-next", "inversed").setWidth(100);
 
-  private final String[] progressBarLabels = { "Choose directory", "Choose columns", "Create file" };
-  private final String[] progressBarLabels2 = { "Validation", "Login", "Upload" };
+  private final String[] progressBarLabels = {
+    Util.text("choose-directory-name"),
+    Util.text("choose-columns-name"),
+    Util.text("create-file-name")
+  };
+  private final String[] progressBarLabels2 = {
+    Util.text("validate-name"),
+    Util.text("login-name"),
+    Util.text("upload-name")
+  };
   
   public WikiPane(Stage stage, double value) {
     this.stage = stage;
