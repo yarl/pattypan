@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.geometry.HPos;
@@ -40,6 +42,15 @@ public final class Util {
 
   public static int WINDOW_WIDTH = 750;
   public static int WINDOW_HEIGHT = 550;
+  static ResourceBundle bundle = ResourceBundle.getBundle("pattypan/text/messages");
+  
+  public static String text(String key) {
+    try {
+      return bundle.getString(key);
+    } catch (final MissingResourceException ex) {
+      return "";
+    }
+  }
 
   /* row and column utils */
   
