@@ -62,7 +62,7 @@ public class ChooseDirectoryPane extends WikiPane {
 
   private void chooseAndSetDirectory() {
     DirectoryChooser fileChooser = new DirectoryChooser();
-    fileChooser.setTitle("Choose directory");
+    fileChooser.setTitle("choose-directory-window-name");
     if (Session.DIRECTORY != null) {
       fileChooser.setInitialDirectory(Session.DIRECTORY);
     }
@@ -93,19 +93,19 @@ public class ChooseDirectoryPane extends WikiPane {
     }
     
     if(files.length == 0) {
-      checkBoxContainer.getChildren().add(new WikiLabel("No files suitable for upload."));
+      checkBoxContainer.getChildren().add(new WikiLabel("choose-directory-no-files"));
     }
     
     nextButton.setDisable(files.length == 0);
   }
 
   private BorderPane setContent() {
-    descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
+    descLabel = new WikiLabel("choose-directory-intro").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
     addElement(descLabel);
 
     browsePath = new WikiTextField("");
-    browseButton = new WikiButton("Browse", "small").setWidth(100);
+    browseButton = new WikiButton("generic-browse", "small").setWidth(100);
     browseButton.setOnAction((ActionEvent e) -> {
       chooseAndSetDirectory();
     });

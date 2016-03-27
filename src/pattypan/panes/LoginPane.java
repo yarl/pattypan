@@ -41,9 +41,9 @@ public class LoginPane extends WikiPane {
   Stage stage;
 
   WikiLabel descLabel;
-  WikiTextField loginText = new WikiTextField("").setPlaceholder("Login").setWidth(300);
-  WikiPasswordField passwordText = new WikiPasswordField().setPlaceholder("Password").setWidth(300);
-  WikiButton loginButton = new WikiButton("Login").setWidth(300);
+  WikiTextField loginText = new WikiTextField("").setPlaceholder("login-login-field").setWidth(300);
+  WikiPasswordField passwordText = new WikiPasswordField().setPlaceholder("login-password-field").setWidth(300);
+  WikiButton loginButton = new WikiButton("login-login-button").setWidth(300);
   WikiLabel loginStatus = new WikiLabel("");
 
   public LoginPane(Stage stage) {
@@ -58,7 +58,7 @@ public class LoginPane extends WikiPane {
   }
 
   private WikiPane setContent() {
-    descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
+    descLabel = new WikiLabel("login-intro").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
     addElement(descLabel);
 
