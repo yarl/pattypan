@@ -59,7 +59,7 @@ public class ValidatePane extends WikiPane {
 
   Stage stage;
   Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
-  
+
   WikiLabel descLabel;
   WikiTextField browsePath;
   WikiButton browseButton;
@@ -68,10 +68,10 @@ public class ValidatePane extends WikiPane {
   public ValidatePane(Stage stage) {
     super(stage, 1.01);
     this.stage = stage;
-  
+
     cfg.setDefaultEncoding("UTF-8");
     cfg.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
-    
+
     setContent();
   }
 
@@ -82,7 +82,7 @@ public class ValidatePane extends WikiPane {
   private void addInfo(String text) {
     infoContainer.getChildren().add(new WikiLabel(text).setAlign("left"));
   }
-  
+
   private void selectFile() {
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle("Choose file");
@@ -94,7 +94,7 @@ public class ValidatePane extends WikiPane {
       loadFile(file);
     }
   }
-  
+
   private void loadFile(File file) {
     Session.DIRECTORY = file.getParentFile();
     Session.FILE = file;
@@ -103,10 +103,6 @@ public class ValidatePane extends WikiPane {
     int result = readFile();
     switch (result) {
       case -1:
-        addInfo("Something is wrong with file!");
-        break;
-      case -2:
-        addInfo("Errors in template!");
         break;
       case 0:
         addInfo("No files in spreadsheet!");
@@ -118,16 +114,34 @@ public class ValidatePane extends WikiPane {
     }
   }
 
-  private ArrayList<Map<String, String>> readDescriptions(Sheet sheet) {
+  private boolean checkHeaders(Sheet sheet) throws Exception {
+    int columns = sheet.getColumns();
+    ArrayList<String> cols = new ArrayList<>();
+    for (int col = 0; col < columns; col++) {
+      cols.add(sheet.getCell(col, 0).getContents());
+    }
+
+    if (cols.isEmpty() || !cols.contains("path") || !cols.contains("name")) {
+      throw new Exception("Headers error!");
+    }
+    
+    return true;
+  }
+
+  private ArrayList<Map<String, String>> readDescriptions(Sheet sheet) throws Exception {
     ArrayList<Map<String, String>> descriptions = new ArrayList<>();
     int rows = sheet.getRows();
     int columns = sheet.getColumns();
 
+    checkHeaders(sheet);
+    
     for (int row = 1; row < rows; row++) {
       Map<String, String> description = new HashMap();
       for (int column = 0; column < columns; column++) {
         String label = sheet.getCell(column, 0).getContents();
-        if(label.isEmpty()) continue;
+        if (label.isEmpty()) {
+          continue;
+        }
         String value = sheet.getCell(column, row).getContents();
         description.put(label, value);
       }
@@ -140,31 +154,31 @@ public class ValidatePane extends WikiPane {
     String text = sheet.getCell(0, 0).getContents();
     return new Template("wikitemplate", new StringReader(text), cfg);
   }
-  
+
   private int addFilesToUpload(ArrayList<Map<String, String>> descriptions, Template template) {
     Session.FILES_TO_UPLOAD = new ArrayList<>();
-    
+
     for (Map<String, String> description : descriptions) {
       try {
         addInfo("Loading '" + description.get("path") + "'");
-        
-        if(description.get("path").isEmpty() || description.get("name").isEmpty()) {
+
+        if (description.get("path").isEmpty() || description.get("name").isEmpty()) {
           addInfo("Essential parametes are missing!");
           continue;
         }
-        
+
         if (description.containsValue("")) {
           addInfo("Warning: some parameters are empty!");
         }
-        
+
         StringWriter writer = new StringWriter();
         template.process(description, writer);
         String wikicode = writer.getBuffer().toString();
-        if(wikicode.isEmpty()) {
+        if (wikicode.isEmpty()) {
           addInfo("Error: empty template!");
           return -2;
         }
-        
+
         Session.FILES_TO_UPLOAD.add(new UploadElement(description, wikicode));
         //addInfo("OK");
       } catch (TemplateException | IOException ex) {
@@ -172,22 +186,28 @@ public class ValidatePane extends WikiPane {
         return -2;
       }
     }
-    
+
     return Session.FILES_TO_UPLOAD.size();
   }
-  
+
   private int readFile() {
     try {
       WorkbookSettings ws = new WorkbookSettings();
       ws.setEncoding("Cp1252");
-      
+
       Workbook workbook = Workbook.getWorkbook(Session.FILE, ws);
       ArrayList<Map<String, String>> descriptions = readDescriptions(workbook.getSheet(0));
       Template template = readTemplate(workbook.getSheet(1));
-      
+
       return addFilesToUpload(descriptions, template);
-    } catch (IOException | BiffException ex) {
-      Logger.getLogger(ValidatePane.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (IOException ex) {
+      addInfo("File error: there are problems opening file. It may be corrupted.");
+      return -1;
+    } catch (BiffException ex) {
+      addInfo("File error: file needs to be saved in binnary format. Please save your file in \"Excel 97-2003 format\"");
+      return -1;
+    } catch (Exception ex) {
+      addInfo(ex.getMessage());
       return -1;
     }
   }
@@ -207,13 +227,13 @@ public class ValidatePane extends WikiPane {
             new Node[]{browsePath, browseButton},
             new Priority[]{Priority.ALWAYS, Priority.NEVER}
     );
-    
+
     addElement(new ScrollPane(infoContainer));
-    
+
     prevButton.linkTo("StartPane", stage);
     nextButton.linkTo("LoginPane", stage);
     nextButton.setDisable(true);
-    
+
     return this;
   }
 
