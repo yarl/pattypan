@@ -50,6 +50,7 @@ import jxl.WorkbookSettings;
 import jxl.read.biff.BiffException;
 import pattypan.Session;
 import pattypan.UploadElement;
+import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
@@ -85,8 +86,8 @@ public class ValidatePane extends WikiPane {
 
   private void selectFile() {
     FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Choose file");
-    FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XLS files (*.xls)", "*.xls");
+    fileChooser.setTitle(Util.text("validate-file-select"));
+    FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(Util.text("validate-file-type"), "*.xls");
     fileChooser.getExtensionFilters().add(extFilter);
 
     File file = fileChooser.showOpenDialog(stage);
@@ -214,12 +215,12 @@ public class ValidatePane extends WikiPane {
 
   private WikiPane setContent() {
 
-    descLabel = new WikiLabel("In cursus nunc enim, ac ullamcorper lectus consequat accumsan. Mauris erat sapien, iaculis a quam in, molestie dapibus libero. Morbi mollis mattis porta. Pellentesque at suscipit est, id vestibulum risus.").setWrapped(true);
+    descLabel = new WikiLabel("validate-intro").setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
     addElement(descLabel);
 
     browsePath = new WikiTextField("");
-    browseButton = new WikiButton("Browse", "small").setWidth(100);
+    browseButton = new WikiButton("generic-browse", "small").setWidth(100);
     browseButton.setOnAction((ActionEvent e) -> {
       selectFile();
     });
