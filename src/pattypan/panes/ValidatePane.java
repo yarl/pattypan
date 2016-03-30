@@ -84,38 +84,37 @@ public class ValidatePane extends WikiPane {
     infoContainer.getChildren().add(new WikiLabel(text).setAlign("left"));
   }
 
+  /**
+   * Shows file shooser dialog.
+   */
   private void selectFile() {
+    FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(Util.text("validate-file-type"), "*.xls");
+    
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle(Util.text("validate-file-select"));
-    FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(Util.text("validate-file-type"), "*.xls");
     fileChooser.getExtensionFilters().add(extFilter);
 
-    File file = fileChooser.showOpenDialog(stage);
-    if (file != null) {
-      loadFile(file);
+    File selectedFile = fileChooser.showOpenDialog(stage);
+    if (selectedFile != null) {
+      loadSelectedFile(selectedFile);
     }
   }
 
-  private void loadFile(File file) {
+  private void loadSelectedFile(File file) {
     Session.DIRECTORY = file.getParentFile();
     Session.FILE = file;
     browsePath.setText(file.getAbsolutePath());
 
-    int result = readFile();
-    switch (result) {
-      case -1:
-        break;
-      case 0:
-        addInfo("No files in spreadsheet!");
-        break;
-      default:
-        addInfo(result + " files loaded successfully!");
-        nextButton.setDisable(false);
-        break;
-    }
+    readSelectedFile();
   }
 
-  private boolean checkHeaders(Sheet sheet) throws Exception {
+  /**
+   * Checks headers of data sheet (first row).
+   *
+   * @param sheet sheet with data
+   * @throws Exception when essential headers are missing
+   */
+  private void checkHeaders(Sheet sheet) throws Exception {
     int columns = sheet.getColumns();
     ArrayList<String> cols = new ArrayList<>();
     for (int col = 0; col < columns; col++) {
@@ -125,8 +124,6 @@ public class ValidatePane extends WikiPane {
     if (cols.isEmpty() || !cols.contains("path") || !cols.contains("name")) {
       throw new Exception("Headers error!");
     }
-    
-    return true;
   }
 
   private ArrayList<Map<String, String>> readDescriptions(Sheet sheet) throws Exception {
@@ -156,60 +153,63 @@ public class ValidatePane extends WikiPane {
     return new Template("wikitemplate", new StringReader(text), cfg);
   }
 
-  private int addFilesToUpload(ArrayList<Map<String, String>> descriptions, Template template) {
+  private void addFilesToUpload(ArrayList<Map<String, String>> descriptions, Template template) throws TemplateException, IOException, Exception {
     Session.FILES_TO_UPLOAD = new ArrayList<>();
 
+    ArrayList<String> errors = new ArrayList<>();
+    ArrayList<String> warnings = new ArrayList<>();
+    
     for (Map<String, String> description : descriptions) {
-      try {
-        addInfo("Loading '" + description.get("path") + "'");
-
-        if (description.get("path").isEmpty() || description.get("name").isEmpty()) {
-          addInfo("Essential parametes are missing!");
-          continue;
-        }
-
-        if (description.containsValue("")) {
-          addInfo("Warning: some parameters are empty!");
-        }
-
-        StringWriter writer = new StringWriter();
-        template.process(description, writer);
-        String wikicode = writer.getBuffer().toString();
-        if (wikicode.isEmpty()) {
-          addInfo("Error: empty template!");
-          return -2;
-        }
-
-        Session.FILES_TO_UPLOAD.add(new UploadElement(description, wikicode));
-        //addInfo("OK");
-      } catch (TemplateException | IOException ex) {
-        Logger.getLogger(ValidatePane.class.getName()).log(Level.SEVERE, null, ex);
-        return -2;
+      String namePath = description.get("name") + " (" + description.get("path") + ")";
+      
+      if (description.get("path").isEmpty() || description.get("name").isEmpty()) {
+        errors.add(namePath);
+        continue;
       }
-    }
+      if (description.containsValue("")) {
+        warnings.add(namePath);
+      }
 
-    return Session.FILES_TO_UPLOAD.size();
+      StringWriter writer = new StringWriter();
+      template.process(description, writer);
+      String wikicode = writer.getBuffer().toString();
+
+      System.out.println(namePath);
+      System.out.println(wikicode + '\n');
+      
+      if (wikicode.isEmpty()) {
+        throw new Exception("Error: empty template!");
+      }
+
+      Session.FILES_TO_UPLOAD.add(new UploadElement(description, wikicode));
+    }
+    
+    addInfo(Session.FILES_TO_UPLOAD.size() + " files loaded successfully!");
+    addInfo(errors.size() + " errors");
+    addInfo(warnings.size() + " warnings");
+    
+    if(Session.FILES_TO_UPLOAD.size() > 0) {
+      nextButton.setDisable(false);
+    }
   }
 
-  private int readFile() {
+  private void readSelectedFile() {
     try {
       WorkbookSettings ws = new WorkbookSettings();
       ws.setEncoding("Cp1252");
 
       Workbook workbook = Workbook.getWorkbook(Session.FILE, ws);
       ArrayList<Map<String, String>> descriptions = readDescriptions(workbook.getSheet(0));
-      Template template = readTemplate(workbook.getSheet(1));
+      Sheet s = workbook.getSheet(1);
+      Template template = readTemplate(s);
 
-      return addFilesToUpload(descriptions, template);
+      addFilesToUpload(descriptions, template);
     } catch (IOException ex) {
       addInfo("File error: there are problems opening file. It may be corrupted.");
-      return -1;
     } catch (BiffException ex) {
       addInfo("File error: file needs to be saved in binnary format. Please save your file in \"Excel 97-2003 format\"");
-      return -1;
     } catch (Exception ex) {
       addInfo(ex.getMessage());
-      return -1;
     }
   }
 
