@@ -24,6 +24,7 @@
 package pattypan.elements;
 
 import javafx.scene.control.TextField;
+import pattypan.Util;
 
 public class WikiTextField extends TextField {
   
@@ -33,7 +34,8 @@ public class WikiTextField extends TextField {
   }
   
   public WikiTextField setPlaceholder(String text) {
-    this.setPromptText(text);
+    String locText = Util.text(text);
+    this.setPromptText(locText.isEmpty() ? text : locText);
     return this;
   }
   

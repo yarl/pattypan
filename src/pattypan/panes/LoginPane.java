@@ -30,6 +30,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import pattypan.Session;
+import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
@@ -96,15 +97,15 @@ public class LoginPane extends WikiPane {
 
       private void setLoginSuccess() {
         setDisableForm(false);
-        loginButton.setText("Login");
+        loginButton.setText(Util.text("login-login-button"));
         nextButton.setDisable(false);
         nextButton.fire();
       }
 
       private void setLoginFailed() {
         setDisableForm(false);
-        loginButton.setText("Login");
-        loginStatus.setText("Login failed!");
+        loginButton.setText(Util.text("login-login-button"));
+        loginStatus.setText(Util.text("login-failed"));
       }
 
       @Override
@@ -132,7 +133,7 @@ public class LoginPane extends WikiPane {
     };
     
     setDisableForm(true);
-    loginButton.setText("Logging in...");
+    loginButton.setText(Util.text("login-load"));
     new Thread(task).start();
   }
 }

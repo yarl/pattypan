@@ -24,6 +24,7 @@
 package pattypan.elements;
 
 import javafx.scene.control.PasswordField;
+import pattypan.Util;
 
 public class WikiPasswordField extends PasswordField {
   
@@ -32,7 +33,8 @@ public class WikiPasswordField extends PasswordField {
   }
   
   public WikiPasswordField setPlaceholder(String text) {
-    setPromptText(text);
+    String locText = Util.text(text);
+    this.setPromptText(locText.isEmpty() ? text : locText);
     return this;
   }
   
