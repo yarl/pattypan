@@ -97,7 +97,8 @@ public class CreateFilePane extends WikiPane {
   }
   
   private void createSpreadsheet() throws IOException, BiffException, WriteException {
-    File f = new File(Session.DIRECTORY, "pattypan.xls");
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH_mm_ss");
+    File f = new File(Session.DIRECTORY, "pattypan " + sdf.format(new Date()) + ".xls");
     WritableWorkbook workbook = Workbook.createWorkbook(f);
     
     WritableSheet sheet = workbook.createSheet("Data", 0);
