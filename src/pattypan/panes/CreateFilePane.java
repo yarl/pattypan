@@ -26,9 +26,10 @@ package pattypan.panes;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.Node;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import jxl.Workbook;
@@ -61,18 +62,21 @@ public class CreateFilePane extends WikiPane {
   }
   
   private WikiPane setContent() {
-    descLabel = new WikiLabel("You will create spreadsheet with " + Session.FILES.size()
-            + " files from directory " + Session.DIRECTORY.getName() + ".").setWrapped(true);
+    descLabel = new WikiLabel(String.format(
+            "You will create spreadsheet with %s files from directory %s.",
+            Session.FILES.size(), Session.DIRECTORY.getName()
+    )).setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
     addElement(descLabel);
     
-    createButton = new WikiButton("Create", "inversed").setWidth(100);
+    createButton = new WikiButton("Create file", "primary").setWidth(200);
     createButton.setOnAction(event -> {
       try {
         createSpreadsheet();
-        addElement(new WikiLabel("Spreadsheet created."));
-        addElement(getOpenFileButton());
+        addElement(new WikiLabel("Spreadsheet created successfully."));
+        getOpenFileButton();
       } catch (IOException | BiffException | WriteException ex) {
+        addElement(new WikiLabel("Error occurred during creation of spreadsheet file!"));
         Logger.getLogger(CreateFilePane.class.getName()).log(Level.SEVERE, null, ex);
       }
     });
@@ -84,16 +88,16 @@ public class CreateFilePane extends WikiPane {
     return this;
   }
   
-  private Node getOpenFileButton() {
-    WikiButton button = new WikiButton("Open file");
-    button.setOnAction(event -> {
+  private void getOpenFileButton() {
+    nextButton.setText("Open file");
+    nextButton.setVisible(true);
+    nextButton.setOnAction(event -> {
       try {
         Desktop.getDesktop().open(Session.FILE);
       } catch (IOException ex) {
         Logger.getLogger(CreateFilePane.class.getName()).log(Level.SEVERE, null, ex);
       }
     });
-    return button;
   }
   
   private void createSpreadsheet() throws IOException, BiffException, WriteException {
