@@ -172,6 +172,7 @@ public class ChooseColumnsPane extends WikiPane {
 
   private WikiPane setContent() {
     descLabel = new WikiLabel("choose-columns-intro").setWrapped(true);
+    descLabel.setMinHeight(40);
     descLabel.setTextAlignment(TextAlignment.LEFT);
     addElement(descLabel);
 
@@ -184,7 +185,7 @@ public class ChooseColumnsPane extends WikiPane {
     );
 
     /* templates pane */
-    templateBox.getItems().addAll("choose-columns-template-artwork", "choose-columns-template-book");
+    templateBox.getItems().addAll("Artwork", "Book"); // no l10n
     templateBox.getSelectionModel().select(Session.TEMPLATE);
     addCheckboxes(Session.TEMPLATE);
 

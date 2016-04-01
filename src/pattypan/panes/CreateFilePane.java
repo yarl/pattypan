@@ -67,6 +67,8 @@ public class CreateFilePane extends WikiPane {
             Session.FILES.size(), Session.DIRECTORY.getName()
     )).setWrapped(true);
     descLabel.setTextAlignment(TextAlignment.LEFT);
+    
+    addElement(new WikiLabel("Summary").setAlign("left").setClass("header"));
     addElement(descLabel);
     
     createButton = new WikiButton("Create file", "primary").setWidth(200);

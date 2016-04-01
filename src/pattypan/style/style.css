@@ -50,6 +50,11 @@ THE SOFTWARE.
   -fx-font-weight: bold;
 }
 
+.header {
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+}
+
 .muted {
   -fx-text-fill: #aaa;
 }
