@@ -31,6 +31,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import pattypan.Util;
 
@@ -86,6 +87,29 @@ public class WikiPane extends BorderPane {
   
   public void addElement(Node element) {
     centerContainer.getChildren().add(element);
+  }
+  
+  public void addElement(String text, String cssClass, int height) {
+    WikiLabel label = new WikiLabel(text).setWrapped(true);
+    label.setTextAlignment(TextAlignment.LEFT);
+    label.setClass(cssClass);
+    
+    VBox box = new VBox();
+    box.getChildren().add(label);
+    box.setMinHeight(height);
+    addElement(box);
+  }
+  
+  public void addElement(String text, int height) {
+    addElement(text, "", height);
+  }
+  
+  public void addElement(String text, String cssClass) {
+    addElement(text, cssClass, 0);
+  }
+  
+  public void addElement(String text) {
+    addElement(text, "", 0);
   }
 
   public void addElementRow(double spacing, Node[] element, Priority[] priority) {

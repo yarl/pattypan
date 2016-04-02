@@ -33,7 +33,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import pattypan.Session;
 import pattypan.Settings;
@@ -41,14 +40,12 @@ import pattypan.Template;
 import pattypan.TemplateField;
 import pattypan.Util;
 import pattypan.elements.WikiButton;
-import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
 
 public class ChooseColumnsPane extends WikiPane {
 
   Stage stage;
 
-  WikiLabel descLabel;
   WikiButton templateButton;
   WikiButton wikicodeButton;
 
@@ -171,10 +168,7 @@ public class ChooseColumnsPane extends WikiPane {
   }
 
   private WikiPane setContent() {
-    descLabel = new WikiLabel("choose-columns-intro").setWrapped(true);
-    descLabel.setMinHeight(40);
-    descLabel.setTextAlignment(TextAlignment.LEFT);
-    addElement(descLabel);
+    addElement("choose-columns-intro", 40);
 
     /* buttons */
     templateButton = new WikiButton("choose-columns-template", "group-left").setWidth(150);

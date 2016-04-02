@@ -39,6 +39,7 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import pattypan.Session;
+import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
@@ -62,14 +63,8 @@ public class CreateFilePane extends WikiPane {
   }
   
   private WikiPane setContent() {
-    descLabel = new WikiLabel(String.format(
-            "You will create spreadsheet with %s files from directory %s.",
-            Session.FILES.size(), Session.DIRECTORY.getName()
-    )).setWrapped(true);
-    descLabel.setTextAlignment(TextAlignment.LEFT);
-    
-    addElement(new WikiLabel("Summary").setAlign("left").setClass("header"));
-    addElement(descLabel);
+    addElement("generic-summary", "header");
+    addElement(Util.text("create-file-summary", Session.FILES.size(), Session.DIRECTORY.getName()), 40);
     
     createButton = new WikiButton("Create file", "primary").setWidth(200);
     createButton.setOnAction(event -> {

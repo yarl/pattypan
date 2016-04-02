@@ -81,15 +81,19 @@ public class ChooseDirectoryPane extends WikiPane {
 
   private void getFileListByDirectory(File directory) {
     checkBoxContainer.getChildren().clear();
+    checkBoxContainer.getChildren().add(new WikiLabel("generic-summary").setClass("header"));
+    
     File[] files = Util.getFilesAllowedToUpload(directory);
     Session.FILES = new ArrayList<>(Arrays.asList(files));
     
     Map<String, Integer> filesByExt = Util.getFilesByExtention(files);
     for(Entry<String, Integer> e : filesByExt.entrySet()) {
-      CheckBox checkbox = new CheckBox("." + e.getKey() + " (" + e.getValue() + ")");
+      String text = String.format(".%s (%s files)", e.getKey(), e.getValue());
+
+      CheckBox checkbox = new CheckBox(text);
       checkbox.setSelected(true);
       checkbox.setDisable(true);
-      checkBoxContainer.getChildren().add(checkbox);
+      checkBoxContainer.getChildren().add(new WikiLabel(text));
     }
     
     if(files.length == 0) {
@@ -100,9 +104,7 @@ public class ChooseDirectoryPane extends WikiPane {
   }
 
   private BorderPane setContent() {
-    descLabel = new WikiLabel("choose-directory-intro").setWrapped(true);
-    descLabel.setTextAlignment(TextAlignment.LEFT);
-    addElement(descLabel);
+    addElement("choose-directory-intro", 40);
 
     browsePath = new WikiTextField("");
     browseButton = new WikiButton("generic-browse", "small").setWidth(100);
@@ -114,7 +116,6 @@ public class ChooseDirectoryPane extends WikiPane {
             new Priority[]{Priority.ALWAYS, Priority.NEVER}
     );
 
-    //scrollText.getStyleClass().add("mw-ui-scrollpane");
     addElement(checkBoxContainer);
     
     prevButton.linkTo("StartPane", stage);

@@ -51,6 +51,11 @@ public final class Util {
       return "";
     }
   }
+  
+  public static String text(String key, Object... vars) {
+    String text = text(key);
+    return String.format(text, vars);
+  }
 
   /* row and column utils */
   

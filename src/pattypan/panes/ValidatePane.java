@@ -81,6 +81,9 @@ public class ValidatePane extends WikiPane {
   }
 
   private void addInfo(String text) {
+    
+    
+    infoContainer.getChildren().add(new WikiLabel("Info").setAlign("left").setClass("header"));
     infoContainer.getChildren().add(new WikiLabel(text).setAlign("left"));
   }
 
