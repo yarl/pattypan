@@ -176,6 +176,10 @@ public class ValidatePane extends WikiPane {
       StringWriter writer = new StringWriter();
       template.process(description, writer);
       String wikicode = writer.getBuffer().toString();
+      
+      if(String.valueOf(wikicode.charAt(0)).equals("'")) {
+        wikicode = wikicode.substring(1);
+      }
 
       System.out.println(namePath);
       System.out.println(wikicode + '\n');

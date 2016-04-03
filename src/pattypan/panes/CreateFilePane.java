@@ -115,7 +115,9 @@ public class CreateFilePane extends WikiPane {
     }
     
     WritableSheet templateSheet = workbook.createSheet("Template", 1);
-    templateSheet.addCell(new Label(0, 0, Session.WIKICODE));
+    templateSheet.addCell(new Label(0, 0, "'" + Session.WIKICODE));
+    //                                    ^^
+    // leading apostrophe prevents turning wikitext into formula in Excel
     
     workbook.write(); 
     workbook.close();
