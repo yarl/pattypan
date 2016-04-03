@@ -64,7 +64,7 @@ public class StartPane extends GridPane {
             new WikiLabel("start-generate-description").setWidth(200),
             new WikiLabel("start-validate-description").setWidth(200)));
     
-    this.addRow(20, new WikiLabel("2016 // Pawel Marynowski \n version "+ Settings.VERSION).setClass("muted"));    
+    this.addRow(20, new WikiLabel("2016 // Pawel Marynowski \n v. "+ Settings.VERSION).setClass("muted"));    
     return this;
   }
 }

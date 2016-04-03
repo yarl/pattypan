@@ -77,6 +77,10 @@ THE SOFTWARE.
   -fx-border-color: #347bff;
 }
 
+.mw-ui-input:disabled {
+  -fx-opacity: 1.0;
+}
+
 .mw-ui-input .scroll-pane, .mw-ui-input .content {
   -fx-padding: 0;
   -fx-border-width: 0;

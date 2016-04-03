@@ -30,7 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
@@ -66,14 +65,14 @@ public class CreateFilePane extends WikiPane {
     addElement("generic-summary", "header");
     addElement(Util.text("create-file-summary", Session.FILES.size(), Session.DIRECTORY.getName()), 40);
     
-    createButton = new WikiButton("Create file", "primary").setWidth(200);
+    createButton = new WikiButton("create-file-button", "primary").setWidth(200);
     createButton.setOnAction(event -> {
       try {
         createSpreadsheet();
-        addElement(new WikiLabel("Spreadsheet created successfully."));
-        getOpenFileButton();
+        addElement(new WikiLabel("create-file-success"));
+        showOpenFileButton();
       } catch (IOException | BiffException | WriteException ex) {
-        addElement(new WikiLabel("Error occurred during creation of spreadsheet file!"));
+        addElement(new WikiLabel("create-file-error"));
         Logger.getLogger(CreateFilePane.class.getName()).log(Level.SEVERE, null, ex);
       }
     });
@@ -85,12 +84,13 @@ public class CreateFilePane extends WikiPane {
     return this;
   }
   
-  private void getOpenFileButton() {
-    nextButton.setText("Open file");
+  private void showOpenFileButton() {
+    nextButton.setText(Util.text("create-file-open"));
     nextButton.setVisible(true);
     nextButton.setOnAction(event -> {
       try {
         Desktop.getDesktop().open(Session.FILE);
+        stage.close();
       } catch (IOException ex) {
         Logger.getLogger(CreateFilePane.class.getName()).log(Level.SEVERE, null, ex);
       }

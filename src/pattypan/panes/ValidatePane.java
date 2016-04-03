@@ -34,8 +34,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
@@ -61,7 +59,6 @@ public class ValidatePane extends WikiPane {
   Stage stage;
   Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
 
-  WikiLabel descLabel;
   WikiTextField browsePath;
   WikiButton browseButton;
   VBox infoContainer = new VBox(4);
@@ -81,9 +78,6 @@ public class ValidatePane extends WikiPane {
   }
 
   private void addInfo(String text) {
-    
-    
-    infoContainer.getChildren().add(new WikiLabel("Info").setAlign("left").setClass("header"));
     infoContainer.getChildren().add(new WikiLabel(text).setAlign("left"));
   }
 
@@ -191,7 +185,8 @@ public class ValidatePane extends WikiPane {
       Session.FILES_TO_UPLOAD.add(new UploadElement(description, wikicode));
     }
     
-    addInfo(Session.FILES_TO_UPLOAD.size() + " files loaded successfully!");
+    infoContainer.getChildren().add(new WikiLabel("Summary").setAlign("left").setClass("header"));
+    addInfo(Session.FILES_TO_UPLOAD.size() + " files loaded successfully");
     addInfo(errors.size() + " errors");
     addInfo(warnings.size() + " warnings");
     
@@ -221,19 +216,17 @@ public class ValidatePane extends WikiPane {
   }
 
   private WikiPane setContent() {
-
-    descLabel = new WikiLabel("validate-intro").setWrapped(true);
-    descLabel.setTextAlignment(TextAlignment.LEFT);
-    addElement(descLabel);
-
+    addElement("validate-intro", 40);
+    
     browsePath = new WikiTextField("");
+    browsePath.setDisable(true);
     browseButton = new WikiButton("generic-browse", "small").setWidth(100);
     browseButton.setOnAction((ActionEvent e) -> {
       selectFile();
     });
     addElementRow(
-            new Node[]{browsePath, browseButton},
-            new Priority[]{Priority.ALWAYS, Priority.NEVER}
+            new Node[]{browseButton, browsePath},
+            new Priority[]{Priority.NEVER, Priority.ALWAYS}
     );
 
     addElement(new ScrollPane(infoContainer));

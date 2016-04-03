@@ -51,11 +51,15 @@ public class WikiButton extends Button {
     this.setText(locName.isEmpty() ? name : locName);
     
     for (int i = 0; i < types.length; i++) {
+      if(types[i].equals("small")) {
+        this.setMinHeight(31);
+      }
+
       types[i] = types[i].isEmpty() ? "" : "mw-ui-" + types[i];
     }
     this.getStyleClass().add("mw-ui-button");
     this.getStyleClass().addAll(types);
-
+    
     this.wrapTextProperty().setValue(true);
     this.setMaxWidth(200);
     this.setMinWidth(200);

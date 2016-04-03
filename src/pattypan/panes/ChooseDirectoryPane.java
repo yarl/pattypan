@@ -34,7 +34,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import pattypan.Session;
@@ -107,13 +106,14 @@ public class ChooseDirectoryPane extends WikiPane {
     addElement("choose-directory-intro", 40);
 
     browsePath = new WikiTextField("");
+    browsePath.setDisable(true);
     browseButton = new WikiButton("generic-browse", "small").setWidth(100);
     browseButton.setOnAction((ActionEvent e) -> {
       chooseAndSetDirectory();
     });
     addElementRow(
-            new Node[]{browsePath, browseButton},
-            new Priority[]{Priority.ALWAYS, Priority.NEVER}
+            new Node[]{browseButton, browsePath},
+            new Priority[]{Priority.NEVER, Priority.ALWAYS}
     );
 
     addElement(checkBoxContainer);
