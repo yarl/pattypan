@@ -30,9 +30,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javax.security.auth.login.LoginException;
 import pattypan.Session;
@@ -48,9 +50,8 @@ public class UploadPane extends WikiPane {
   volatile boolean stopRq = false;
   WikiLabel fakeLoger = new WikiLabel("");
 
-  WikiLabel descLabel;
-  WikiButton uploadButton = new WikiButton("Upload", "primary").setWidth(300);
-  WikiButton stopButton = new WikiButton("Stop");
+  WikiButton uploadButton = new WikiButton("upload-button", "primary").setWidth(150);
+  WikiButton stopButton = new WikiButton("upload-stop").setWidth(150);
 
   VBox infoContainer = new VBox(4);
 
@@ -75,12 +76,15 @@ public class UploadPane extends WikiPane {
   }
 
   private WikiPane setContent() {
-    descLabel = new WikiLabel("Click below to start upload.").setWrapped(true);
-    descLabel.setTextAlignment(TextAlignment.LEFT);
-    addElement(descLabel);
+    addElement("upload-intro", 40);
 
-    addElement(uploadButton);
-    addElement(stopButton);
+    stopButton.setDisable(true);
+    
+    addElementRow(
+        new Node[]{new Region(), uploadButton, stopButton, new Region()},
+        new Priority[]{Priority.ALWAYS, Priority.NEVER, Priority.NEVER, Priority.ALWAYS}
+    );
+    
     addElement(new ScrollPane(infoContainer));
 
     nextButton.setVisible(false);
@@ -90,17 +94,24 @@ public class UploadPane extends WikiPane {
   private WikiPane setActions() {
     uploadButton.setOnAction((ActionEvent e) -> {
       stopRq = false;
+      uploadButton.setDisable(true);
+      stopButton.setDisable(false);
       uploadFiles();
     });
     
     stopButton.setOnAction((ActionEvent e) -> {
-      addInfo("Upload cancelled!");
+      stopButton.setDisable(true);
+      addInfo("Upload cancel requested. No more images will be uploaded after currently uploading one.");
       stopRq = true;
     });
     
     fakeLoger.textProperty().addListener(new ChangeListener<String>() {
       @Override
       public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
+        if(newValue.equals("Upload completed.")) {
+          uploadButton.setDisable(false);
+          stopButton.setDisable(true);
+        }
         addInfo(newValue);
       }
     });
@@ -116,8 +127,10 @@ public class UploadPane extends WikiPane {
       protected Object call() {
         int i = 0;
         for (UploadElement ue : Session.FILES_TO_UPLOAD) {
+          i++;
           if (!stopRq) {
-            updateMessage("Uploading " + ue.getData("name") + "...");
+            updateMessage(String.format("[%s/%s] Uploading %s",
+                    i, Session.FILES_TO_UPLOAD.size(), ue.getData("name")));
             try {
               Session.WIKI.upload(ue.getFile(), ue.getData("name"), ue.getWikicode(), Settings.NAME + " " + Settings.VERSION);
             } catch (IOException ex) {
@@ -129,6 +142,7 @@ public class UploadPane extends WikiPane {
             }
           }
         }
+        updateMessage("Upload completed.");
         return true;
       }
     };
