@@ -41,7 +41,6 @@ public class LoginPane extends WikiPane {
 
   Stage stage;
 
-  WikiLabel descLabel;
   WikiTextField loginText = new WikiTextField("").setPlaceholder("login-login-field").setWidth(300);
   WikiPasswordField passwordText = new WikiPasswordField().setPlaceholder("login-password-field").setWidth(300);
   WikiButton loginButton = new WikiButton("login-login-button").setWidth(300);
@@ -59,9 +58,7 @@ public class LoginPane extends WikiPane {
   }
 
   private WikiPane setContent() {
-    descLabel = new WikiLabel("login-intro").setWrapped(true);
-    descLabel.setTextAlignment(TextAlignment.LEFT);
-    addElement(descLabel);
+    addElement("login-intro", 40);
 
     passwordText.setOnKeyPressed((KeyEvent event) -> {
       if (event.getCode().equals(KeyCode.ENTER)) {
