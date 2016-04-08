@@ -147,11 +147,8 @@ public class UploadPane extends WikiPane {
               }
               Session.WIKI.upload(ue.getFile(), ue.getData("name"), ue.getWikicode(), summary);
               uploaded++;
-            } catch (IOException ex) {
-              updateMessage("Upload error: " + ex.getLocalizedMessage());
-              Logger.getLogger(UploadPane.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (LoginException ex) {
-              updateMessage("Login error: " + ex.getLocalizedMessage());
+            } catch (IOException | LoginException ex) {
+              updateMessage(Util.text("upload-log-error", ex.getLocalizedMessage()));
               Logger.getLogger(UploadPane.class.getName()).log(Level.SEVERE, null, ex);
             }
           }
