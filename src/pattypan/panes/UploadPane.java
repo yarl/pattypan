@@ -41,6 +41,7 @@ import javax.security.auth.login.LoginException;
 import pattypan.Session;
 import pattypan.Settings;
 import pattypan.UploadElement;
+import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
@@ -103,14 +104,14 @@ public class UploadPane extends WikiPane {
 
     stopButton.setOnAction((ActionEvent e) -> {
       stopButton.setDisable(true);
-      addInfo("Upload cancel requested. No more images will be uploaded after currently uploading one.");
+      addInfo("upload-log-canceled");
       stopRq = true;
     });
 
     fakeLoger.textProperty().addListener(new ChangeListener<String>() {
       @Override
       public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
-        if (newValue.equals("Upload completed.")) {
+        if (newValue.contains("Upload completed")) {
           uploadButton.setDisable(false);
           stopButton.setDisable(true);
         }
@@ -155,8 +156,7 @@ public class UploadPane extends WikiPane {
             }
           }
         }
-        updateMessage(String.format("Upload completed. %s files uploaded, %s files skipped",
-                uploaded, skipped));
+        updateMessage(Util.text("upload-log-done", uploaded, skipped));
         return true;
       }
     };
