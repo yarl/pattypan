@@ -24,6 +24,7 @@
 package pattypan.panes;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.value.ChangeListener;
@@ -57,6 +58,7 @@ public class UploadPane extends WikiPane {
 
   /**
    * UploadPane constructor
+   *
    * @param stage program stage
    */
   public UploadPane(Stage stage) {
@@ -70,7 +72,7 @@ public class UploadPane extends WikiPane {
   public WikiPane getContent() {
     return this;
   }
-  
+
   private void addInfo(String text) {
     infoContainer.getChildren().add(new WikiLabel(text).setAlign("left"));
   }
@@ -79,18 +81,18 @@ public class UploadPane extends WikiPane {
     addElement("upload-intro", 40);
 
     stopButton.setDisable(true);
-    
+
     addElementRow(
-        new Node[]{new Region(), uploadButton, stopButton, new Region()},
-        new Priority[]{Priority.ALWAYS, Priority.NEVER, Priority.NEVER, Priority.ALWAYS}
+            new Node[]{new Region(), uploadButton, stopButton, new Region()},
+            new Priority[]{Priority.ALWAYS, Priority.NEVER, Priority.NEVER, Priority.ALWAYS}
     );
-    
+
     addElement(new ScrollPane(infoContainer));
 
     nextButton.setVisible(false);
     return this;
   }
-  
+
   private WikiPane setActions() {
     uploadButton.setOnAction((ActionEvent e) -> {
       stopRq = false;
@@ -98,26 +100,26 @@ public class UploadPane extends WikiPane {
       stopButton.setDisable(false);
       uploadFiles();
     });
-    
+
     stopButton.setOnAction((ActionEvent e) -> {
       stopButton.setDisable(true);
       addInfo("Upload cancel requested. No more images will be uploaded after currently uploading one.");
       stopRq = true;
     });
-    
+
     fakeLoger.textProperty().addListener(new ChangeListener<String>() {
       @Override
       public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
-        if(newValue.equals("Upload completed.")) {
+        if (newValue.equals("Upload completed.")) {
           uploadButton.setDisable(false);
           stopButton.setDisable(true);
         }
         addInfo(newValue);
       }
     });
-    
+
     prevButton.linkTo("LoginPane", stage);
-    
+
     return this;
   }
 
@@ -125,14 +127,25 @@ public class UploadPane extends WikiPane {
     Task task = new Task() {
       @Override
       protected Object call() {
+        final String summary = Settings.NAME + " " + Settings.VERSION;
+
         int i = 0;
+        int uploaded = 0;
+        int skipped = 0;
+
         for (UploadElement ue : Session.FILES_TO_UPLOAD) {
           i++;
           if (!stopRq) {
             updateMessage(String.format("[%s/%s] Uploading %s",
                     i, Session.FILES_TO_UPLOAD.size(), ue.getData("name")));
             try {
-              Session.WIKI.upload(ue.getFile(), ue.getData("name"), ue.getWikicode(), Settings.NAME + " " + Settings.VERSION);
+              Map m = Session.WIKI.getPageInfo("File:" + ue.getData("name"));
+              if ((boolean) m.get("exists")) {
+                skipped++;
+                continue;
+              }
+              Session.WIKI.upload(ue.getFile(), ue.getData("name"), ue.getWikicode(), summary);
+              uploaded++;
             } catch (IOException ex) {
               updateMessage("Upload error: " + ex.getLocalizedMessage());
               Logger.getLogger(UploadPane.class.getName()).log(Level.SEVERE, null, ex);
@@ -142,7 +155,8 @@ public class UploadPane extends WikiPane {
             }
           }
         }
-        updateMessage("Upload completed.");
+        updateMessage(String.format("Upload completed. %s files uploaded, %s files skipped",
+                uploaded, skipped));
         return true;
       }
     };
