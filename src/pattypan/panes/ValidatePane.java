@@ -23,6 +23,7 @@
  */
 package pattypan.panes;
 
+import freemarker.core.InvalidReferenceException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -34,10 +35,13 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -85,7 +89,7 @@ public class ValidatePane extends WikiPane {
    */
   private void selectFile() {
     FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(Util.text("validate-file-type"), "*.xls");
-    
+
     FileChooser fileChooser = new FileChooser();
     fileChooser.setTitle(Util.text("validate-file-select"));
     fileChooser.getExtensionFilters().add(extFilter);
@@ -128,7 +132,7 @@ public class ValidatePane extends WikiPane {
     int columns = sheet.getColumns();
 
     checkHeaders(sheet);
-    
+
     for (int row = 1; row < rows; row++) {
       Map<String, String> description = new HashMap();
       for (int column = 0; column < columns; column++) {
@@ -154,14 +158,26 @@ public class ValidatePane extends WikiPane {
 
     ArrayList<String> errors = new ArrayList<>();
     ArrayList<String> warnings = new ArrayList<>();
-    
+
     for (Map<String, String> description : descriptions) {
-      String namePath = description.get("name") + " (" + description.get("path") + ")";
+      String namePath = String.format("%s (%s)",
+              description.get("name"), description.get("path"));
+
+      if (description.get("path").isEmpty() && description.get("name").isEmpty()) {
+        continue;
+      }
       
       if (description.get("path").isEmpty() || description.get("name").isEmpty()) {
         errors.add(namePath);
         continue;
       }
+
+      File f = new File(description.get("path"));
+      if (!f.isFile()) {
+        errors.add(namePath);
+        continue;
+      }
+
       if (description.containsValue("")) {
         warnings.add(namePath);
       }
@@ -169,21 +185,21 @@ public class ValidatePane extends WikiPane {
       StringWriter writer = new StringWriter();
       template.process(description, writer);
       String wikicode = writer.getBuffer().toString();
-      
-      if(String.valueOf(wikicode.charAt(0)).equals("'")) {
+
+      if (String.valueOf(wikicode.charAt(0)).equals("'")) {
         wikicode = wikicode.substring(1);
       }
 
       System.out.println(namePath);
       System.out.println(wikicode + '\n');
-      
+
       if (wikicode.isEmpty()) {
         throw new Exception("Error: empty template!");
       }
 
       Session.FILES_TO_UPLOAD.add(new UploadElement(description, wikicode));
     }
-    
+
     infoContainer.getChildren().add(new WikiLabel("Summary").setAlign("left").setClass("header"));
     addInfo(Session.FILES_TO_UPLOAD.size() + " files loaded successfully");
     addInfo(errors.size() + " errors");
@@ -216,7 +232,7 @@ public class ValidatePane extends WikiPane {
 
   private WikiPane setContent() {
     addElement("validate-intro", 40);
-    
+
     browsePath = new WikiTextField("");
     browsePath.setDisable(true);
     browseButton = new WikiButton("generic-browse", "small").setWidth(100);
