@@ -23,9 +23,17 @@
  */
 package pattypan.panes;
 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javafx.geometry.Pos;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import pattypan.Settings;
 import pattypan.Util;
@@ -33,15 +41,15 @@ import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 
 public class StartPane extends GridPane {
-  
+
   String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
   Stage stage;
-  
+
   public StartPane(Stage stage) {
     this.stage = stage;
     createContent();
   }
-  
+
   public GridPane getContent() {
     return this;
   }
@@ -50,21 +58,35 @@ public class StartPane extends GridPane {
     this.getStylesheets().add(css);
     this.setAlignment(Pos.CENTER);
     this.setHgap(20);
-    this.setVgap(10);
+    this.setVgap(5);
     this.getStyleClass().add("background");
 
     this.getColumnConstraints().add(Util.newColumn(400, "px"));
-    
+
     this.addRow(0, new WikiLabel("pattypan").setClass("title"));
-    this.addRow(10, new HBox(20, 
+    this.addRow(1, new WikiLabel("v. " + Settings.VERSION));
+
+    this.addRow(20, new HBox(20,
             new WikiButton("start-generate-button", "primary").setWidth(200).linkTo("ChooseDirectoryPane", stage),
             new WikiButton("start-validate-button").setWidth(200).linkTo("ValidatePane", stage)));
-    
-    this.addRow(11, new HBox(20,
+
+    this.addRow(21, new HBox(20,
             new WikiLabel("start-generate-description").setWidth(200),
             new WikiLabel("start-validate-description").setWidth(200)));
-    
-    this.addRow(20, new WikiLabel("2016 // Pawel Marynowski \n v. "+ Settings.VERSION).setClass("muted"));    
+
+    this.addRow(40, new WikiLabel("2016 // Pawel Marynowski").setClass("muted"));
+
+    Hyperlink link = new Hyperlink("Report it!");
+    TextFlow flow = new TextFlow(new Text("Found bug?"), link);
+    flow.setTextAlignment(TextAlignment.CENTER);
+    link.setOnAction(event -> {
+      try {
+        Desktop.getDesktop().browse(new URI("https://github.com/yarl/pattypan/issues"));
+      } catch (IOException | URISyntaxException ex) {
+      }
+    });
+
+    this.addRow(41, flow);
     return this;
   }
 }
