@@ -225,6 +225,8 @@ public class ValidatePane extends WikiPane {
       addInfo("File error: there are problems opening file. It may be corrupted.");
     } catch (BiffException ex) {
       addInfo("File error: file needs to be saved in binnary format. Please save your file in \"Excel 97-2003 format\"");
+    } catch (InvalidReferenceException ex) {
+      addInfo("File error: variables mismatch. Column headers variables must match wikitemplate variables.");
     } catch (Exception ex) {
       addInfo(ex.getMessage());
     }
