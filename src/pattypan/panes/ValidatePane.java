@@ -204,8 +204,16 @@ public class ValidatePane extends WikiPane {
     addInfo(Session.FILES_TO_UPLOAD.size() + " files loaded successfully");
     addInfo(errors.size() + " errors");
     addInfo(warnings.size() + " warnings");
-    
-    if(Session.FILES_TO_UPLOAD.size() > 0) {
+
+    WikiButton reloadButton = new WikiButton("Reload", "inversed");
+    reloadButton.setOnAction(event -> {
+      infoContainer.getChildren().clear();
+      readSelectedFile();
+    });
+
+    infoContainer.getChildren().addAll(new Region(), new Region(), reloadButton);
+
+    if (Session.FILES_TO_UPLOAD.size() > 0) {
       nextButton.setDisable(false);
     }
   }
