@@ -61,7 +61,7 @@ public class ChooseDirectoryPane extends WikiPane {
 
   private void chooseAndSetDirectory() {
     DirectoryChooser fileChooser = new DirectoryChooser();
-    fileChooser.setTitle("choose-directory-window-name");
+    fileChooser.setTitle(Util.text("choose-directory-window-name"));
     if (Session.DIRECTORY != null) {
       fileChooser.setInitialDirectory(Session.DIRECTORY);
     }
