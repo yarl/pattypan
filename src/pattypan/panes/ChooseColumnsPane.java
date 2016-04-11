@@ -179,7 +179,8 @@ public class ChooseColumnsPane extends WikiPane {
     );
 
     /* templates pane */
-    templateBox.getItems().addAll("Artwork", "Book"); // no l10n
+    
+    templateBox.getItems().addAll(Settings.TEMPLATES.keySet().toArray());
     templateBox.getSelectionModel().select(Session.TEMPLATE);
     addCheckboxes(Session.TEMPLATE);
 
