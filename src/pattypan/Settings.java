@@ -33,13 +33,35 @@ public final class Settings {
   public static final String NAME = "pattypan";
   public static final String VERSION = "0.0.0";
   public static final String USERAGENT = NAME + "/" + VERSION + " (https://github.com/yarl/pattypan)";
-  
+
   public static int WINDOW_WIDTH = 600;
   public static int WINDOW_HEIGHT = 400;
 
   public static final Map<String, Template> TEMPLATES = new HashMap<>();
 
   static {
+    TEMPLATES.put(
+            "Information",
+            new Template("Information",
+                    new TemplateField[]{
+                      new TemplateField("description", "Description"),
+                      new TemplateField("date", "Date"),
+                      new TemplateField("source", "Source"),
+                      new TemplateField("author", "Author"),
+                      new TemplateField("permission", "Permission"),
+                      new TemplateField("other_versions", "Other versions"),
+                      new TemplateField("license", "License"),
+                    }, "=={{int:filedesc}}==\n{{Information\n"
+                    + " |description = ${description}\n"
+                    + " |date = ${date}\n"
+                    + " |source = ${source}\n"
+                    + " |author = ${author}\n"
+                    + " |permission = ${permission}\n"
+                    + " |other versions = ${other_versions}\n"
+                    + "}}\n\n"
+                    + "=={{int:license-header}}==\n${license}"
+            )
+    );
     TEMPLATES.put(
             "Artwork",
             new Template("Artwork",
