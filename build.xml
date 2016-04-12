@@ -50,4 +50,30 @@
     nbproject/build-impl.xml and nbproject/jfx-impl.xml.
 
     -->
+  <target name="package-for-store" depends="jar">
+    <property name="store.jar.name" value="pattypan"/>
+
+    <!-- don't edit below this line -->
+    <property name="store.dir" value="store"/>
+    <property name="store.jar" value="${store.dir}/${store.jar.name}.jar"/>
+
+    <echo message="Packaging ${application.title} into a single JAR at ${store.jar}"/>
+    <delete dir="${store.dir}"/>
+    <mkdir dir="${store.dir}"/>
+
+    <jar destfile="${store.dir}/temp_final.jar" filesetmanifest="skip">
+      <zipgroupfileset dir="${dist.dir}" includes="*.jar"/>
+      <zipgroupfileset dir="lib" includes="*.jar"/>
+
+      <manifest>
+        <attribute name="Main-Class" value="pattypan.Main"/>
+      </manifest>
+    </jar>
+
+    <zip destfile="${store.jar}">
+      <zipfileset src="${store.dir}/temp_final.jar"
+                  excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+    </zip>
+    <delete file="${store.dir}/temp_final.jar"/>
+  </target>
 </project>
