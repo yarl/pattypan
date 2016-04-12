@@ -99,6 +99,7 @@ public class ChooseColumnsPane extends WikiPane {
     String wikicode = t.wikicode;
    
     vars.removeAll(Session.VARIABLES);
+    vars.remove("category?trim");
     for (String var : vars) {
       wikicode = wikicode.replace("${" + var + "}", "");
     }
@@ -114,6 +115,7 @@ public class ChooseColumnsPane extends WikiPane {
         vars.add(cb.getTooltip().getText());
       }
     }
+    vars.add("categories");
 
     return vars;
   }

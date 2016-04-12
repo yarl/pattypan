@@ -59,7 +59,13 @@ public final class Settings {
                     + " |permission = ${permission}\n"
                     + " |other versions = ${other_versions}\n"
                     + "}}\n\n"
-                    + "=={{int:license-header}}==\n${license}"
+                    + "=={{int:license-header}}==\n${license}\n\n"
+                    + "<#if categories ? has_content>\n"
+                    + "<#list categories ? split(\",\") as category>\n"
+                    + "[[Category:${category?trim}]]\n"
+                    + "</#list>\n"
+                    + "<#else>{{subst:unc}}\n"
+                    + "</#if>"
             )
     );
     TEMPLATES.put(
@@ -83,7 +89,7 @@ public final class Settings {
                       new TemplateField("notes", "Notes"),
                       new TemplateField("accession_number", "Accession number"),
                       new TemplateField("place_of_creation", "Place of creation"),
-                      new TemplateField("source", "source"),
+                      new TemplateField("source", "Source"),
                       new TemplateField("permission", "Permission"),
                       new TemplateField("other_versions", "Other versions"),
                       new TemplateField("references", "References"),
@@ -113,7 +119,13 @@ public final class Settings {
                     + " |references = ${references}\n"
                     + " |wikidata = ${wikidata}\n"
                     + "}}\n\n"
-                    + "=={{int:license-header}}==\n${license}"
+                    + "=={{int:license-header}}==\n${license}\n\n"
+                    + "<#if categories ? has_content>\n"
+                    + "<#list categories ? split(\",\") as category>\n"
+                    + "[[Category:${category?trim}]]\n"
+                    + "</#list>\n"
+                    + "<#else>{{subst:unc}}\n"
+                    + "</#if>"
             ));
   }
 }
