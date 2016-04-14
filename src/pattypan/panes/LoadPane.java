@@ -35,8 +35,6 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
@@ -57,7 +55,7 @@ import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
 import pattypan.elements.WikiTextField;
 
-public class ValidatePane extends WikiPane {
+public class LoadPane extends WikiPane {
 
   Stage stage;
   Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
@@ -66,7 +64,7 @@ public class ValidatePane extends WikiPane {
   WikiButton browseButton;
   VBox infoContainer = new VBox(4);
 
-  public ValidatePane(Stage stage) {
+  public LoadPane(Stage stage) {
     super(stage, 1.01);
     this.stage = stage;
 
@@ -257,7 +255,7 @@ public class ValidatePane extends WikiPane {
     addElement(new ScrollPane(infoContainer));
 
     prevButton.linkTo("StartPane", stage);
-    nextButton.linkTo("LoginPane", stage);
+    nextButton.linkTo("CheckPane", stage);
     nextButton.setDisable(true);
 
     return this;

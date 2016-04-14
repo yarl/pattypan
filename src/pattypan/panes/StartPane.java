@@ -68,7 +68,7 @@ public class StartPane extends GridPane {
 
     this.addRow(20, new HBox(20,
             new WikiButton("start-generate-button", "primary").setWidth(200).linkTo("ChooseDirectoryPane", stage),
-            new WikiButton("start-validate-button").setWidth(200).linkTo("ValidatePane", stage)));
+            new WikiButton("start-validate-button").setWidth(200).linkTo("LoadPane", stage)));
 
     this.addRow(21, new HBox(20,
             new WikiLabel("start-generate-description").setWidth(200),
