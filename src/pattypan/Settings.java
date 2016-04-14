@@ -31,7 +31,7 @@ public final class Settings {
   private Settings() {};
   
   public static final String NAME = "pattypan";
-  public static final String VERSION = "0.0.0";
+  public static final String VERSION = "0.1.0";
   public static final String USERAGENT = NAME + "/" + VERSION + " (https://github.com/yarl/pattypan)";
 
   public static int WINDOW_WIDTH = 600;
