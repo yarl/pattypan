@@ -63,7 +63,7 @@ public class UploadPane extends WikiPane {
    * @param stage program stage
    */
   public UploadPane(Stage stage) {
-    super(stage, 1.0);
+    super(stage, 2.0);
     this.stage = stage;
 
     setContent();

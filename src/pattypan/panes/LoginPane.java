@@ -27,7 +27,6 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import pattypan.Session;
 import pattypan.Util;
@@ -47,7 +46,7 @@ public class LoginPane extends WikiPane {
   WikiLabel loginStatus = new WikiLabel("");
 
   public LoginPane(Stage stage) {
-    super(stage, 1.5);
+    super(stage, 1.67);
     this.stage = stage;
 
     setContent();

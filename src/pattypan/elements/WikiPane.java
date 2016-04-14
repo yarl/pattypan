@@ -54,6 +54,7 @@ public class WikiPane extends BorderPane {
   };
   private final String[] progressBarLabels2 = {
     Util.text("validate-name"),
+    Util.text("check-name"),
     Util.text("login-name"),
     Util.text("upload-name")
   };
