@@ -51,7 +51,8 @@ public final class Settings {
                       new TemplateField("permission", "Permission"),
                       new TemplateField("other_versions", "Other versions"),
                       new TemplateField("license", "License"),
-                    }, "=={{int:filedesc}}==\n{{Information\n"
+                    }, "=={{int:filedesc}}==\n"
+                    + "{{Information\n"
                     + " |description = ${description}\n"
                     + " |date = ${date}\n"
                     + " |source = ${source}\n"
@@ -96,7 +97,8 @@ public final class Settings {
                       new TemplateField("wikidata", "Wikidata"),
                       new TemplateField("license", "License"),
                       new TemplateField("partnership", "Partnership")
-                    }, "=={{int:filedesc}}==\n{{Artwork\n"
+                    }, "=={{int:filedesc}}==\n"
+                    + "{{Artwork\n"
                     + " |artist = ${artist}\n"
                     + " |author = ${author}\n"
                     + " |title = ${title}\n"
@@ -129,6 +131,77 @@ public final class Settings {
                     + "</#list>\n"
                     + "<#else>{{subst:unc}}\n"
                     + "</#if>"
-            ));
+            )
+    );
+    TEMPLATES.put("Photograph",
+            new Template("Photograph",
+                    new TemplateField[]{
+                      new TemplateField("photographer", "Photographer"),
+                      new TemplateField("title", "Title"),
+                      new TemplateField("description", "Description"),
+                      new TemplateField("depicted_people", "Depicted people"),
+                      new TemplateField("depicted_place", "Depicted place"),
+                      new TemplateField("date", "Date"),
+                      new TemplateField("medium", "Medium"),
+                      new TemplateField("dimensions", "Dimensions"),
+                      new TemplateField("institution", "Institution"),
+                      new TemplateField("department", "Department"),
+                      new TemplateField("references", "References"),
+                      new TemplateField("object_history", "Object history"),
+                      new TemplateField("exhibition_history", "Exhibition history"),
+                      new TemplateField("credit_line", "Credit line"),
+                      new TemplateField("inscriptions", "Inscriptions"),
+                      new TemplateField("notes", "Notes"),
+                      new TemplateField("accession_number", "Accession number"),
+                      new TemplateField("source", "Source"),
+                      new TemplateField("permission", "Permission"),
+                      new TemplateField("other_versions", "Other versions"),
+                      new TemplateField("license", "License"),
+                      new TemplateField("partnership", "Partnership")
+                    }, "=={{int:filedesc}}==\n"
+                    + "{{Photograph\n"
+                    + " |photographer = ${photographer}\n"
+                    + " |title = ${title}\n"
+                    + " |description = ${description}\n"
+                    + " |depicted people = ${depicted_people}\n"
+                    + " |depicted place = ${depicted_place}\n"
+                    + " |date = ${date}\n"
+                    + " |medium = ${medium}\n"
+                    + " |dimensions = ${dimensions}\n"
+                    + " |institution = ${institution}\n"
+                    + " |department = ${department}\n"
+                    + " |references = ${references}\n"
+                    + " |object history = ${object_history}\n"
+                    + " |exhibition history = ${exhibition_history}\n"
+                    + " |credit line = ${credit_line}\n"
+                    + " |inscriptions = ${inscriptions}\n"
+                    + " |notes = ${notes}\n"
+                    + " |accession number = ${accession_number}\n"
+                    + " |source = ${source}\n"
+                    + " |permission = ${permission}\n"
+                    + " |other_versions = ${other_versions}\n"
+                    + "}}\n\n"
+                    + "=={{int:license-header}}==\n"
+                    + "${license}${partnership}"
+                    + "\n\n"
+                    + "<#if categories ? has_content>\n"
+                    + "<#list categories ? split(\",\") as category>\n"
+                    + "[[Category:${category?trim}]]\n"
+                    + "</#list>\n"
+                    + "<#else>{{subst:unc}}\n"
+                    + "</#if>"
+            )
+    );
+    
+    /*
+    TEMPLATES.put("Name",
+            new Template("Name",
+                    new TemplateField[]{
+                      new TemplateField("", ""),
+                      new TemplateField("", ""),
+                    }, ""
+            )
+    );
+    */
   }
 }
