@@ -205,7 +205,6 @@ public class LoadPane extends WikiPane {
 
     WikiButton reloadButton = new WikiButton("Reload", "inversed");
     reloadButton.setOnAction(event -> {
-      infoContainer.getChildren().clear();
       readSelectedFile();
     });
 
@@ -217,6 +216,7 @@ public class LoadPane extends WikiPane {
   }
 
   private void readSelectedFile() {
+    infoContainer.getChildren().clear();
     try {
       WorkbookSettings ws = new WorkbookSettings();
       ws.setEncoding("Cp1252");
