@@ -95,6 +95,7 @@ public final class Settings {
                       new TemplateField("references", "References"),
                       new TemplateField("wikidata", "Wikidata"),
                       new TemplateField("license", "License"),
+                      new TemplateField("partnership", "Partnership")
                     }, "=={{int:filedesc}}==\n{{Artwork\n"
                     + " |artist = ${artist}\n"
                     + " |author = ${author}\n"
@@ -119,7 +120,9 @@ public final class Settings {
                     + " |references = ${references}\n"
                     + " |wikidata = ${wikidata}\n"
                     + "}}\n\n"
-                    + "=={{int:license-header}}==\n${license}\n\n"
+                    + "=={{int:license-header}}==\n"
+                    + "${license}${partnership}"
+                    + "\n\n"
                     + "<#if categories ? has_content>\n"
                     + "<#list categories ? split(\",\") as category>\n"
                     + "[[Category:${category?trim}]]\n"
