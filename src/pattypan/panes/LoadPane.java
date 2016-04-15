@@ -217,6 +217,8 @@ public class LoadPane extends WikiPane {
 
   private void readSelectedFile() {
     infoContainer.getChildren().clear();
+    Session.SCENES.remove("CheckPane");
+    
     try {
       WorkbookSettings ws = new WorkbookSettings();
       ws.setEncoding("Cp1252");
