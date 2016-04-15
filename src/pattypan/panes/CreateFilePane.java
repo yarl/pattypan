@@ -31,6 +31,8 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.Stage;
+import jxl.Cell;
+import jxl.CellView;
 import jxl.Workbook;
 import jxl.read.biff.BiffException;
 import jxl.write.Label;
@@ -60,11 +62,11 @@ public class CreateFilePane extends WikiPane {
   public WikiPane getContent() {
     return this;
   }
-  
+
   private WikiPane setContent() {
     addElement("generic-summary", "header");
     addElement(Util.text("create-file-summary", Session.FILES.size(), Session.DIRECTORY.getName()), 40);
-    
+
     createButton = new WikiButton("create-file-button", "primary").setWidth(200);
     createButton.setOnAction(event -> {
       try {
@@ -80,10 +82,10 @@ public class CreateFilePane extends WikiPane {
 
     prevButton.linkTo("ChooseColumnsPane", stage);
     nextButton.setVisible(false);
-    
+
     return this;
   }
-  
+
   private void showOpenFileButton() {
     nextButton.setText(Util.text("create-file-open"));
     nextButton.setVisible(true);
@@ -96,30 +98,42 @@ public class CreateFilePane extends WikiPane {
       }
     });
   }
-  
+
+  private void autoSizeColumn(int column, WritableSheet sheet) {
+    CellView cell = sheet.getColumnView(column);
+    cell.setAutosize(true);
+    sheet.setColumnView(column, cell);
+  }
+
   private void createSpreadsheet() throws IOException, BiffException, WriteException {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH_mm_ss");
     File f = new File(Session.DIRECTORY, "pattypan " + sdf.format(new Date()) + ".xls");
     WritableWorkbook workbook = Workbook.createWorkbook(f);
-    
+
     WritableSheet sheet = workbook.createSheet("Data", 0);
     int num = 0;
-    for(String var : Session.VARIABLES) {
+    for (String var : Session.VARIABLES) {
       sheet.addCell(new Label(num++, 0, var));
     }
-    
+
     num = 1;
-    for(File file : Session.FILES) {
+    for (File file : Session.FILES) {
       sheet.addCell(new Label(0, num, file.getAbsolutePath()));
       sheet.addCell(new Label(1, num++, file.getName()));
     }
-    
+
+    for (num = 0; num < sheet.getColumns(); num++) {
+      autoSizeColumn(num, sheet);
+    }
+
     WritableSheet templateSheet = workbook.createSheet("Template", 1);
     templateSheet.addCell(new Label(0, 0, "'" + Session.WIKICODE));
     //                                    ^^
     // leading apostrophe prevents turning wikitext into formula in Excel
-    
-    workbook.write(); 
+
+    autoSizeColumn(0, templateSheet);
+
+    workbook.write();
     workbook.close();
     Session.FILE = f;
   }
