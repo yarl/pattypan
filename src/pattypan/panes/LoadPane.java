@@ -188,8 +188,8 @@ public class LoadPane extends WikiPane {
         wikicode = wikicode.substring(1);
       }
 
-      System.out.println(namePath);
-      System.out.println(wikicode + '\n');
+      //System.out.println(namePath);
+      //System.out.println(wikicode + '\n');
 
       if (wikicode.isEmpty()) {
         throw new Exception("Error: empty template!");
