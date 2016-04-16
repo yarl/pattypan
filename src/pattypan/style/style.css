@@ -50,7 +50,7 @@ THE SOFTWARE.
   -fx-font-weight: bold;
 }
 
-.header {
+.header, .mw-ui-header {
   -fx-font-size: 16px;
   -fx-font-weight: bold;
 }
@@ -136,6 +136,12 @@ THE SOFTWARE.
   -fx-font-size: 13px;
   -fx-font-weight: normal;
   -fx-padding: .3em 1em .3em 1em;
+}
+
+.mw-ui-button.mw-ui-noborder {
+  -fx-padding: 0;
+  -fx-border-width: 0;
+  -fx-background-color: #fff;
 }
 
 .mw-ui-button.mw-ui-group-right {
