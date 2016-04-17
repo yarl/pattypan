@@ -23,10 +23,17 @@
  */
 package pattypan.panes;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
@@ -54,6 +61,24 @@ public class StartPane extends GridPane {
     return this;
   }
 
+  public ArrayList<String> getVersions() throws Exception {
+    ArrayList<String> versions = new ArrayList<>();
+    String json = Util.readUrl("https://api.github.com/repos/yarl/pattypan/releases");
+    
+    JsonArray releases = new JsonParser().parse(json).getAsJsonArray();
+    for(JsonElement element : releases) {
+      JsonObject release = element.getAsJsonObject();
+      boolean draft = release.get("draft").getAsBoolean();
+      boolean pre = release.get("prerelease").getAsBoolean();
+      String tag = release.get("tag_name").getAsString();
+      
+      if(!draft && !pre) {
+        versions.add(tag.contains("v") ? tag.substring(1) : tag);
+      }
+    }
+    return versions;
+  }
+  
   private GridPane createContent() {
     this.getStylesheets().add(css);
     this.setAlignment(Pos.CENTER);
@@ -86,6 +111,13 @@ public class StartPane extends GridPane {
       }
     });
 
+    try {
+      ArrayList<String> versions = getVersions();
+      System.out.println(versions.toString());
+    } catch (Exception ex) {
+      Logger.getLogger(StartPane.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
     this.addRow(41, flow);
     return this;
   }
