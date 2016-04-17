@@ -43,7 +43,7 @@ public final class Util {
   public static int WINDOW_WIDTH = 750;
   public static int WINDOW_HEIGHT = 550;
   static ResourceBundle bundle = ResourceBundle.getBundle("pattypan/text/messages");
-  
+
   public static String text(String key) {
     try {
       return bundle.getString(key);
@@ -51,42 +51,41 @@ public final class Util {
       return "";
     }
   }
-  
+
   public static String text(String key, Object... vars) {
     String text = text(key);
     return String.format(text, vars);
   }
 
   /* row and column utils */
-  
   public static ColumnConstraints newColumn(int value) {
     return newColumn(value, "%", HPos.CENTER);
   }
-  
+
   public static ColumnConstraints newColumn(int value, String unit) {
     return newColumn(value, unit, HPos.CENTER);
   }
-  
+
   public static ColumnConstraints newColumn(int value, String unit, HPos position) {
     ColumnConstraints col = new ColumnConstraints();
-    if(unit.equals("%")) {
+    if (unit.equals("%")) {
       col.setPercentWidth(value);
     }
-    if(unit.equals("px")) {
+    if (unit.equals("px")) {
       col.setMaxWidth(value);
       col.setMinWidth(value);
     }
-    
-    if(position != null) {
+
+    if (position != null) {
       col.setHalignment(position);
     }
     return col;
   }
-  
+
   /* file utils */
-  private final static ArrayList<String> allowedExtentionImage =
-          new ArrayList<>(Arrays.asList("png", "gif", "jpg", "jpeg", "tiff", "tif", "xcf"));
-  
+  private final static ArrayList<String> allowedExtentionImage
+          = new ArrayList<>(Arrays.asList("png", "gif", "jpg", "jpeg", "tiff", "tif", "xcf"));
+
   public static ArrayList<String> getVariablesFromString(String text) {
     final Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
     Matcher m = pattern.matcher(text);
@@ -97,7 +96,7 @@ public final class Util {
     }
     return results;
   }
-  
+
   public static String getExtFromFilename(String filename) {
     String extension = "";
 
@@ -107,26 +106,26 @@ public final class Util {
     }
     return extension;
   }
-   
+
   public static File[] getFilesAllowedToUpload(File directory) {
-      return directory.listFiles(new FilenameFilter() {
-        @Override
-        public boolean accept(File directory, String name) {
-          return isFileAllowedToUpload(name);
-        }
-      });
+    return directory.listFiles(new FilenameFilter() {
+      @Override
+      public boolean accept(File directory, String name) {
+        return isFileAllowedToUpload(name);
+      }
+    });
   }
-  
+
   public static File[] getFilesAllowedToUpload(File directory, String ext) {
-      return directory.listFiles((File dir, String name)
-              -> name.toLowerCase().endsWith(ext)
-      );
+    return directory.listFiles((File dir, String name)
+            -> name.toLowerCase().endsWith(ext)
+    );
   }
-  
+
   public static Map<String, Integer> getFilesByExtention(File[] files) {
     Map<String, Integer> map = new HashMap<>();
 
-    for(File file : files) {
+    for (File file : files) {
       String ext = getExtFromFilename(file.getName());
       if (map.containsKey(ext)) {
         int count = map.get(ext);
@@ -137,7 +136,7 @@ public final class Util {
     }
     return map;
   }
-  
+
   public static boolean isFileAllowedToUpload(String name) {
     return allowedExtentionImage.indexOf(getExtFromFilename(name)) > -1;
   }
