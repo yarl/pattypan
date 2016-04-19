@@ -31,6 +31,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,6 +56,7 @@ public class StartPane extends GridPane {
   public StartPane(Stage stage) {
     this.stage = stage;
     createContent();
+    checkVersion();
   }
 
   public GridPane getContent() {
@@ -77,6 +79,22 @@ public class StartPane extends GridPane {
       }
     }
     return versions;
+  }
+  
+  private void checkVersion() {
+    try {
+      ArrayList<String> versions = getVersions();
+      for (String version : versions) {
+        if (Util.versionCompare(version, Settings.VERSION) > 0) {
+          this.addRow(42, new WikiLabel("New version is available!"));
+          break;
+        }
+      }
+
+    } catch (UnknownHostException ex) {
+    } catch (Exception ex) {
+      Logger.getLogger(StartPane.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
   
   private GridPane createContent() {
@@ -110,14 +128,6 @@ public class StartPane extends GridPane {
       } catch (IOException | URISyntaxException ex) {
       }
     });
-
-    try {
-      ArrayList<String> versions = getVersions();
-      System.out.println(versions.toString());
-    } catch (Exception ex) {
-      Logger.getLogger(StartPane.class.getName()).log(Level.SEVERE, null, ex);
-    }
-    
     this.addRow(41, flow);
     return this;
   }
