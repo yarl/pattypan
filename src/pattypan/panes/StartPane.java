@@ -66,27 +66,42 @@ public class StartPane extends GridPane {
   public ArrayList<String> getVersions() throws Exception {
     ArrayList<String> versions = new ArrayList<>();
     String json = Util.readUrl("https://api.github.com/repos/yarl/pattypan/releases");
-    
+
     JsonArray releases = new JsonParser().parse(json).getAsJsonArray();
-    for(JsonElement element : releases) {
+    for (JsonElement element : releases) {
       JsonObject release = element.getAsJsonObject();
       boolean draft = release.get("draft").getAsBoolean();
       boolean pre = release.get("prerelease").getAsBoolean();
       String tag = release.get("tag_name").getAsString();
-      
-      if(!draft && !pre) {
+
+      if (!draft && !pre) {
         versions.add(tag.contains("v") ? tag.substring(1) : tag);
       }
     }
     return versions;
   }
-  
+
+  private TextFlow showUpdateAlert() {
+    Hyperlink link = new Hyperlink("Download now.");
+    TextFlow flow = new TextFlow(new Text("New version is available!"), link);
+    
+    flow.getStyleClass().add("message");
+    flow.setTextAlignment(TextAlignment.CENTER);
+    link.setOnAction(event -> {
+      try {
+        Desktop.getDesktop().browse(new URI("https://github.com/yarl/pattypan/releases"));
+      } catch (IOException | URISyntaxException ex) {
+      }
+    });
+    return flow;
+  }
+
   private void checkVersion() {
     try {
       ArrayList<String> versions = getVersions();
       for (String version : versions) {
         if (Util.versionCompare(version, Settings.VERSION) > 0) {
-          this.addRow(42, new WikiLabel("New version is available!"));
+          this.addRow(10, showUpdateAlert());
           break;
         }
       }
@@ -96,7 +111,7 @@ public class StartPane extends GridPane {
       Logger.getLogger(StartPane.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
-  
+
   private GridPane createContent() {
     this.getStylesheets().add(css);
     this.setAlignment(Pos.CENTER);

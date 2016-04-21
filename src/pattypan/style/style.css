@@ -59,6 +59,18 @@ THE SOFTWARE.
   -fx-text-fill: #aaa;
 }
 
+.bold {
+  -fx-font-weight: bold;
+}
+
+.message {
+  -fx-padding: .5em 1em .5em 1em;
+  -fx-border-width: 2px;
+  -fx-border-color: #F9C557;
+  -fx-border-insets: 0;
+  -fx-border-radius: 2px;
+}
+
 .hyperlink {
   -fx-text-fill: #347bff;
 }
