@@ -23,10 +23,18 @@
  */
 package pattypan.panes;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
@@ -48,10 +56,60 @@ public class StartPane extends GridPane {
   public StartPane(Stage stage) {
     this.stage = stage;
     createContent();
+    checkVersion();
   }
 
   public GridPane getContent() {
     return this;
+  }
+
+  public ArrayList<String> getVersions() throws Exception {
+    ArrayList<String> versions = new ArrayList<>();
+    String json = Util.readUrl("https://api.github.com/repos/yarl/pattypan/releases");
+
+    JsonArray releases = new JsonParser().parse(json).getAsJsonArray();
+    for (JsonElement element : releases) {
+      JsonObject release = element.getAsJsonObject();
+      boolean draft = release.get("draft").getAsBoolean();
+      boolean pre = release.get("prerelease").getAsBoolean();
+      String tag = release.get("tag_name").getAsString();
+
+      if (!draft && !pre) {
+        versions.add(tag.contains("v") ? tag.substring(1) : tag);
+      }
+    }
+    return versions;
+  }
+
+  private TextFlow showUpdateAlert() {
+    Hyperlink link = new Hyperlink("Download now.");
+    TextFlow flow = new TextFlow(new Text("New version is available!"), link);
+    
+    flow.getStyleClass().add("message");
+    flow.setTextAlignment(TextAlignment.CENTER);
+    link.setOnAction(event -> {
+      try {
+        Desktop.getDesktop().browse(new URI("https://github.com/yarl/pattypan/releases"));
+      } catch (IOException | URISyntaxException ex) {
+      }
+    });
+    return flow;
+  }
+
+  private void checkVersion() {
+    try {
+      ArrayList<String> versions = getVersions();
+      for (String version : versions) {
+        if (Util.versionCompare(version, Settings.VERSION) > 0) {
+          this.addRow(10, showUpdateAlert());
+          break;
+        }
+      }
+
+    } catch (UnknownHostException ex) {
+    } catch (Exception ex) {
+      Logger.getLogger(StartPane.class.getName()).log(Level.SEVERE, null, ex);
+    }
   }
 
   private GridPane createContent() {
@@ -85,7 +143,6 @@ public class StartPane extends GridPane {
       } catch (IOException | URISyntaxException ex) {
       }
     });
-
     this.addRow(41, flow);
     return this;
   }
