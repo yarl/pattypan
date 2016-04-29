@@ -52,7 +52,7 @@ public class UploadElement {
   }
   
   public String getWikicode() {
-    return wikicode;
+    return wikicode + "\n[[Category:Uploaded with pattypan]]";
   }
   
   public UploadElement setData(Map<String, String> data) {
