@@ -95,7 +95,11 @@ public class WikiButton extends Button {
       Session.SCENES.put(paneName, scene);
     }
     
+    double oldWidth = stage.getWidth();
+    double oldHeight = stage.getHeight();
     stage.setScene(scene);
+    stage.setWidth(oldWidth);
+    stage.setHeight(oldHeight);
   }
 
   public WikiButton setWidth(int width) {
