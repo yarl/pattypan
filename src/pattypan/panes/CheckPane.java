@@ -28,18 +28,22 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pattypan.Session;
 import pattypan.UploadElement;
+import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
 
 public class CheckPane extends WikiPane {
 
   Stage stage;
   VBox fileListContainer = new VBox(4);
+  VBox detailsContainer = new VBox(4);
 
   public CheckPane(Stage stage) {
     super(stage, 1.34);
@@ -52,26 +56,42 @@ public class CheckPane extends WikiPane {
     return this;
   }
 
+  private void setDetails(UploadElement ue) {
+    
+    WikiLabel title = new WikiLabel(ue.getData("name")).setClass("header");
+    Hyperlink preview = new Hyperlink("Preview");
+    WikiLabel wikitext = new WikiLabel(ue.getWikicode()).setAlign("left");
+    
+    preview.setOnAction(event -> {
+      try {
+        URI link = new URI("https://commons.wikimedia.org/wiki/Special:ExpandTemplates"
+                + "?wpRemoveComments=true"
+                + "&wpInput=" + URLEncoder.encode(ue.getWikicode(), "UTF-8")
+                + "&wpContextTitle=" + URLEncoder.encode(ue.getData("name"), "UTF-8"));
+        Desktop.getDesktop().browse(link);
+      } catch (IOException | URISyntaxException ex) {
+      }
+    });
+
+    detailsContainer.getChildren().clear();
+    detailsContainer.getChildren().addAll(title, preview, wikitext);
+  }
+  
   private WikiPane setContent() {
     addElement("check-intro", 40);
 
     for (UploadElement ue : Session.FILES_TO_UPLOAD) {
       Hyperlink label = new Hyperlink(ue.getData("name"));
       label.setOnAction(event -> {
-        try {
-          URI link = new URI("https://commons.wikimedia.org/wiki/Special:ExpandTemplates"
-                  + "?wpRemoveComments=true"
-                  + "&wpInput=" + URLEncoder.encode(ue.getWikicode(), "UTF-8")
-                  + "&wpContextTitle=" + URLEncoder.encode(ue.getData("name"), "UTF-8"));
-          Desktop.getDesktop().browse(link);
-        } catch (IOException | URISyntaxException ex) {
-        }
+        setDetails(ue);
       });
-
       fileListContainer.getChildren().add(label);
     }
-
-    addElement(new ScrollPane(fileListContainer));
+    
+    addElementRow(10,
+            new Node[]{new ScrollPane(fileListContainer), new ScrollPane(detailsContainer)},
+            new Priority[]{Priority.ALWAYS, Priority.ALWAYS}
+    );
 
     prevButton.linkTo("LoadPane", stage);
     nextButton.linkTo("LoginPane", stage);
