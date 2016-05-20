@@ -170,7 +170,10 @@ public class LoadPane extends WikiPane {
         continue;
       }
 
-      File f = new File(description.get("path"));
+      String fixedPath = description.get("path").trim()
+              .replace("/", File.separator)
+              .replace("\\", File.separator);
+      File f = new File(fixedPath);
       if (!f.isFile()) {
         errors.add(namePath);
         continue;
