@@ -29,7 +29,9 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -62,6 +64,7 @@ public class LoadPane extends WikiPane {
 
   WikiTextField browsePath;
   WikiButton browseButton;
+  WikiButton reloadButton = new WikiButton("Reload", "inversed");
   VBox infoContainer = new VBox(4);
 
   public LoadPane(Stage stage) {
@@ -72,6 +75,7 @@ public class LoadPane extends WikiPane {
     cfg.setTemplateExceptionHandler(TemplateExceptionHandler.DEBUG_HANDLER);
 
     setContent();
+    setActions();
   }
 
   public WikiPane getContent() {
@@ -205,12 +209,7 @@ public class LoadPane extends WikiPane {
     addInfo(Session.FILES_TO_UPLOAD.size() + " files loaded successfully");
     addInfo(errors.size() + " errors");
     addInfo(warnings.size() + " warnings");
-
-    WikiButton reloadButton = new WikiButton("Reload", "inversed");
-    reloadButton.setOnAction(event -> {
-      readSelectedFile();
-    });
-
+    
     infoContainer.getChildren().addAll(new Region(), new Region(), reloadButton);
 
     if (Session.FILES_TO_UPLOAD.size() > 0) {
@@ -241,8 +240,17 @@ public class LoadPane extends WikiPane {
     } catch (Exception ex) {
       addInfo(ex.getMessage());
     }
+    
+    infoContainer.getChildren().addAll(new Region(), new Region(), reloadButton);
   }
 
+  private WikiPane setActions() {
+    reloadButton.setOnAction(event -> {
+      readSelectedFile();
+    });
+    return this;
+  }
+  
   private WikiPane setContent() {
     addElement("validate-intro", 40);
 
