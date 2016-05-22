@@ -58,7 +58,7 @@ public class CheckPane extends WikiPane {
 
   private void setDetails(UploadElement ue) {
     
-    WikiLabel title = new WikiLabel(ue.getData("name")).setClass("header");
+    WikiLabel title = new WikiLabel(ue.getData("name")).setClass("header").setAlign("left");
     Hyperlink preview = new Hyperlink("Preview");
     WikiLabel wikitext = new WikiLabel(ue.getWikicode()).setAlign("left");
     
@@ -88,9 +88,14 @@ public class CheckPane extends WikiPane {
       fileListContainer.getChildren().add(label);
     }
     
+    ScrollPane s1 = new ScrollPane(fileListContainer);
+    ScrollPane s2 = new ScrollPane(detailsContainer);
+    s1.setFitToWidth(true);
+    s2.setFitToWidth(true);
+             
     addElementRow(10,
-            new Node[]{new ScrollPane(fileListContainer), new ScrollPane(detailsContainer)},
-            new Priority[]{Priority.ALWAYS, Priority.ALWAYS}
+            new Node[]{s1 ,s2},
+            new Priority[]{Priority.SOMETIMES, Priority.SOMETIMES}
     );
 
     prevButton.linkTo("LoadPane", stage);
