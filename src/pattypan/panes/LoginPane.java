@@ -74,7 +74,7 @@ public class LoginPane extends WikiPane {
     addElement(loginButton);
     addElement(loginStatus);
 
-    prevButton.linkTo("LoadPane", stage);
+    prevButton.linkTo("CheckPane", stage);
     nextButton.linkTo("UploadPane", stage).setDisable(true);
 
     return this;
