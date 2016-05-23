@@ -190,9 +190,17 @@ public class ChooseColumnsPane extends WikiPane {
     addElement(templatePane);
 
     /* wiki code pane */
+    ComboBox templateBox2 = new ComboBox();
+    templateBox2.getItems().addAll(Settings.TEMPLATES.keySet().toArray());
+    templateBox2.setOnAction((Event ev) -> {
+      String templateName = templateBox.getSelectionModel().getSelectedItem().toString();
+      Template t = Settings.TEMPLATES.get(templateName);
+      wikicodeText.setText(t.wikicode);
+    });
+    
     wikicodeText.getStyleClass().add("mw-ui-input");
     wikicodeText.setText(Session.WIKICODE);
-    wikicodePane.getChildren().addAll(wikicodeText);
+    wikicodePane.getChildren().addAll(templateBox2, wikicodeText);
     return this;
   }
 }
