@@ -29,11 +29,10 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +44,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import jxl.Cell;
+import jxl.CellType;
+import jxl.DateCell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
@@ -142,11 +144,26 @@ public class LoadPane extends WikiPane {
         if (label.isEmpty()) {
           continue;
         }
+        String value = getCellValue(sheet, column, row);
         description.put(label, value);
       }
       descriptions.add(description);
     }
     return descriptions;
+  }
+  
+  private String getCellValue(Sheet sheet, int column, int row) {
+    SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd");
+    Cell valueCell = sheet.getCell(column, row);
+    String value;
+    
+    if (valueCell.getType() == CellType.DATE) {
+      DateCell dateCell = (DateCell) valueCell;
+      value = destFormat.format(dateCell.getDate());
+    } else {
+      value = sheet.getCell(column, row).getContents().trim();
+    }
+    return value;
   }
 
   private Template readTemplate(Sheet sheet) throws IOException {
