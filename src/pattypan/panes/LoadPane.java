@@ -142,7 +142,6 @@ public class LoadPane extends WikiPane {
         if (label.isEmpty()) {
           continue;
         }
-        String value = sheet.getCell(column, row).getContents().trim();
         description.put(label, value);
       }
       descriptions.add(description);
