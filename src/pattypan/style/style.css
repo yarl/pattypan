@@ -79,7 +79,7 @@ THE SOFTWARE.
  ******************************************************************************/
 
 .mw-ui-input {
-  -fx-padding: .3em .3em .3em .6em;
+  -fx-padding: .4em .3em .4em .6em;
   -fx-border-width: 2px;
   -fx-border-color: #ccc;
   -fx-background-color: #fff;

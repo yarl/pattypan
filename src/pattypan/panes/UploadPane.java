@@ -87,7 +87,6 @@ public class UploadPane extends WikiPane {
             new Node[]{new Region(), uploadButton, stopButton, new Region()},
             new Priority[]{Priority.ALWAYS, Priority.NEVER, Priority.NEVER, Priority.ALWAYS}
     );
-
     addElement(new WikiScrollPane(infoContainer));
 
     nextButton.setVisible(false);

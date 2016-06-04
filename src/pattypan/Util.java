@@ -201,6 +201,14 @@ public final class Util {
     }
   }
 
+  /**
+   * Returns keys by value
+   * 
+   * @param map map with data
+   * @param value searched value
+   * @return list of keys that has searched value
+   * @source http://stackoverflow.com/a/2904266/1418878
+   */
   public static <T, E> Set<T> getKeysByValue(Map<T, E> map, E value) {
     return map.entrySet()
             .stream()
