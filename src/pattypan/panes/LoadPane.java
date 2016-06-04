@@ -37,9 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import javafx.event.ActionEvent;
 import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -65,9 +63,9 @@ public class LoadPane extends WikiPane {
   Stage stage;
   Configuration cfg = new Configuration(Configuration.VERSION_2_3_23);
 
-  WikiTextField browsePath;
-  WikiButton browseButton;
-  WikiButton reloadButton = new WikiButton("Reload", "inversed");
+  WikiTextField browsePath = new WikiTextField("");
+  WikiButton browseButton = new WikiButton("generic-browse", "small").setWidth(100);
+  WikiButton reloadButton = new WikiButton("", "small", "inversed").setWidth(40).setIcon("refresh.png");
   VBox infoContainer = new VBox(6);
 
   public LoadPane(Stage stage) {
@@ -141,7 +139,7 @@ public class LoadPane extends WikiPane {
     for (int row = 1; row < rows; row++) {
       Map<String, String> description = new HashMap();
       for (int column = 0; column < columns; column++) {
-        String label = sheet.getCell(column, 0).getContents();
+        String label = sheet.getCell(column, 0).getContents().trim();
         if (label.isEmpty()) {
           continue;
         }
@@ -223,7 +221,8 @@ public class LoadPane extends WikiPane {
       
       Set<String> keys = Util.getKeysByValue(description, "");
       if (keys.size() > 0) {
-        warnings.add(namePath + ": empty values for " + keys.toString());
+        String values = keys.toString();
+        warnings.add(namePath + ": empty values for " + values.substring(1, values.length() - 2));
       }
 
       StringWriter writer = new StringWriter();
@@ -284,10 +283,13 @@ public class LoadPane extends WikiPane {
       addInfo(ex.getMessage());
     }
     
-    reloadButton.setVisible(true);
+    reloadButton.setDisable(false);
   }
 
   private WikiPane setActions() {
+    browseButton.setOnAction(event -> {
+      selectFile();
+    });
     reloadButton.setOnAction(event -> {
       readSelectedFile();
     });
@@ -297,20 +299,14 @@ public class LoadPane extends WikiPane {
   private WikiPane setContent() {
     addElement("validate-intro", 40);
 
-    browsePath = new WikiTextField("");
     browsePath.setDisable(true);
-    browseButton = new WikiButton("generic-browse", "small").setWidth(100);
-    browseButton.setOnAction((ActionEvent e) -> {
-      selectFile();
-    });
+    reloadButton.setDisable(true);
+    
     addElementRow(
-            new Node[]{browseButton, browsePath},
-            new Priority[]{Priority.NEVER, Priority.ALWAYS}
+            new Node[]{browseButton, browsePath, reloadButton},
+            new Priority[]{Priority.NEVER, Priority.ALWAYS, Priority.NEVER}
     );
-
     addElement(new WikiScrollPane(infoContainer));
-    addElement(reloadButton);
-    reloadButton.setVisible(false);
 
     prevButton.linkTo("StartPane", stage);
     nextButton.linkTo("CheckPane", stage);

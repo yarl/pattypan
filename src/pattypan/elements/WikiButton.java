@@ -31,6 +31,8 @@ import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import pattypan.Session;
@@ -100,6 +102,14 @@ public class WikiButton extends Button {
     stage.setScene(scene);
     stage.setWidth(oldWidth);
     stage.setHeight(oldHeight);
+  }
+  
+  public WikiButton setIcon(String name) {
+    Image image = new Image(getClass().getResourceAsStream("/pattypan/resources/" + name));
+    ImageView iv = new ImageView(image);
+
+    this.setGraphic(iv);
+    return this;
   }
 
   public WikiButton setWidth(int width) {
