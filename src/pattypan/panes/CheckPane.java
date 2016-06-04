@@ -30,7 +30,6 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -38,6 +37,7 @@ import pattypan.Session;
 import pattypan.UploadElement;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
+import pattypan.elements.WikiScrollPane;
 
 public class CheckPane extends WikiPane {
 
@@ -80,21 +80,18 @@ public class CheckPane extends WikiPane {
   private WikiPane setContent() {
     addElement("check-intro", 40);
 
-    for (UploadElement ue : Session.FILES_TO_UPLOAD) {
-      Hyperlink label = new Hyperlink(ue.getData("name"));
+    Session.FILES_TO_UPLOAD.stream().map(uploadElement -> {
+      Hyperlink label = new Hyperlink(uploadElement.getData("name"));
       label.setOnAction(event -> {
-        setDetails(ue);
+        setDetails(uploadElement);
       });
+      return label;
+    }).forEach(label -> {
       fileListContainer.getChildren().add(label);
-    }
-    
-    ScrollPane s1 = new ScrollPane(fileListContainer);
-    ScrollPane s2 = new ScrollPane(detailsContainer);
-    s1.setFitToWidth(true);
-    s2.setFitToWidth(true);
-             
+    });
+       
     addElementRow(10,
-            new Node[]{s1 ,s2},
+            new Node[]{new WikiScrollPane(fileListContainer), new WikiScrollPane(detailsContainer)},
             new Priority[]{Priority.SOMETIMES, Priority.SOMETIMES}
     );
 

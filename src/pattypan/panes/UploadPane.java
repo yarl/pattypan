@@ -32,7 +32,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -45,6 +44,7 @@ import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
+import pattypan.elements.WikiScrollPane;
 
 public class UploadPane extends WikiPane {
 
@@ -88,7 +88,7 @@ public class UploadPane extends WikiPane {
             new Priority[]{Priority.ALWAYS, Priority.NEVER, Priority.NEVER, Priority.ALWAYS}
     );
 
-    addElement(new ScrollPane(infoContainer));
+    addElement(new WikiScrollPane(infoContainer));
 
     nextButton.setVisible(false);
     return this;

@@ -29,7 +29,6 @@ import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -41,6 +40,7 @@ import pattypan.TemplateField;
 import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiPane;
+import pattypan.elements.WikiScrollPane;
 
 public class ChooseColumnsPane extends WikiPane {
 
@@ -186,7 +186,7 @@ public class ChooseColumnsPane extends WikiPane {
     templateBox.getSelectionModel().select(Session.TEMPLATE);
     addCheckboxes(Session.TEMPLATE);
 
-    templatePane.getChildren().addAll(templateBox, new ScrollPane(templateCheckboxContainer));
+    templatePane.getChildren().addAll(templateBox, new WikiScrollPane(templateCheckboxContainer));
     addElement(templatePane);
 
     /* wiki code pane */

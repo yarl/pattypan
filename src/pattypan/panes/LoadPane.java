@@ -57,6 +57,7 @@ import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
+import pattypan.elements.WikiScrollPane;
 import pattypan.elements.WikiTextField;
 
 public class LoadPane extends WikiPane {
@@ -307,7 +308,7 @@ public class LoadPane extends WikiPane {
             new Priority[]{Priority.NEVER, Priority.ALWAYS}
     );
 
-    addElement(new ScrollPane(infoContainer));
+    addElement(new WikiScrollPane(infoContainer));
     addElement(reloadButton);
     reloadButton.setVisible(false);
 
