@@ -33,9 +33,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.MissingResourceException;
+import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import javafx.geometry.HPos;
 import javafx.scene.layout.ColumnConstraints;
 
@@ -196,5 +199,13 @@ public final class Util {
     else {
       return Integer.signum(vals1.length - vals2.length);
     }
+  }
+
+  public static <T, E> Set<T> getKeysByValue(Map<T, E> map, E value) {
+    return map.entrySet()
+            .stream()
+            .filter(entry -> Objects.equals(entry.getValue(), value))
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toSet());
   }
 }

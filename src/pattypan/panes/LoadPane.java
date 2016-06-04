@@ -36,11 +36,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -67,7 +67,7 @@ public class LoadPane extends WikiPane {
   WikiTextField browsePath;
   WikiButton browseButton;
   WikiButton reloadButton = new WikiButton("Reload", "inversed");
-  VBox infoContainer = new VBox(4);
+  VBox infoContainer = new VBox(6);
 
   public LoadPane(Stage stage) {
     super(stage, 1.01);
@@ -152,6 +152,14 @@ public class LoadPane extends WikiPane {
     return descriptions;
   }
   
+  /**
+   * Get value of cell
+   * 
+   * @param sheet sheet with data
+   * @param column number of column
+   * @param row number of cell
+   * @return string with data in cell
+   */
   private String getCellValue(Sheet sheet, int column, int row) {
     SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd");
     Cell valueCell = sheet.getCell(column, row);
@@ -185,22 +193,36 @@ public class LoadPane extends WikiPane {
         continue;
       }
       
-      if (description.get("path").isEmpty() || description.get("name").isEmpty()) {
-        errors.add(namePath);
-        continue;
+      boolean hasError = false;
+      if (description.get("path").isEmpty()) {
+        hasError = true;
+        errors.add(namePath + ": empty path");
+      }
+      if (description.get("name").isEmpty()) {
+        hasError = true;
+        errors.add(namePath + ": empty name");
       }
 
+      if(hasError) {
+        continue;
+      }
+      
       String fixedPath = description.get("path").trim()
               .replace("/", File.separator)
               .replace("\\", File.separator);
       File f = new File(fixedPath);
       if (!f.isFile()) {
-        errors.add(namePath);
+        errors.add(namePath + ": file not found");
+        hasError = true;
+      }
+      
+      if(hasError) {
         continue;
       }
-
-      if (description.containsValue("")) {
-        warnings.add(namePath);
+      
+      Set<String> keys = Util.getKeysByValue(description, "");
+      if (keys.size() > 0) {
+        warnings.add(namePath + ": empty values for " + keys.toString());
       }
 
       StringWriter writer = new StringWriter();
@@ -224,9 +246,13 @@ public class LoadPane extends WikiPane {
     infoContainer.getChildren().add(new WikiLabel("Summary").setAlign("left").setClass("header"));
     addInfo(Session.FILES_TO_UPLOAD.size() + " files loaded successfully");
     addInfo(errors.size() + " errors");
+    errors.stream().forEach((error) -> {
+      addInfo("\t" + error);
+    });
     addInfo(warnings.size() + " warnings");
-    
-    infoContainer.getChildren().addAll(new Region(), new Region(), reloadButton);
+    warnings.stream().forEach((warning) -> {
+      addInfo("\t" + warning);
+    });
 
     if (Session.FILES_TO_UPLOAD.size() > 0) {
       nextButton.setDisable(false);
@@ -257,7 +283,7 @@ public class LoadPane extends WikiPane {
       addInfo(ex.getMessage());
     }
     
-    infoContainer.getChildren().addAll(new Region(), new Region(), reloadButton);
+    reloadButton.setVisible(true);
   }
 
   private WikiPane setActions() {
@@ -282,6 +308,8 @@ public class LoadPane extends WikiPane {
     );
 
     addElement(new ScrollPane(infoContainer));
+    addElement(reloadButton);
+    reloadButton.setVisible(false);
 
     prevButton.linkTo("StartPane", stage);
     nextButton.linkTo("CheckPane", stage);
