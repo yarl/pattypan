@@ -84,7 +84,11 @@ public class LoadPane extends WikiPane {
   }
 
   private void addInfo(String text) {
-    infoContainer.getChildren().add(new WikiLabel(text).setAlign("left"));
+    addInfo(text, "");
+  }
+  
+  private void addInfo(String text, String cssClass) {
+    infoContainer.getChildren().add(new WikiLabel(text).setAlign("left").setClass(cssClass));
   }
 
   /**
@@ -245,13 +249,13 @@ public class LoadPane extends WikiPane {
 
     infoContainer.getChildren().add(new WikiLabel("Summary").setAlign("left").setClass("header"));
     addInfo(Session.FILES_TO_UPLOAD.size() + " files loaded successfully");
-    addInfo(errors.size() + " errors");
+    addInfo(errors.size() + " errors", "bold");
     errors.stream().forEach((error) -> {
-      addInfo("\t" + error);
+      addInfo(error);
     });
-    addInfo(warnings.size() + " warnings");
+    addInfo(warnings.size() + " warnings", "bold");
     warnings.stream().forEach((warning) -> {
-      addInfo("\t" + warning);
+      addInfo(warning);
     });
 
     if (Session.FILES_TO_UPLOAD.size() > 0) {
