@@ -1,3 +1,5 @@
+![Logo](https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Pattypan.svg/150px-Pattypan.svg.png)
+
 ### pattypan
 
 Tool that will enable the volunteer or employee working in a GLAM institution to simplify choosing and uploading selected files to [Wikimedia Commons](https://commons.wikimedia.org/). Created thanks to Wikimedia Foundation [IEG Grant](https://meta.wikimedia.org/wiki/Grants:IEG/Batch_uploader_for_small_GLAM_projects).
@@ -14,6 +16,6 @@ Source code is available under the [MIT License](https://github.com/yarl/pattypa
 * [wiki-java](https://github.com/MER-C/wiki-java)
 
 #### Credits
-Name by Wojciech Pędzich.
+Name by Wojciech Pędzich. Logo by [Rickterto](//commons.wikimedia.org/wiki/User:Rickterto), licensed under the Creative Commons [BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.en) license.
 
 
