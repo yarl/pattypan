@@ -26,7 +26,7 @@ package pattypan;
 import java.io.File;
 import java.util.Map;
 
-public class UploadElement {
+public final class UploadElement {
 
   private Map<String, String> data;
   private String wikicode;
@@ -35,10 +35,19 @@ public class UploadElement {
   }
 
   public UploadElement(Map<String, String> data, String wikicode) {
-    this.data = data;
-    this.wikicode = wikicode;
+    setData(data);
+    setWikicode(wikicode);
   }
 
+  private void addNameExtention() {
+    String pathExt = Util.getExtFromFilename(getData("path"));
+    String nameExt = Util.getExtFromFilename(getData("name"));
+    
+    if(!pathExt.equals(nameExt)) {
+      setData("name", getData("name") + "." + pathExt);
+    }
+  }
+  
   public Map<String, String> getData() {
     return data;
   }
@@ -57,6 +66,12 @@ public class UploadElement {
   
   public UploadElement setData(Map<String, String> data) {
     this.data = data;
+    addNameExtention();
+    return this;
+  }
+  
+  public UploadElement setData(String key, String data) {
+    this.data.put(key, data);
     return this;
   }
 

@@ -118,7 +118,7 @@ public class CreateFilePane extends WikiPane {
     num = 1;
     for (File file : Session.FILES) {
       sheet.addCell(new Label(0, num, file.getAbsolutePath()));
-      sheet.addCell(new Label(1, num++, file.getName()));
+      sheet.addCell(new Label(1, num++, Util.getNameFromFilename(file.getName())));
     }
 
     for (num = 0; num < sheet.getColumns(); num++) {

@@ -103,6 +103,14 @@ public final class Util {
     return results;
   }
 
+  public static String getNameFromFilename(String filename) {
+    int pos = filename.lastIndexOf(".");
+    if (pos > 0) {
+      filename = filename.substring(0, pos);
+    }
+    return filename;
+  }
+  
   public static String getExtFromFilename(String filename) {
     String extension = "";
 
