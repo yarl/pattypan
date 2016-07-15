@@ -25,6 +25,7 @@ package pattypan;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import pattypan.panes.StartPane;
 
@@ -32,9 +33,12 @@ public class Main extends Application {
   
   @Override
   public void start(Stage stage) {
+    Image logo = new Image(getClass().getResourceAsStream("/pattypan/resources/logo.png"));
+    
     Scene scene = new Scene(new StartPane(stage), Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
     stage.setResizable(true);
     stage.setTitle("pattypan");
+    stage.getIcons().add(logo);
     stage.setScene(scene);
     stage.show();
   }
