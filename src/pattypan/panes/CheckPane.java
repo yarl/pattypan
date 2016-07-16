@@ -94,6 +94,8 @@ public class CheckPane extends WikiPane {
             new Node[]{new WikiScrollPane(fileListContainer), new WikiScrollPane(detailsContainer)},
             new Priority[]{Priority.SOMETIMES, Priority.SOMETIMES}
     );
+    
+    setDetails(Session.FILES_TO_UPLOAD.get(0));
 
     prevButton.linkTo("LoadPane", stage);
     nextButton.linkTo("LoginPane", stage);

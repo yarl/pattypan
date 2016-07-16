@@ -75,6 +75,10 @@ THE SOFTWARE.
   -fx-text-fill: #347bff;
 }
 
+.hyperlink:visited {
+    -fx-underline: false;
+}
+
 /* INPUT
  ******************************************************************************/
 
