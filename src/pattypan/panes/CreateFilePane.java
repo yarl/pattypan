@@ -43,19 +43,22 @@ import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
+import pattypan.elements.WikiTextField;
 
 public class CreateFilePane extends WikiPane {
 
   Stage stage;
 
   WikiLabel descLabel;
-  WikiButton createButton;
+  WikiTextField fileName = new WikiTextField("").setPlaceholder("create-file-filename").setWidth(300);
+  WikiButton createButton = new WikiButton("create-file-button", "primary").setWidth(300);
 
   public CreateFilePane(Stage stage) {
     super(stage, 1.0);
     this.stage = stage;
 
     setContent();
+    setActions();
   }
 
   public WikiPane getContent() {
@@ -65,8 +68,23 @@ public class CreateFilePane extends WikiPane {
   private WikiPane setContent() {
     addElement("generic-summary", "header");
     addElement(Util.text("create-file-summary", Session.FILES.size(), Session.DIRECTORY.getName()), 40);
+    addElement(fileName);
+    addElement(createButton);
 
-    createButton = new WikiButton("create-file-button", "primary").setWidth(200);
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH_mm_ss");
+    fileName.setText("pattypan " + sdf.format(new Date()));
+
+    prevButton.linkTo("ChooseColumnsPane", stage);
+    nextButton.setVisible(false);
+
+    return this;
+  }
+
+  private WikiPane setActions() {
+    fileName.textProperty().addListener((observable, oldValue, newValue) -> {
+      createButton.setDisable(newValue.isEmpty());
+    });
+
     createButton.setOnAction(event -> {
       try {
         createSpreadsheet();
@@ -77,10 +95,6 @@ public class CreateFilePane extends WikiPane {
         Logger.getLogger(CreateFilePane.class.getName()).log(Level.SEVERE, null, ex);
       }
     });
-    addElement(createButton);
-
-    prevButton.linkTo("ChooseColumnsPane", stage);
-    nextButton.setVisible(false);
 
     return this;
   }
@@ -105,8 +119,7 @@ public class CreateFilePane extends WikiPane {
   }
 
   private void createSpreadsheet() throws IOException, BiffException, WriteException {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH_mm_ss");
-    File f = new File(Session.DIRECTORY, "pattypan " + sdf.format(new Date()) + ".xls");
+    File f = new File(Session.DIRECTORY, fileName.getText() + ".xls");
     WritableWorkbook workbook = Workbook.createWorkbook(f);
 
     WritableSheet sheet = workbook.createSheet("Data", 0);
