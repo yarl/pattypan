@@ -37,7 +37,6 @@ import pattypan.Session;
 import pattypan.Settings;
 import pattypan.Template;
 import pattypan.TemplateField;
-import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiPane;
 import pattypan.elements.WikiScrollPane;
@@ -122,7 +121,7 @@ public class ChooseColumnsPane extends WikiPane {
   
   private ArrayList<String> getWikicodeVariables() {
     ArrayList<String> vars = new ArrayList<>(Arrays.asList("path", "name"));
-    vars.addAll(Util.getVariablesFromString(wikicodeText.getText()));
+    vars.addAll(Template.getTemplateVariables(wikicodeText.getText()));
     
     return vars;
   }

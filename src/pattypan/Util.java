@@ -92,17 +92,6 @@ public final class Util {
   private final static ArrayList<String> allowedExtentionImage
           = new ArrayList<>(Arrays.asList("png", "gif", "jpg", "jpeg", "tiff", "tif", "xcf"));
 
-  public static ArrayList<String> getVariablesFromString(String text) {
-    final Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
-    Matcher m = pattern.matcher(text);
-    ArrayList<String> results = new ArrayList<>();
-
-    while (m.find()) {
-      results.add(m.group(1));
-    }
-    return results;
-  }
-
   public static String getNameFromFilename(String filename) {
     int pos = filename.lastIndexOf(".");
     if (pos > 0) {
