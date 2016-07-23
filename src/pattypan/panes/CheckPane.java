@@ -30,6 +30,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -81,7 +82,10 @@ public class CheckPane extends WikiPane {
     addElement("check-intro", 40);
 
     Session.FILES_TO_UPLOAD.stream().map(uploadElement -> {
-      Hyperlink label = new Hyperlink(uploadElement.getData("name"));
+      String name = uploadElement.getData("name"); 
+      Hyperlink label = new Hyperlink(name);
+      
+      label.setTooltip(new Tooltip(name));
       label.setOnAction(event -> {
         setDetails(uploadElement);
       });
@@ -91,7 +95,7 @@ public class CheckPane extends WikiPane {
     });
        
     addElementRow(10,
-            new Node[]{new WikiScrollPane(fileListContainer), new WikiScrollPane(detailsContainer)},
+            new Node[]{new WikiScrollPane(fileListContainer).setWidth(250), new WikiScrollPane(detailsContainer)},
             new Priority[]{Priority.SOMETIMES, Priority.SOMETIMES}
     );
     

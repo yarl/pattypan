@@ -33,4 +33,9 @@ public class WikiScrollPane extends ScrollPane {
     this.setContent(content);
   }
   
+  public WikiScrollPane setWidth(int width) {
+    this.setMaxWidth(width);
+    this.setMinWidth(width);
+    return this;
+  }
 }
