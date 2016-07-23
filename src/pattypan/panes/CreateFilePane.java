@@ -23,13 +23,21 @@
  */
 package pattypan.panes;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifSubIFDDirectory;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.CheckBox;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import jxl.CellView;
 import jxl.Workbook;
@@ -52,7 +60,8 @@ public class CreateFilePane extends WikiPane {
   WikiLabel descLabel;
   WikiTextField fileName = new WikiTextField("").setPlaceholder("create-file-filename").setWidth(300);
   WikiButton createButton = new WikiButton("create-file-button", "primary").setWidth(300);
-
+  CheckBox dateExifCheckbox = new CheckBox("Preload date from Exif");
+  
   public CreateFilePane(Stage stage) {
     super(stage, 1.0);
     this.stage = stage;
@@ -69,6 +78,8 @@ public class CreateFilePane extends WikiPane {
     addElement("generic-summary", "header");
     addElement(Util.text("create-file-summary", Session.FILES.size(), Session.DIRECTORY.getName()), 40);
     addElement(fileName);
+    addElement(dateExifCheckbox);
+    addElement(new Region());
     addElement(createButton);
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH_mm_ss");
@@ -121,32 +132,83 @@ public class CreateFilePane extends WikiPane {
   private void createSpreadsheet() throws IOException, BiffException, WriteException {
     File f = new File(Session.DIRECTORY, fileName.getText() + ".xls");
     WritableWorkbook workbook = Workbook.createWorkbook(f);
+    
+    createDataSheet(workbook);
+    createTemplateSheet(workbook);
+    
+    workbook.write();
+    workbook.close();
+    Session.FILE = f;
+  }
 
+  /**
+   * 
+   * @param workbook
+   * @throws WriteException 
+   */
+  private void createDataSheet(WritableWorkbook workbook) throws WriteException {
     WritableSheet sheet = workbook.createSheet("Data", 0);
-    int num = 0;
-    for (String var : Session.VARIABLES) {
-      sheet.addCell(new Label(num++, 0, var));
+
+    // first row (header)
+    int column = 0;
+    for (String variable : Session.VARIABLES) {
+      sheet.addCell(new Label(column++, 0, variable));
     }
 
-    num = 1;
+    // next rows with path and name
+    int row = 1;
     for (File file : Session.FILES) {
-      sheet.addCell(new Label(0, num, file.getAbsolutePath()));
-      sheet.addCell(new Label(1, num++, Util.getNameFromFilename(file.getName())));
+      sheet.addCell(new Label(0, row, file.getAbsolutePath()));
+      sheet.addCell(new Label(1, row++, Util.getNameFromFilename(file.getName())));
     }
-
-    for (num = 0; num < sheet.getColumns(); num++) {
+    
+    column = Session.VARIABLES.indexOf("date");
+    if(column >= 0) {
+      row = 1;
+      for (File file : Session.FILES) {
+        sheet.addCell(new Label(column, row++, getExifDate(file)));
+      }
+    }
+    
+    for (int num = 0; num < sheet.getColumns(); num++) {
       autoSizeColumn(num, sheet);
     }
-
+  }
+  
+  /**
+   * 
+   * @param workbook
+   * @throws WriteException 
+   */
+  private void createTemplateSheet(WritableWorkbook workbook) throws WriteException {
     WritableSheet templateSheet = workbook.createSheet("Template", 1);
     templateSheet.addCell(new Label(0, 0, "'" + Session.WIKICODE));
     //                                    ^^
     // leading apostrophe prevents turning wikitext into formula in Excel
 
     autoSizeColumn(0, templateSheet);
-
-    workbook.write();
-    workbook.close();
-    Session.FILE = f;
+  }
+  
+  /**
+   * 
+   * @param filePath
+   * @return 
+   */
+  private String getExifDate(File file) {
+    try {
+      Metadata metadata = ImageMetadataReader.readMetadata(file);
+      Directory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+      int dateTag = ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL;
+      
+      if (directory != null && directory.containsTag(dateTag)) {
+        Date date = directory.getDate(dateTag, TimeZone.getDefault());
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(date);
+      } else {
+        return "";
+      }
+    } catch (ImageProcessingException | IOException ex) {
+      Logger.getLogger(CreateFilePane.class.getName()).log(Level.SEVERE, null, ex);
+      return "";
+    }
   }
 }
