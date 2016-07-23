@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import javafx.scene.Node;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -164,13 +165,20 @@ public class LoadPane extends WikiPane {
    * @return string with data in cell
    */
   private String getCellValue(Sheet sheet, int column, int row) {
-    SimpleDateFormat destFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat formatDate = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat formatDateHour = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    formatDate.setTimeZone(TimeZone.getTimeZone("UTC"));
+    formatDateHour.setTimeZone(TimeZone.getTimeZone("UTC"));
+    
     Cell valueCell = sheet.getCell(column, row);
     String value;
     
     if (valueCell.getType() == CellType.DATE) {
       DateCell dateCell = (DateCell) valueCell;
-      value = destFormat.format(dateCell.getDate());
+      //@TODO: more elegant hour detection
+      value = dateCell.getContents().contains(":")
+              ? formatDateHour.format(dateCell.getDate())
+              : formatDate.format(dateCell.getDate());
     } else {
       value = sheet.getCell(column, row).getContents().trim();
     }
