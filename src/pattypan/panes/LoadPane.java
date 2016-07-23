@@ -87,7 +87,7 @@ public class LoadPane extends WikiPane {
   private void addInfo(String text) {
     addInfo(text, "");
   }
-  
+
   private void addInfo(String text, String cssClass) {
     infoContainer.getChildren().add(new WikiLabel(text).setAlign("left").setClass(cssClass));
   }
@@ -134,6 +134,12 @@ public class LoadPane extends WikiPane {
     }
   }
 
+  /**
+   * 
+   * @param sheet
+   * @return
+   * @throws Exception 
+   */
   private ArrayList<Map<String, String>> readDescriptions(Sheet sheet) throws Exception {
     ArrayList<Map<String, String>> descriptions = new ArrayList<>();
     int rows = sheet.getRows();
@@ -155,10 +161,10 @@ public class LoadPane extends WikiPane {
     }
     return descriptions;
   }
-  
+
   /**
    * Get value of cell
-   * 
+   *
    * @param sheet sheet with data
    * @param column number of column
    * @param row number of cell
@@ -172,7 +178,7 @@ public class LoadPane extends WikiPane {
     
     Cell valueCell = sheet.getCell(column, row);
     String value;
-    
+
     if (valueCell.getType() == CellType.DATE) {
       DateCell dateCell = (DateCell) valueCell;
       //@TODO: more elegant hour detection
@@ -185,11 +191,25 @@ public class LoadPane extends WikiPane {
     return value;
   }
 
+  /**
+   * 
+   * @param sheet
+   * @return
+   * @throws IOException 
+   */
   private Template readTemplate(Sheet sheet) throws IOException {
     String text = sheet.getCell(0, 0).getContents();
     return new Template("wikitemplate", new StringReader(text), cfg);
   }
 
+  /**
+   * 
+   * @param descriptions
+   * @param template
+   * @throws TemplateException
+   * @throws IOException
+   * @throws Exception 
+   */
   private void addFilesToUpload(ArrayList<Map<String, String>> descriptions, Template template) throws TemplateException, IOException, Exception {
     Session.FILES_TO_UPLOAD = new ArrayList<>();
 
@@ -203,7 +223,7 @@ public class LoadPane extends WikiPane {
       if (description.get("path").isEmpty() && description.get("name").isEmpty()) {
         continue;
       }
-      
+
       boolean hasError = false;
       if (description.get("path").isEmpty()) {
         hasError = true;
@@ -214,10 +234,10 @@ public class LoadPane extends WikiPane {
         errors.add(namePath + ": empty name");
       }
 
-      if(hasError) {
+      if (hasError) {
         continue;
       }
-      
+
       String fixedPath = description.get("path").trim()
               .replace("/", File.separator)
               .replace("\\", File.separator);
@@ -226,11 +246,11 @@ public class LoadPane extends WikiPane {
         errors.add(namePath + ": file not found");
         hasError = true;
       }
-      
-      if(hasError) {
+
+      if (hasError) {
         continue;
       }
-      
+
       Set<String> keys = Util.getKeysByValue(description, "");
       if (keys.size() > 0) {
         String values = keys.toString();
@@ -247,7 +267,6 @@ public class LoadPane extends WikiPane {
 
       //System.out.println(namePath);
       //System.out.println(wikicode + '\n');
-
       if (wikicode.isEmpty()) {
         throw new Exception("Error: empty template!");
       }
@@ -274,7 +293,7 @@ public class LoadPane extends WikiPane {
   private void readSelectedFile() {
     infoContainer.getChildren().clear();
     Session.SCENES.remove("CheckPane");
-    
+
     try {
       WorkbookSettings ws = new WorkbookSettings();
       ws.setEncoding("Cp1252");
@@ -294,7 +313,7 @@ public class LoadPane extends WikiPane {
     } catch (Exception ex) {
       addInfo(ex.getMessage());
     }
-    
+
     reloadButton.setDisable(false);
   }
 
@@ -307,13 +326,13 @@ public class LoadPane extends WikiPane {
     });
     return this;
   }
-  
+
   private WikiPane setContent() {
     addElement("validate-intro", 40);
 
     browsePath.setDisable(true);
     reloadButton.setDisable(true);
-    
+
     addElementRow(
             new Node[]{browseButton, browsePath, reloadButton},
             new Priority[]{Priority.NEVER, Priority.ALWAYS, Priority.NEVER}
