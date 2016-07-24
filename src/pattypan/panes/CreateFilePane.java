@@ -179,7 +179,7 @@ public class CreateFilePane extends WikiPane {
     }
     
     column = Session.VARIABLES.indexOf("date");
-    if(column >= 0) {
+    if(column >= 0 && dateExifCheckbox.isSelected()) {
       row = 1;
       for (File file : Session.FILES) {
         sheet.addCell(new Label(column, row++, getExifDate(file)));
