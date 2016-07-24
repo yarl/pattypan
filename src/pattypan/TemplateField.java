@@ -23,34 +23,86 @@
  */
 package pattypan;
 
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import pattypan.elements.WikiLabel;
+import pattypan.elements.WikiRadioButton;
+import pattypan.elements.WikiTextField;
 
 public class TemplateField {
-  
+
   public String name;
   public String label;
   public boolean isSelected;
-  public String constant;
-  
+  public String value;
+
   CheckBox cb;
-  
+  ToggleGroup group = new ToggleGroup();
+  RadioButton buttonYes = new WikiRadioButton("YES", group).setHeight(35);
+  RadioButton buttonConst = new WikiRadioButton("CONST", group).setHeight(35);
+  RadioButton buttonNo = new WikiRadioButton("NO", group).setHeight(35);
+
+  WikiLabel labelElement = new WikiLabel("");
+  WikiTextField valueText = new WikiTextField("").setWidth(50, 500);
+
   public TemplateField(String name, String label, boolean isSelected, String constant) {
     this.name = name;
     this.label = label;
     this.isSelected = isSelected;
-    this.constant = constant;
+    this.value = constant;
     
-    cb = new CheckBox(label);
-    cb.setSelected(isSelected);
-    cb.setTooltip(new Tooltip(name));
+    labelElement = new WikiLabel(label).setWidth(200, 500).setHeight(35);
+    buttonYes.setSelected(true);
+
+    group.selectedToggleProperty().addListener((ObservableValue<? extends Toggle> ov, Toggle tOld, Toggle tNew) -> {
+      RadioButton btn = (RadioButton) tNew.getToggleGroup().getSelectedToggle();
+      String id = btn.getId();
+      switch (id) {
+        case "YES":
+          valueText.setVisible(true);
+          labelElement.setDisable(false);
+          this.isSelected = true;
+          break;
+        case "CONST":
+          valueText.setVisible(true);
+          labelElement.setDisable(true);
+          this.isSelected = false;
+          break;
+        case "NO":
+          valueText.setVisible(false);
+          valueText.setText("");
+          labelElement.setDisable(true);
+          this.isSelected = false;
+          break;
+        default:
+          break;
+      }
+    });
+    
+    valueText.setOnKeyReleased((KeyEvent event) -> {
+      this.value = valueText.getText();
+    });
   }
-  
+
   public TemplateField(String name, String label) {
     this(name, label, true, "");
   }
-  
-  public CheckBox getCheckbox() {
-    return cb;
+
+  public HBox getRow() {
+    Region spacer = new Region();
+    spacer.setMinWidth(20);
+
+    HBox hb = new HBox(10);
+    hb.getChildren().addAll(labelElement,
+            buttonYes, buttonConst, buttonNo,
+            spacer, valueText, new Region());
+    
+    return hb;
   }
 }

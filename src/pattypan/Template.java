@@ -24,6 +24,7 @@
 package pattypan;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,11 +44,11 @@ public class Template {
     this.wikicode = wikicode;
   }
   
-  public ArrayList<String> getTemplateVariables() {
-    return getTemplateVariables(wikicode);
+  public ArrayList<TemplateField> getTemplateVariables() {
+    return new ArrayList<>(Arrays.asList(variables));
   }
   
-  public static ArrayList<String> getTemplateVariables(String text) {
+  public static ArrayList<String> getVariablesFromString(String text) {
     final Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
     Matcher m = pattern.matcher(text);
     ArrayList<String> results = new ArrayList<>();

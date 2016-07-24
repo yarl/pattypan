@@ -47,6 +47,9 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import pattypan.Session;
+import pattypan.Settings;
+import pattypan.Template;
+import pattypan.TemplateField;
 import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
@@ -160,6 +163,19 @@ public class CreateFilePane extends WikiPane {
     for (File file : Session.FILES) {
       sheet.addCell(new Label(0, row, file.getAbsolutePath()));
       sheet.addCell(new Label(1, row++, Util.getNameFromFilename(file.getName())));
+    }
+    
+    if (Session.METHOD.equals("template")) {
+      Template template = Settings.TEMPLATES.get(Session.TEMPLATE);
+      for (TemplateField tf : template.variables) {
+        if(tf.isSelected && !tf.value.isEmpty()) {
+          column = Session.VARIABLES.indexOf(tf.name);
+          row = 1;
+          for (File file : Session.FILES) {
+            sheet.addCell(new Label(column, row++, tf.value));
+          }
+        }
+      }
     }
     
     column = Session.VARIABLES.indexOf("date");
