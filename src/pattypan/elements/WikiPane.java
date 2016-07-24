@@ -28,6 +28,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -113,14 +114,18 @@ public class WikiPane extends BorderPane {
     addElement(text, "", 0);
   }
 
-  public void addElementRow(double spacing, Node[] element, Priority[] priority) {
+  public void addElementRow(Pane target, double spacing, Node[] element, Priority[] priority) {
     HBox hb = new HBox(spacing);
     hb.getChildren().addAll(element);
 
     for (int i = 0; i < priority.length; i++) {
       HBox.setHgrow(element[i], priority[i]);
     }
-    centerContainer.getChildren().add(hb);
+    target.getChildren().add(hb);
+  }
+  
+  public void addElementRow(double spacing, Node[] element, Priority[] priority) {
+    addElementRow(centerContainer, spacing, element, priority);
   }
   
   public void addElementRow(Node[] element, Priority[] priority) {

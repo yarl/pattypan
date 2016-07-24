@@ -23,32 +23,20 @@
  */
 package pattypan.elements;
 
-import javafx.scene.control.TextField;
-import pattypan.Util;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 
-public class WikiTextField extends TextField {
+public class WikiRadioButton extends RadioButton {
   
-  public WikiTextField(String text) {
-    super(text);
-    this.getStyleClass().addAll("mw-ui-input");
+  public WikiRadioButton(String id, ToggleGroup group) {
+    super();
+    this.setToggleGroup(group);
+    this.setId(id);
   }
   
-  public WikiTextField setPlaceholder(String text) {
-    String locText = Util.text(text);
-    this.setPromptText(locText.isEmpty() ? text : locText);
-    return this;
-  }
-  
-  public WikiTextField setWidth(int width) {
-    this.setMaxWidth(width);
-    this.setMinWidth(width);
-    return this;
-  }
-  
-  public WikiTextField setWidth(int width, int maxWidth) {
-    this.setMaxWidth(maxWidth);
-    this.setPrefWidth(maxWidth);
-    this.setMinWidth(width);
+  public WikiRadioButton setHeight(int height) {
+    this.setMinHeight(height);
+    this.setMaxHeight(height);
     return this;
   }
 }

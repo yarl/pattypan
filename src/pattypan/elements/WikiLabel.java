@@ -75,6 +75,19 @@ public class WikiLabel extends Label {
     return this;
   }
   
+  public WikiLabel setWidth(int width, int maxWidth) {
+    this.setMaxWidth(maxWidth);
+    this.setPrefWidth(maxWidth);
+    this.setMinWidth(width);
+    return this;
+  }
+  
+  public WikiLabel setHeight(int width) {
+    this.setMaxHeight(width);
+    this.setMinHeight(width);
+    return this;
+  }
+  
   public WikiLabel setWrapped(boolean wrap) {
     this.setWrapText(wrap);
     return this;
