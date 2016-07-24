@@ -119,7 +119,7 @@ public class CreateFilePane extends WikiPane {
     nextButton.setOnAction(event -> {
       try {
         Desktop.getDesktop().open(Session.FILE);
-        stage.close();
+        //stage.close();
       } catch (IOException ex) {
         Logger.getLogger(CreateFilePane.class.getName()).log(Level.SEVERE, null, ex);
       }
