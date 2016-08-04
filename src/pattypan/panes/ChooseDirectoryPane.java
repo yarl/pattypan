@@ -48,8 +48,8 @@ public class ChooseDirectoryPane extends WikiPane {
   Stage stage;
 
   WikiLabel descLabel;
-  WikiTextField browsePath;
-  WikiButton browseButton;
+  WikiTextField browsePath = new WikiTextField("");
+  WikiButton browseButton = new WikiButton("generic-browse", "small").setWidth(100);
   VBox checkBoxContainer = new VBox();
 
   public ChooseDirectoryPane(Stage stage) {
@@ -57,8 +57,46 @@ public class ChooseDirectoryPane extends WikiPane {
     this.stage = stage;
 
     setContent();
+    setActions();
   }
 
+  /*
+   * set content and actions
+   *****************************************************************************
+   */
+  
+  public BorderPane getContent() {
+    return this;
+  }
+  
+  private void setActions() {
+    browseButton.setOnAction((ActionEvent e) -> {
+      chooseAndSetDirectory();
+    });
+    prevButton.linkTo("StartPane", stage);
+    nextButton.linkTo("ChooseColumnsPane", stage);
+  }
+  
+  private void setContent() {
+    addElement("choose-directory-intro", 40);
+    addElementRow(
+            new Node[]{browseButton, browsePath},
+            new Priority[]{Priority.NEVER, Priority.ALWAYS}
+    );
+    addElement(checkBoxContainer);
+
+    browsePath.setDisable(true);
+    nextButton.setDisable(true);
+  }
+  
+  /*
+   * methods
+   *****************************************************************************
+   */
+  
+  /**
+   * 
+   */
   private void chooseAndSetDirectory() {
     DirectoryChooser fileChooser = new DirectoryChooser();
     fileChooser.setTitle(Util.text("choose-directory-window-name"));
@@ -74,10 +112,10 @@ public class ChooseDirectoryPane extends WikiPane {
     }
   }
 
-  public BorderPane getContent() {
-    return this;
-  }
-
+  /**
+   * 
+   * @param directory 
+   */
   private void getFileListByDirectory(File directory) {
     checkBoxContainer.getChildren().clear();
     checkBoxContainer.getChildren().add(new WikiLabel("generic-summary").setClass("header"));
@@ -100,28 +138,5 @@ public class ChooseDirectoryPane extends WikiPane {
     }
     
     nextButton.setDisable(files.length == 0);
-  }
-
-  private BorderPane setContent() {
-    addElement("choose-directory-intro", 40);
-
-    browsePath = new WikiTextField("");
-    browsePath.setDisable(true);
-    browseButton = new WikiButton("generic-browse", "small").setWidth(100);
-    browseButton.setOnAction((ActionEvent e) -> {
-      chooseAndSetDirectory();
-    });
-    addElementRow(
-            new Node[]{browseButton, browsePath},
-            new Priority[]{Priority.NEVER, Priority.ALWAYS}
-    );
-
-    addElement(checkBoxContainer);
-    
-    prevButton.linkTo("StartPane", stage);
-    nextButton.linkTo("ChooseColumnsPane", stage);
-    nextButton.setDisable(true);
-    
-    return this;
   }
 }
