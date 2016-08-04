@@ -27,7 +27,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Map.Entry;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -50,6 +49,7 @@ public class ChooseDirectoryPane extends WikiPane {
   WikiLabel descLabel;
   WikiTextField browsePath = new WikiTextField("");
   WikiButton browseButton = new WikiButton("generic-browse", "small").setWidth(100);
+  CheckBox includeSubdirectoriesCheckbox = new CheckBox(Util.text("choose-directory-include-subdirectories"));
   VBox checkBoxContainer = new VBox();
 
   public ChooseDirectoryPane(Stage stage) {
@@ -64,38 +64,43 @@ public class ChooseDirectoryPane extends WikiPane {
    * set content and actions
    *****************************************************************************
    */
-  
   public BorderPane getContent() {
     return this;
   }
-  
+
   private void setActions() {
     browseButton.setOnAction((ActionEvent e) -> {
       chooseAndSetDirectory();
     });
+    includeSubdirectoriesCheckbox.setOnAction((ActionEvent e) -> {
+      if (Session.DIRECTORY != null) {
+        getFileListByDirectory(Session.DIRECTORY);
+      }
+    });
+
     prevButton.linkTo("StartPane", stage);
     nextButton.linkTo("ChooseColumnsPane", stage);
   }
-  
+
   private void setContent() {
     addElement("choose-directory-intro", 40);
     addElementRow(
             new Node[]{browseButton, browsePath},
             new Priority[]{Priority.NEVER, Priority.ALWAYS}
     );
+    addElement(new VBox(includeSubdirectoriesCheckbox));
     addElement(checkBoxContainer);
 
     browsePath.setDisable(true);
     nextButton.setDisable(true);
   }
-  
+
   /*
    * methods
    *****************************************************************************
    */
-  
   /**
-   * 
+   *
    */
   private void chooseAndSetDirectory() {
     DirectoryChooser fileChooser = new DirectoryChooser();
@@ -113,30 +118,30 @@ public class ChooseDirectoryPane extends WikiPane {
   }
 
   /**
-   * 
-   * @param directory 
+   *
+   * @param directory
    */
   private void getFileListByDirectory(File directory) {
     checkBoxContainer.getChildren().clear();
     checkBoxContainer.getChildren().add(new WikiLabel("generic-summary").setClass("header"));
-    
-    File[] files = Util.getFilesAllowedToUpload(directory);
-    Session.FILES = new ArrayList<>(Arrays.asList(files));
-    
-    Map<String, Integer> filesByExt = Util.getFilesByExtention(files);
-    for(Entry<String, Integer> e : filesByExt.entrySet()) {
-      String text = String.format(".%s (%s files)", e.getKey(), e.getValue());
 
-      CheckBox checkbox = new CheckBox(text);
-      checkbox.setSelected(true);
-      checkbox.setDisable(true);
-      checkBoxContainer.getChildren().add(new WikiLabel(text));
-    }
-    
-    if(files.length == 0) {
+    File[] files = Util.getFilesAllowedToUpload(directory, includeSubdirectoriesCheckbox.isSelected());
+    Session.FILES = new ArrayList<>(Arrays.asList(files));
+
+    Map<String, Integer> filesByExt = Util.getFilesByExtention(files);
+    filesByExt.entrySet().stream()
+            .map((e) -> String.format(".%s (%s files)", e.getKey(), e.getValue()))
+            .forEach((text) -> {
+              CheckBox checkbox = new CheckBox(text);
+              checkbox.setSelected(true);
+              checkbox.setDisable(true);
+              checkBoxContainer.getChildren().add(new WikiLabel(text));
+            });
+
+    if (files.length == 0) {
       checkBoxContainer.getChildren().add(new WikiLabel("choose-directory-no-files"));
     }
-    
+
     nextButton.setDisable(files.length == 0);
   }
 }

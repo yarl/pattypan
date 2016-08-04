@@ -25,9 +25,12 @@ package pattypan;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -36,8 +39,6 @@ import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javafx.geometry.HPos;
 import javafx.scene.layout.ColumnConstraints;
@@ -99,7 +100,7 @@ public final class Util {
     }
     return filename;
   }
-  
+
   public static String getExtFromFilename(String filename) {
     String extension = "";
 
@@ -110,13 +111,21 @@ public final class Util {
     return extension;
   }
 
-  public static File[] getFilesAllowedToUpload(File directory) {
-    return directory.listFiles(new FilenameFilter() {
-      @Override
-      public boolean accept(File directory, String name) {
-        return isFileAllowedToUpload(name);
+  public static File[] getFilesAllowedToUpload(File directory, boolean includeSubdirectories) {
+    ArrayList<File> files = new ArrayList<>();
+    try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory.toPath())) {
+      for (Path path : stream) {
+        if (path.toFile().isDirectory() && includeSubdirectories) {
+          File[] dirFiles = getFilesAllowedToUpload(path.toFile(), includeSubdirectories);
+          ArrayList<File> dirFilesList = new ArrayList<>(Arrays.asList(dirFiles));
+          files.addAll(dirFilesList);
+        } else if (isFileAllowedToUpload(path.toFile().getName())) {
+          files.add(path.toFile());
+        }
       }
-    });
+    } catch (IOException e) {
+    }
+    return files.stream().toArray(File[]::new);
   }
 
   public static File[] getFilesAllowedToUpload(File directory, String ext) {
@@ -200,7 +209,7 @@ public final class Util {
 
   /**
    * Returns keys by value
-   * 
+   *
    * @param map map with data
    * @param value searched value
    * @return list of keys that has searched value
