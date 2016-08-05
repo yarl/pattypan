@@ -36,6 +36,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import pattypan.Session;
+import pattypan.Settings;
 import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
@@ -113,6 +114,7 @@ public class ChooseDirectoryPane extends WikiPane {
     if (file != null) {
       Session.DIRECTORY = file;
       browsePath.setText(file.getAbsolutePath());
+      Settings.setSetting("path", Session.DIRECTORY.getAbsolutePath());
       getFileListByDirectory(file);
     }
   }

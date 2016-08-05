@@ -51,6 +51,7 @@ import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.read.biff.BiffException;
 import pattypan.Session;
+import pattypan.Settings;
 import pattypan.UploadElement;
 import pattypan.Util;
 import pattypan.elements.WikiButton;
@@ -112,6 +113,7 @@ public class LoadPane extends WikiPane {
     Session.DIRECTORY = file.getParentFile();
     Session.FILE = file;
     browsePath.setText(file.getAbsolutePath());
+    Settings.setSetting("path", Session.DIRECTORY.getAbsolutePath());
 
     readSelectedFile();
   }
