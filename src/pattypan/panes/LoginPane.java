@@ -23,12 +23,14 @@
  */
 package pattypan.panes;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import pattypan.Session;
+import pattypan.Settings;
 import pattypan.Util;
 import pattypan.elements.WikiButton;
 import pattypan.elements.WikiLabel;
@@ -50,50 +52,59 @@ public class LoginPane extends WikiPane {
     this.stage = stage;
 
     setContent();
+    setActions();
   }
 
+  /*
+   * set content and actions
+   *****************************************************************************
+   */
   public WikiPane getContent() {
     return this;
   }
 
-  private WikiPane setContent() {
-    addElement("login-intro", 40);
-
+  private void setActions() {
     passwordText.setOnKeyPressed((KeyEvent event) -> {
       if (event.getCode().equals(KeyCode.ENTER)) {
         logIn();
       }
     });
-    
+
     loginButton.setOnAction((ActionEvent event) -> {
       logIn();
     });
 
+    prevButton.linkTo("CheckPane", stage);
+    nextButton.linkTo("UploadPane", stage).setDisable(true);
+  }
+
+  private void setContent() {
+    addElement("login-intro", 40);
     addElement(loginText);
     addElement(passwordText);
     addElement(loginButton);
     addElement(loginStatus);
 
-    prevButton.linkTo("CheckPane", stage);
-    nextButton.linkTo("UploadPane", stage).setDisable(true);
-
-    return this;
+    if (!Settings.getSetting("user").isEmpty()) {
+      loginText.setText(Settings.getSetting("user"));
+      Platform.runLater(() -> {
+        passwordText.requestFocus();
+      });
+    }
   }
 
-  private void setDisableForm(boolean state) {
-    loginText.setDisable(state);
-    passwordText.setDisable(state);
-    loginButton.setDisable(state);
-  }
-  
-  
-  
+  /*
+   * methods
+   *****************************************************************************
+   */
   private void logIn() {
     Task<Integer> task = new Task<Integer>() {
 
       private void setLoginSuccess() {
         setDisableForm(false);
         loginButton.setText(Util.text("login-login-button"));
+        loginStatus.setText("");
+        Settings.setSetting("user", loginText.getText());
         nextButton.setDisable(false);
         nextButton.fire();
       }
@@ -127,9 +138,15 @@ public class LoginPane extends WikiPane {
         setLoginFailed();
       }
     };
-    
+
     setDisableForm(true);
     loginButton.setText(Util.text("login-load"));
     new Thread(task).start();
+  }
+
+  private void setDisableForm(boolean state) {
+    loginText.setDisable(state);
+    passwordText.setDisable(state);
+    loginButton.setDisable(state);
   }
 }
