@@ -45,13 +45,11 @@ public class Main extends Application {
     stage.show();
 
     stage.setOnCloseRequest((WindowEvent we) -> {
-      Settings.setSetting("windowWidth", (int)stage.getWidth()+"");
-      Settings.setSetting("windowHeight", (int)stage.getHeight()+"");
+      Settings.setSetting("windowWidth", (int) scene.getWidth() + "");
+      Settings.setSetting("windowHeight", (int) scene.getHeight() + "");
       Settings.saveProperties();
     });
   }
-  
-  
 
   /**
    * @param args the command line arguments
