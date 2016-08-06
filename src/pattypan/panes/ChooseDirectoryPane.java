@@ -100,17 +100,27 @@ public class ChooseDirectoryPane extends WikiPane {
    * methods
    *****************************************************************************
    */
+  
   /**
-   *
+   * Opens directory chooser
    */
   private void chooseAndSetDirectory() {
     DirectoryChooser fileChooser = new DirectoryChooser();
     fileChooser.setTitle(Util.text("choose-directory-window-name"));
-    if (Session.DIRECTORY != null) {
-      fileChooser.setInitialDirectory(Session.DIRECTORY);
+
+    Session.DIRECTORY = !Settings.getSetting("path").isEmpty()
+            ? new File(Settings.getSetting("path"))
+            : null;
+    fileChooser.setInitialDirectory(Session.DIRECTORY);
+
+    File file;
+    try {
+      file = fileChooser.showDialog(stage);
+    } catch (IllegalArgumentException ex) {
+      fileChooser.setInitialDirectory(null);
+      file = fileChooser.showDialog(stage);
     }
 
-    File file = fileChooser.showDialog(stage);
     if (file != null) {
       Session.DIRECTORY = file;
       browsePath.setText(file.getAbsolutePath());
@@ -120,6 +130,7 @@ public class ChooseDirectoryPane extends WikiPane {
   }
 
   /**
+   * Gets list of files from directory
    *
    * @param directory
    */

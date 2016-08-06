@@ -236,7 +236,7 @@ public final class Settings {
   }
 
   public static String getSetting(String key) {
-    return SETTINGS.get(key);
+    return SETTINGS.get(key) != null ? SETTINGS.get(key) : "";
   }
 
   public static int getSettingInt(String key) {

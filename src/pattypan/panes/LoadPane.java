@@ -103,7 +103,19 @@ public class LoadPane extends WikiPane {
     fileChooser.setTitle(Util.text("validate-file-select"));
     fileChooser.getExtensionFilters().add(extFilter);
 
-    File selectedFile = fileChooser.showOpenDialog(stage);
+    File initialDir = !Settings.getSetting("path").isEmpty()
+            ? new File(Settings.getSetting("path"))
+            : null;
+    fileChooser.setInitialDirectory(initialDir);
+
+    File selectedFile;
+    try {
+      selectedFile = fileChooser.showOpenDialog(stage);
+    } catch (IllegalArgumentException ex) {
+      fileChooser.setInitialDirectory(null);
+      selectedFile = fileChooser.showOpenDialog(stage);
+    }
+
     if (selectedFile != null) {
       loadSelectedFile(selectedFile);
     }
@@ -137,10 +149,10 @@ public class LoadPane extends WikiPane {
   }
 
   /**
-   * 
+   *
    * @param sheet
    * @return
-   * @throws Exception 
+   * @throws Exception
    */
   private ArrayList<Map<String, String>> readDescriptions(Sheet sheet) throws Exception {
     ArrayList<Map<String, String>> descriptions = new ArrayList<>();
@@ -177,7 +189,7 @@ public class LoadPane extends WikiPane {
     SimpleDateFormat formatDateHour = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     formatDate.setTimeZone(TimeZone.getTimeZone("UTC"));
     formatDateHour.setTimeZone(TimeZone.getTimeZone("UTC"));
-    
+
     Cell valueCell = sheet.getCell(column, row);
     String value;
 
@@ -194,10 +206,10 @@ public class LoadPane extends WikiPane {
   }
 
   /**
-   * 
+   *
    * @param sheet
    * @return
-   * @throws IOException 
+   * @throws IOException
    */
   private Template readTemplate(Sheet sheet) throws IOException {
     String text = sheet.getCell(0, 0).getContents();
@@ -205,12 +217,12 @@ public class LoadPane extends WikiPane {
   }
 
   /**
-   * 
+   *
    * @param descriptions
    * @param template
    * @throws TemplateException
    * @throws IOException
-   * @throws Exception 
+   * @throws Exception
    */
   private void addFilesToUpload(ArrayList<Map<String, String>> descriptions, Template template) throws TemplateException, IOException, Exception {
     Session.FILES_TO_UPLOAD = new ArrayList<>();
