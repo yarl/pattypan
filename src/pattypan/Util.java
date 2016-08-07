@@ -72,6 +72,11 @@ public final class Util {
     return String.format(text, vars);
   }
 
+  /**
+   * Open URL in browser
+   * 
+   * @source http://stackoverflow.com/a/28807079
+   */
   public static void openUrl(String url) {
     String os = System.getProperty("os.name").toLowerCase();
 
