@@ -84,11 +84,7 @@ public class ChooseColumnsPane extends WikiPane {
     Hyperlink docLink = new Hyperlink(Util.text("choose-columns-template-doc"));
     docLink.setMinHeight(25);
     docLink.setOnAction(event -> {
-      try {
-        URI link = new URI("https://commons.wikimedia.org/wiki/Template:" + template.name + "/doc");
-        Desktop.getDesktop().browse(link);
-      } catch (IOException | URISyntaxException ex) {
-      }
+      Util.openUrl("https://commons.wikimedia.org/wiki/Template:" + template.name + "/doc");
     });
 
     templateDescContainer.getChildren().clear();

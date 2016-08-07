@@ -23,10 +23,16 @@
  */
 package pattypan;
 
+import edu.stanford.ejalbert.BrowserLauncher;
+import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
+import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -39,6 +45,8 @@ import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.geometry.HPos;
 import javafx.scene.layout.ColumnConstraints;
@@ -62,6 +70,25 @@ public final class Util {
   public static String text(String key, Object... vars) {
     String text = text(key);
     return String.format(text, vars);
+  }
+
+  public static void openUrl(String url) {
+    String os = System.getProperty("os.name").toLowerCase();
+
+    try {
+      if (os.contains("win")) {
+        Desktop.getDesktop().browse(new URI(url));
+      } else if (os.contains("mac")) {
+        Runtime rt = Runtime.getRuntime();
+        rt.exec("open " + url);
+      } else {
+        new BrowserLauncher().openURLinBrowser(url);
+      }
+    } catch (BrowserLaunchingInitializingException | UnsupportedOperatingSystemException ex) {
+      Logger.getLogger(Util.class.getName()).log(Level.WARNING, null, ex);
+    } catch (URISyntaxException | IOException ex) {
+      Logger.getLogger(Util.class.getName()).log(Level.WARNING, null, ex);
+    }
   }
 
   /* row and column utils */

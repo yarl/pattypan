@@ -25,9 +25,12 @@ package pattypan.panes;
 
 import java.awt.Desktop;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Tooltip;
@@ -36,6 +39,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pattypan.Session;
 import pattypan.UploadElement;
+import pattypan.Util;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiPane;
 import pattypan.elements.WikiScrollPane;
@@ -65,12 +69,12 @@ public class CheckPane extends WikiPane {
     
     preview.setOnAction(event -> {
       try {
-        URI link = new URI("https://commons.wikimedia.org/wiki/Special:ExpandTemplates"
+        Util.openUrl("https://commons.wikimedia.org/wiki/Special:ExpandTemplates"
                 + "?wpRemoveComments=true"
                 + "&wpInput=" + URLEncoder.encode(ue.getWikicode(), "UTF-8")
                 + "&wpContextTitle=" + URLEncoder.encode(ue.getData("name"), "UTF-8"));
-        Desktop.getDesktop().browse(link);
-      } catch (IOException | URISyntaxException ex) {
+      } catch (UnsupportedEncodingException ex) {
+        Logger.getLogger(CheckPane.class.getName()).log(Level.SEVERE, null, ex);
       }
     });
 
