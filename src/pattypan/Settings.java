@@ -219,20 +219,24 @@ public final class Settings {
   }
 
   /**
+   * Gets directory for local user settings
+   * 
    * @source http://stackoverflow.com/a/16660314/1418878
-   * @return
+   * @return path to local Pattypan directory
    */
   private static String getPropertiesDirectiry() {
-    String workingDirectory;
+    String dir;
     String OS = (System.getProperty("os.name")).toUpperCase();
 
     if (OS.contains("WIN")) {
-      workingDirectory = System.getenv("AppData");
+      dir = System.getenv("AppData") + "/Pattypan";
+    } else if(OS.contains("NUX")) {
+      dir = System.getProperty("user.home") + "/.pattypan";
     } else {
-      workingDirectory = System.getProperty("user.home");
-      workingDirectory += "/Library/Application Support";
+      dir = System.getProperty("user.home");
+      dir += "/Library/Application Support/Pattypan";
     }
-    return workingDirectory + "/Pattypan";
+    return dir;
   }
 
   public static String getSetting(String key) {
