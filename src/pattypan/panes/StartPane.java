@@ -27,10 +27,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -53,66 +49,36 @@ public class StartPane extends GridPane {
   String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
   Stage stage;
 
+  Hyperlink link = new Hyperlink(Util.text("start-bug-report"));
+  Hyperlink downloadLink = new Hyperlink(Util.text("start-new-version-available-download"));
+
   public StartPane(Stage stage) {
     this.stage = stage;
-    createContent();
+
+    setContent();
+    setActions();
     checkVersion();
   }
 
+  /*
+   * set content and actions
+   *****************************************************************************
+   */
   public GridPane getContent() {
     return this;
   }
 
-  public ArrayList<String> getVersions() throws Exception {
-    ArrayList<String> versions = new ArrayList<>();
-    String json = Util.readUrl("https://api.github.com/repos/yarl/pattypan/releases");
-
-    JsonArray releases = new JsonParser().parse(json).getAsJsonArray();
-    for (JsonElement element : releases) {
-      JsonObject release = element.getAsJsonObject();
-      boolean draft = release.get("draft").getAsBoolean();
-      boolean pre = release.get("prerelease").getAsBoolean();
-      String tag = release.get("tag_name").getAsString();
-
-      if (!draft && !pre) {
-        versions.add(tag.contains("v") ? tag.substring(1) : tag);
-      }
-    }
-    return versions;
-  }
-
-  private TextFlow showUpdateAlert() {
-    Hyperlink link = new Hyperlink("Download now.");
-    TextFlow flow = new TextFlow(new Text("New version is available!"), link);
-    
-    flow.getStyleClass().add("message");
-    flow.setTextAlignment(TextAlignment.CENTER);
+  private void setActions() {
     link.setOnAction(event -> {
-      try {
-        Desktop.getDesktop().browse(new URI("https://github.com/yarl/pattypan/releases"));
-      } catch (IOException | URISyntaxException ex) {
-      }
+      Util.openUrl("https://github.com/yarl/pattypan/issues");
     });
-    return flow;
+
+    downloadLink.setOnAction(event -> {
+      Util.openUrl("https://github.com/yarl/pattypan/releases");
+    });
   }
 
-  private void checkVersion() {
-    try {
-      ArrayList<String> versions = getVersions();
-      for (String version : versions) {
-        if (Util.versionCompare(version, Settings.VERSION) > 0) {
-          this.addRow(10, showUpdateAlert());
-          break;
-        }
-      }
-
-    } catch (UnknownHostException ex) {
-    } catch (Exception ex) {
-      Logger.getLogger(StartPane.class.getName()).log(Level.SEVERE, null, ex);
-    }
-  }
-
-  private GridPane createContent() {
+  private GridPane setContent() {
     this.getStylesheets().add(css);
     this.setAlignment(Pos.CENTER);
     this.setHgap(20);
@@ -134,16 +100,65 @@ public class StartPane extends GridPane {
 
     this.addRow(40, new WikiLabel("2016 // Pawel Marynowski").setClass("muted"));
 
-    Hyperlink link = new Hyperlink(Util.text("start-bug-report"));
     TextFlow flow = new TextFlow(new Text(Util.text("start-bug-found")), link);
     flow.setTextAlignment(TextAlignment.CENTER);
-    link.setOnAction(event -> {
-      try {
-        Desktop.getDesktop().browse(new URI("https://github.com/yarl/pattypan/issues"));
-      } catch (IOException | URISyntaxException ex) {
-      }
-    });
+
     this.addRow(41, flow);
     return this;
+  }
+
+  /*
+   * methods
+   *****************************************************************************
+   */
+  
+  /**
+   * Checks if this Pattypan version is the lastest one. If no, show alert.
+   */
+  private void checkVersion() {
+    try {
+      ArrayList<String> versions = getVersions();
+      for (String version : versions) {
+        if (Util.versionCompare(version, Settings.VERSION) > 0) {
+          this.addRow(10, showUpdateAlert());
+          break;
+        }
+      }
+    } catch (UnknownHostException ex) {
+      Logger.getLogger(StartPane.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (Exception ex) {
+      Logger.getLogger(StartPane.class.getName()).log(Level.SEVERE, null, ex);
+    }
+  }
+
+  /**
+   * Gets list of stable versions from Github repo
+   *
+   * @return list of stable releases from Github
+   * @throws Exception
+   */
+  public ArrayList<String> getVersions() throws Exception {
+    ArrayList<String> versions = new ArrayList<>();
+    String json = Util.readUrl("https://api.github.com/repos/yarl/pattypan/releases");
+
+    JsonArray releases = new JsonParser().parse(json).getAsJsonArray();
+    for (JsonElement element : releases) {
+      JsonObject release = element.getAsJsonObject();
+      boolean draft = release.get("draft").getAsBoolean();
+      boolean pre = release.get("prerelease").getAsBoolean();
+      String tag = release.get("tag_name").getAsString();
+
+      if (!draft && !pre) {
+        versions.add(tag.contains("v") ? tag.substring(1) : tag);
+      }
+    }
+    return versions;
+  }
+
+  private TextFlow showUpdateAlert() {
+    TextFlow flow = new TextFlow(new Text(Util.text("start-new-version-available")), downloadLink);
+    flow.getStyleClass().add("message");
+    flow.setTextAlignment(TextAlignment.CENTER);
+    return flow;
   }
 }
