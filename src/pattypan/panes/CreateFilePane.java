@@ -36,7 +36,6 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.CheckBox;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import jxl.CellView;
@@ -63,7 +62,6 @@ public class CreateFilePane extends WikiPane {
   WikiLabel descLabel;
   WikiTextField fileName = new WikiTextField("").setPlaceholder("create-file-filename").setWidth(300);
   WikiButton createButton = new WikiButton("create-file-button", "primary").setWidth(300);
-  CheckBox dateExifCheckbox = new CheckBox("Preload date from Exif");
   
   public CreateFilePane(Stage stage) {
     super(stage, 1.0);
@@ -81,7 +79,6 @@ public class CreateFilePane extends WikiPane {
     addElement("generic-summary", "header");
     addElement(Util.text("create-file-summary", Session.FILES.size(), Session.DIRECTORY.getName()), 40);
     addElement(fileName);
-    addElement(dateExifCheckbox);
     addElement(new Region());
     addElement(createButton);
 
@@ -179,7 +176,7 @@ public class CreateFilePane extends WikiPane {
     }
     
     column = Session.VARIABLES.indexOf("date");
-    if(column >= 0 && dateExifCheckbox.isSelected()) {
+    if(column >= 0 && !Settings.getSetting("exifDate").isEmpty()) {
       row = 1;
       for (File file : Session.FILES) {
         sheet.addCell(new Label(column, row++, getExifDate(file)));

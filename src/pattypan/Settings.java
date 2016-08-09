@@ -52,6 +52,7 @@ public final class Settings {
     SETTINGS.put("user", "");
     SETTINGS.put("windowWidth", "800");
     SETTINGS.put("windowHeight", "600");
+    SETTINGS.put("exifDate", "");
 
     TEMPLATES.put(
             "Information",

@@ -23,11 +23,7 @@
  */
 package pattypan.panes;
 
-import java.awt.Desktop;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;

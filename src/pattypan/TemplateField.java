@@ -24,6 +24,7 @@
 package pattypan;
 
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Toggle;
@@ -31,6 +32,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import pattypan.elements.WikiLabel;
 import pattypan.elements.WikiRadioButton;
 import pattypan.elements.WikiTextField;
@@ -94,15 +96,38 @@ public class TemplateField {
     this(name, label, true, "");
   }
 
-  public HBox getRow() {
+  public VBox getRow() {
     Region spacer = new Region();
     spacer.setMinWidth(20);
 
+    VBox vb = new VBox(5);
     HBox hb = new HBox(10);
+    HBox hbCheckbox = new HBox(10);
+    
     hb.getChildren().addAll(labelElement,
             buttonYes, buttonConst, buttonNo,
             spacer, valueText, new Region());
+    vb.getChildren().add(hb);
     
-    return hb;
+    if(name.equals("date")) {
+      Region r = new Region();
+      r.setMaxWidth(622);
+      r.setPrefWidth(622);
+      r.setMinWidth(420);
+      r.setMinHeight(30);
+      
+      CheckBox checkbox = new CheckBox("Preload date from Exif");
+      checkbox.setMaxWidth(500);
+      checkbox.setPrefWidth(500);
+      checkbox.setMinWidth(305);
+      checkbox.setOnAction((ActionEvent e) -> {
+        Settings.setSetting("exifDate", checkbox.isSelected() ? "true" : "");
+      });
+
+      hbCheckbox.getChildren().addAll(r, checkbox);
+      vb.getChildren().add(hbCheckbox);
+    }
+    
+    return vb;
   }
 }
