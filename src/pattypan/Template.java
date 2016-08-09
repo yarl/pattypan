@@ -44,14 +44,68 @@ public class Template {
     this.wikicode = wikicode;
   }
   
-  public ArrayList<TemplateField> getTemplateVariables() {
+  /**
+   * Returns list of variables
+   * 
+   * @return
+   */
+  public ArrayList<TemplateField> getVariables() {
     return new ArrayList<>(Arrays.asList(variables));
   }
   
-  public static ArrayList<String> getVariablesFromString(String text) {
+  
+  /**
+   * Returns selected template variables with additional "path" and "name" vars
+   * 
+   * @return
+   */
+  public ArrayList<String> getComputedVariables() {
+    ArrayList<String> vars = new ArrayList<>(Arrays.asList("path", "name"));
+    for (TemplateField tf : variables) {
+      if (tf.isSelected) {
+        vars.add(tf.name);
+      }
+    }
+    vars.add("categories");
+
+    return vars;
+  }
+  
+  
+  /**
+   * Gets "raw" wikicode, removes variables set as "No" and sets constant 
+   * strings for variables set as "Cont"
+   * 
+   * @return string with computed wikicode
+   */
+  public String getComputedWikicode() {
+    ArrayList<TemplateField> vars = getVariables();
+    String text = wikicode;
+
+    for (TemplateField var : vars) {
+      if (!var.isSelected && !var.value.isEmpty()) {
+        text = text.replace("${" + var.name + "}", var.value);
+      } else if (!var.isSelected && var.value.isEmpty()) {
+        text = text.replace("${" + var.name + "}", "");
+      }
+    }
+
+    return text;
+  }
+  
+  /**
+   * 
+   * 
+   * @param text input string
+   * @return 
+   */
+  public static ArrayList<String> getComputedVariablesFromString(String text) {
     final Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
     Matcher m = pattern.matcher(text);
+    
     ArrayList<String> results = new ArrayList<>();
+    results.add("path");
+    results.add("name");
 
     while (m.find()) {
       results.add(m.group(1));

@@ -23,10 +23,6 @@
  */
 package pattypan.panes;
 
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javafx.event.Event;
@@ -68,87 +64,15 @@ public class ChooseColumnsPane extends WikiPane {
     setActions();
   }
 
+  /*
+   * set content and actions
+   *****************************************************************************
+   */
+  
   public WikiPane getContent() {
     return this;
   }
-
-  /**
-   * Adds checkboxes with wikitemplate fields.
-   *
-   * @param templateName name of wikitemplate
-   * @return true, if template exists
-   */
-  private boolean showTemplateFieldsChoose(String templateName) {
-    Template template = Settings.TEMPLATES.get(templateName);
-
-    Hyperlink docLink = new Hyperlink(Util.text("choose-columns-template-doc"));
-    docLink.setMinHeight(25);
-    docLink.setOnAction(event -> {
-      Util.openUrl("https://commons.wikimedia.org/wiki/Template:" + template.name + "/doc");
-    });
-
-    templateDescContainer.getChildren().clear();
-    templateDescContainer.getChildren().add(new HBox(10,
-            new WikiLabel("{{" + template.name + "}}").setClass("header").setAlign("left"),
-            docLink
-    ));
-    templateDescContainer.getChildren().add(new WikiLabel("choose-columns-template-intro").setAlign("left").setHeight(70));
-
-    HBox headersContainer = new HBox(10);
-    headersContainer.getChildren().addAll(
-            new WikiLabel("choose-columns-fields-name").setClass("bold").setWidth(200, 495).setHeight(35),
-            new WikiLabel("choose-columns-radio-buttons").setClass("bold").setWidth(115).setHeight(35),
-            new WikiLabel("choose-columns-value").setClass("bold").setWidth(50, 500).setHeight(35));
-    templateDescContainer.getChildren().add(headersContainer);
-
-    for (TemplateField tf : template.variables) {
-      templateDescContainer.getChildren().add(tf.getRow());
-    }
-    return true;
-  }
-
-  private String getTemplateWikicode(String templateName) {
-    Template template = Settings.TEMPLATES.get(templateName);
-
-    if (template == null) {
-      return "";
-    }
-
-    ArrayList<TemplateField> vars = template.getTemplateVariables();
-    String wikicode = template.wikicode;
-
-    for (TemplateField var : vars) {
-      if (!var.isSelected && !var.value.isEmpty()) {
-        wikicode = wikicode.replace("${" + var.name + "}", var.value);
-      } else if (!var.isSelected && var.value.isEmpty()) {
-        wikicode = wikicode.replace("${" + var.name + "}", "");
-      }
-    }
-
-    return wikicode;
-  }
-
-  private ArrayList<String> getTemplateVariables() {
-    ArrayList<String> vars = new ArrayList<>(Arrays.asList("path", "name"));
-
-    Template template = Settings.TEMPLATES.get(Session.TEMPLATE);
-    for (TemplateField tf : template.variables) {
-      if (tf.isSelected) {
-        vars.add(tf.name);
-      }
-    }
-    vars.add("categories");
-
-    return vars;
-  }
-
-  private ArrayList<String> getWikicodeVariables() {
-    ArrayList<String> vars = new ArrayList<>(Arrays.asList("path", "name"));
-    vars.addAll(Template.getVariablesFromString(wikicodeText.getText()));
-
-    return vars;
-  }
-
+  
   private WikiPane setActions() {
     wikicodeLink.setOnAction(event -> {
       templateDescContainer.getChildren().clear();
@@ -159,13 +83,15 @@ public class ChooseColumnsPane extends WikiPane {
     prevButton.linkTo("ChooseDirectoryPane", stage);
     nextButton.setOnAction(event -> {
       if (Session.METHOD.equals("wikicode")) {
-        Session.VARIABLES = getWikicodeVariables();
-        Session.WIKICODE = wikicodeText.getText().trim();
+        String text = wikicodeText.getText().trim();
+        Session.VARIABLES = Template.getComputedVariablesFromString(text);
+        Session.WIKICODE = text;
       }
 
       if (Session.METHOD.equals("template")) {
-        Session.VARIABLES = getTemplateVariables();
-        Session.WIKICODE = getTemplateWikicode(Session.TEMPLATE);
+        Template template = Settings.TEMPLATES.get(Session.TEMPLATE);
+        Session.VARIABLES = template.getComputedVariables();
+        Session.WIKICODE = template.getComputedWikicode();
       }
 
       nextButton.goTo("CreateFilePane", stage);
@@ -216,5 +142,45 @@ public class ChooseColumnsPane extends WikiPane {
     wikicodeText.setText(Session.WIKICODE);
     wikicodePane.getChildren().addAll(templateBox, wikicodeText);
     return this;
+  }
+  
+  /*
+   * methods
+   *****************************************************************************
+   */
+
+  /**
+   * Adds checkboxes with wikitemplate fields.
+   *
+   * @param templateName name of wikitemplate
+   * @return true, if template exists
+   */
+  private boolean showTemplateFieldsChoose(String templateName) {
+    Template template = Settings.TEMPLATES.get(templateName);
+
+    Hyperlink docLink = new Hyperlink(Util.text("choose-columns-template-doc"));
+    docLink.setMinHeight(25);
+    docLink.setOnAction(event -> {
+      Util.openUrl("https://commons.wikimedia.org/wiki/Template:" + template.name + "/doc");
+    });
+
+    templateDescContainer.getChildren().clear();
+    templateDescContainer.getChildren().add(new HBox(10,
+            new WikiLabel("{{" + template.name + "}}").setClass("header").setAlign("left"),
+            docLink
+    ));
+    templateDescContainer.getChildren().add(new WikiLabel("choose-columns-template-intro").setAlign("left").setHeight(70));
+
+    HBox headersContainer = new HBox(10);
+    headersContainer.getChildren().addAll(
+            new WikiLabel("choose-columns-fields-name").setClass("bold").setWidth(200, 495).setHeight(35),
+            new WikiLabel("choose-columns-radio-buttons").setClass("bold").setWidth(115).setHeight(35),
+            new WikiLabel("choose-columns-value").setClass("bold").setWidth(50, 500).setHeight(35));
+    templateDescContainer.getChildren().add(headersContainer);
+
+    for (TemplateField tf : template.variables) {
+      templateDescContainer.getChildren().add(tf.getRow());
+    }
+    return true;
   }
 }
