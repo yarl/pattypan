@@ -39,6 +39,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import pattypan.Session;
 import pattypan.Settings;
 import pattypan.Util;
 import pattypan.elements.WikiButton;
@@ -89,7 +90,10 @@ public class StartPane extends GridPane {
 
     this.addRow(0, new WikiLabel("pattypan").setClass("title"));
     this.addRow(1, new WikiLabel("v. " + Settings.VERSION));
-
+    if(!Session.WIKI.getDomain().equals("commons.wikimedia.org")) {
+      this.addRow(3, new WikiLabel(Session.WIKI.getDomain()));
+    }
+    
     this.addRow(20, new HBox(20,
             new WikiButton("start-generate-button", "primary").setWidth(300).linkTo("ChooseDirectoryPane", stage),
             new WikiButton("start-validate-button").setWidth(300).linkTo("LoadPane", stage)));

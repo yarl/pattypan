@@ -28,6 +28,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.wikipedia.Wiki;
 import pattypan.panes.StartPane;
 
 public class Main extends Application {
@@ -55,6 +56,9 @@ public class Main extends Application {
    * @param args the command line arguments
    */
   public static void main(String[] args) {
+    if (args.length > 0) {
+      Session.WIKI = new Wiki(args[0].equals("-test") ? "test.wikipedia.org" : args[0]);
+    }
     launch(args);
   }
 
