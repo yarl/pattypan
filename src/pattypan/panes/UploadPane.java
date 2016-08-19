@@ -70,30 +70,16 @@ public class UploadPane extends WikiPane {
     setActions();
   }
 
+  /*
+   * set content and actions
+   *****************************************************************************
+   */
+  
   public WikiPane getContent() {
     return this;
   }
-
-  private void addInfo(String text) {
-    infoContainer.getChildren().add(new WikiLabel(text).setAlign("left"));
-  }
-
-  private WikiPane setContent() {
-    addElement("upload-intro", 40);
-
-    stopButton.setDisable(true);
-
-    addElementRow(
-            new Node[]{new Region(), uploadButton, stopButton, new Region()},
-            new Priority[]{Priority.ALWAYS, Priority.NEVER, Priority.NEVER, Priority.ALWAYS}
-    );
-    addElement(new WikiScrollPane(infoContainer));
-
-    nextButton.setVisible(false);
-    return this;
-  }
-
-  private WikiPane setActions() {
+  
+  private void setActions() {
     uploadButton.setOnAction((ActionEvent e) -> {
       stopRq = false;
       uploadButton.setDisable(true);
@@ -119,8 +105,44 @@ public class UploadPane extends WikiPane {
     });
 
     prevButton.linkTo("LoginPane", stage);
+  }
+  
+  private void setContent() {
+    addElement("upload-intro", 40);
 
-    return this;
+    stopButton.setDisable(true);
+
+    addElementRow(
+            new Node[]{new Region(), uploadButton, stopButton, new Region()},
+            new Priority[]{Priority.ALWAYS, Priority.NEVER, Priority.NEVER, Priority.ALWAYS}
+    );
+    addElement(new WikiScrollPane(infoContainer));
+
+    nextButton.setVisible(false);
+  }
+  
+  /*
+   * methods
+   *****************************************************************************
+   */
+
+  private void addInfo(String text) {
+    infoContainer.getChildren().add(new WikiLabel(text).setAlign("left"));
+  }
+  
+  /**
+   * Checks if file name is taken on Wikimedia Commons
+   * @param name file name (without File: prefix)
+   * @return true if name is taken
+   */
+  private boolean isFileNameTaken(String name) {
+    try {
+      Map map = Session.WIKI.getPageInfo("File:" + name);
+      return (boolean) map.get("exists");
+    } catch (IOException ex) {
+      Logger.getLogger(UploadPane.class.getName()).log(Level.SEVERE, null, ex);
+      return false;
+    }
   }
 
   private void uploadFiles() {
@@ -139,8 +161,7 @@ public class UploadPane extends WikiPane {
             updateMessage(String.format("[%s/%s] Uploading %s",
                     i, Session.FILES_TO_UPLOAD.size(), ue.getData("name")));
             try {
-              Map m = Session.WIKI.getPageInfo("File:" + ue.getData("name"));
-              if ((boolean) m.get("exists")) {
+              if (isFileNameTaken(ue.getData("name"))) {
                 skipped++;
                 continue;
               }
@@ -149,6 +170,7 @@ public class UploadPane extends WikiPane {
             } catch (IOException | LoginException ex) {
               updateMessage(Util.text("upload-log-error", ex.getLocalizedMessage()));
               Logger.getLogger(UploadPane.class.getName()).log(Level.SEVERE, null, ex);
+              skipped++;
             }
           }
         }
