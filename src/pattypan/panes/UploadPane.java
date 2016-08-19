@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -35,6 +37,7 @@ import javafx.scene.Node;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javax.security.auth.login.LoginException;
 import pattypan.Session;
@@ -74,11 +77,10 @@ public class UploadPane extends WikiPane {
    * set content and actions
    *****************************************************************************
    */
-  
   public WikiPane getContent() {
     return this;
   }
-  
+
   private void setActions() {
     uploadButton.setOnAction((ActionEvent e) -> {
       stopRq = false;
@@ -96,17 +98,18 @@ public class UploadPane extends WikiPane {
     fakeLoger.textProperty().addListener(new ChangeListener<String>() {
       @Override
       public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
-        if (newValue.contains("Upload completed")) {
+        if (newValue.equals("_COMPLETE_UPLOAD")) {
           uploadButton.setDisable(false);
           stopButton.setDisable(true);
+        } else {
+          addInfo(newValue);
         }
-        addInfo(newValue);
       }
     });
 
     prevButton.linkTo("LoginPane", stage);
   }
-  
+
   private void setContent() {
     addElement("upload-intro", 40);
 
@@ -120,18 +123,34 @@ public class UploadPane extends WikiPane {
 
     nextButton.setVisible(false);
   }
-  
+
   /*
    * methods
    *****************************************************************************
    */
-
   private void addInfo(String text) {
     infoContainer.getChildren().add(new WikiLabel(text).setAlign("left"));
   }
-  
+
+  /**
+   * Retuns human-readable error from MediaWiki API
+   * 
+   * @url https://www.mediawiki.org/wiki/API:Errors_and_warnings#Errors
+   * @param error raw MediaWiki error
+   * @return error string
+   */
+  private String getMediaWikiError(Exception error) {
+    final Pattern errorPattern = Pattern.compile("info=\"(.*?)\"");
+    Matcher m = errorPattern.matcher(error.getLocalizedMessage());
+    while (m.find()) {
+      return m.group(1);
+    }
+    return error.getLocalizedMessage();
+  }
+
   /**
    * Checks if file name is taken on Wikimedia Commons
+   *
    * @param name file name (without File: prefix)
    * @return true if name is taken
    */
@@ -144,42 +163,47 @@ public class UploadPane extends WikiPane {
       return false;
     }
   }
-
+  
   private void uploadFiles() {
     Task task = new Task() {
       @Override
       protected Object call() {
         final String summary = Settings.NAME + " " + Settings.VERSION;
-
-        int i = 0;
+        int current = 0;
+        int max = Session.FILES_TO_UPLOAD.size();
+        
         int uploaded = 0;
         int skipped = 0;
 
         for (UploadElement ue : Session.FILES_TO_UPLOAD) {
-          i++;
+          current++;
           if (!stopRq) {
-            updateMessage(String.format("[%s/%s] Uploading %s",
-                    i, Session.FILES_TO_UPLOAD.size(), ue.getData("name")));
+            updateMessage(Util.text("upload-log-uploading", current, max, ue.getData("name")));
             try {
               if (isFileNameTaken(ue.getData("name"))) {
+                updateMessage(Util.text("upload-log-error", current, max, Util.text("upload-log-error-name-taken")));
+                Thread.sleep(10);
                 skipped++;
                 continue;
               }
               Session.WIKI.upload(ue.getFile(), ue.getData("name"), ue.getWikicode(), summary);
+              Thread.sleep(10);
+              updateMessage(Util.text("upload-log-success", current, max));
               uploaded++;
-            } catch (IOException | LoginException ex) {
-              updateMessage(Util.text("upload-log-error", ex.getLocalizedMessage()));
-              Logger.getLogger(UploadPane.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException | IOException | LoginException ex) {
+              updateMessage(Util.text("upload-log-error", current, max, getMediaWikiError(ex)));
+              try { Thread.sleep(10); } catch (InterruptedException e) {}
               skipped++;
             }
           }
         }
+        updateMessage("_COMPLETE_UPLOAD");
+        try { Thread.sleep(10); } catch (InterruptedException e) {}
         updateMessage(Util.text("upload-log-done", uploaded, skipped));
         return true;
       }
     };
-    Thread t = new Thread(task);
     fakeLoger.textProperty().bind(task.messageProperty());
-    t.start();
+    new Thread(task).start();
   }
 }
