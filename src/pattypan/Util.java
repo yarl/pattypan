@@ -76,6 +76,7 @@ public final class Util {
    * Open URL in browser
    * 
    * @source http://stackoverflow.com/a/28807079
+   * @param url website URL
    */
   public static void openUrl(String url) {
     String os = System.getProperty("os.name").toLowerCase();
