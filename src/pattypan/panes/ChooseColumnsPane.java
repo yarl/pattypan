@@ -23,8 +23,6 @@
  */
 package pattypan.panes;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;

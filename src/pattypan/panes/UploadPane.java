@@ -37,7 +37,6 @@ import javafx.scene.Node;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import javax.security.auth.login.LoginException;
 import pattypan.Session;
@@ -60,11 +59,6 @@ public class UploadPane extends WikiPane {
 
   VBox infoContainer = new VBox(4);
 
-  /**
-   * UploadPane constructor
-   *
-   * @param stage program stage
-   */
   public UploadPane(Stage stage) {
     super(stage, 2.0);
     this.stage = stage;

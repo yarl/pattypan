@@ -53,14 +53,55 @@ public class CheckPane extends WikiPane {
     setContent();
   }
 
+  /*
+   * set content and actions
+   *****************************************************************************
+   */
   public WikiPane getContent() {
     return this;
   }
+  
+  private void setContent() {
+    addElement("check-intro", 40);
 
+    Session.FILES_TO_UPLOAD.stream().map(uploadElement -> {
+      String name = uploadElement.getData("name");
+      Hyperlink label = new Hyperlink(name);
+
+      label.setTooltip(new Tooltip(name));
+      label.setOnAction(event -> {
+        setDetails(uploadElement);
+      });
+      return label;
+    }).forEach(label -> {
+      fileListContainer.getChildren().add(label);
+    });
+
+    addElementRow(10,
+            new Node[]{new WikiScrollPane(fileListContainer).setWidth(250), new WikiScrollPane(detailsContainer)},
+            new Priority[]{Priority.SOMETIMES, Priority.SOMETIMES}
+    );
+
+    setDetails(Session.FILES_TO_UPLOAD.get(0));
+
+    prevButton.linkTo("LoadPane", stage);
+    nextButton.linkTo("LoginPane", stage);
+  }
+
+  /*
+   * methods
+   *****************************************************************************
+   */
+  
+  /**
+   * Shows details of selected file
+   * 
+   * @param ue 
+   */
   private void setDetails(UploadElement ue) {
     
     WikiLabel title = new WikiLabel(ue.getData("name")).setClass("header").setAlign("left");
-    Hyperlink preview = new Hyperlink("Preview");
+    Hyperlink preview = new Hyperlink(Util.text("check-preview"));
     WikiLabel wikitext = new WikiLabel(ue.getWikicode()).setAlign("left");
     
     preview.setOnAction(event -> {
@@ -76,34 +117,5 @@ public class CheckPane extends WikiPane {
 
     detailsContainer.getChildren().clear();
     detailsContainer.getChildren().addAll(title, preview, wikitext);
-  }
-  
-  private WikiPane setContent() {
-    addElement("check-intro", 40);
-
-    Session.FILES_TO_UPLOAD.stream().map(uploadElement -> {
-      String name = uploadElement.getData("name"); 
-      Hyperlink label = new Hyperlink(name);
-      
-      label.setTooltip(new Tooltip(name));
-      label.setOnAction(event -> {
-        setDetails(uploadElement);
-      });
-      return label;
-    }).forEach(label -> {
-      fileListContainer.getChildren().add(label);
-    });
-       
-    addElementRow(10,
-            new Node[]{new WikiScrollPane(fileListContainer).setWidth(250), new WikiScrollPane(detailsContainer)},
-            new Priority[]{Priority.SOMETIMES, Priority.SOMETIMES}
-    );
-    
-    setDetails(Session.FILES_TO_UPLOAD.get(0));
-
-    prevButton.linkTo("LoadPane", stage);
-    nextButton.linkTo("LoginPane", stage);
-
-    return this;
   }
 }
