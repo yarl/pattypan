@@ -45,6 +45,7 @@ public class CheckPane extends WikiPane {
   Stage stage;
   VBox fileListContainer = new VBox(4);
   VBox detailsContainer = new VBox(4);
+  Hyperlink prevLabel = new Hyperlink();
 
   public CheckPane(Stage stage) {
     super(stage, 1.34);
@@ -70,7 +71,7 @@ public class CheckPane extends WikiPane {
 
       label.setTooltip(new Tooltip(name));
       label.setOnAction(event -> {
-        setDetails(uploadElement);
+        setDetails(uploadElement, label);
       });
       return label;
     }).forEach(label -> {
@@ -82,7 +83,7 @@ public class CheckPane extends WikiPane {
             new Priority[]{Priority.SOMETIMES, Priority.SOMETIMES}
     );
 
-    setDetails(Session.FILES_TO_UPLOAD.get(0));
+    setDetails(Session.FILES_TO_UPLOAD.get(0), (Hyperlink) fileListContainer.getChildren().get(0));
 
     prevButton.linkTo("LoadPane", stage);
     nextButton.linkTo("LoginPane", stage);
@@ -98,11 +99,15 @@ public class CheckPane extends WikiPane {
    * 
    * @param ue 
    */
-  private void setDetails(UploadElement ue) {
+  private void setDetails(UploadElement ue, Hyperlink label) {
     
     WikiLabel title = new WikiLabel(ue.getData("name")).setClass("header").setAlign("left");
     Hyperlink preview = new Hyperlink(Util.text("check-preview"));
     WikiLabel wikitext = new WikiLabel(ue.getWikicode()).setAlign("left");
+    
+    prevLabel.getStyleClass().remove("bold");
+    prevLabel = label;
+    prevLabel.getStyleClass().add("bold");
     
     preview.setOnAction(event -> {
       try {
