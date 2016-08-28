@@ -129,7 +129,7 @@ public class StartPane extends GridPane {
         }
       }
     } catch (UnknownHostException ex) {
-      Logger.getLogger(StartPane.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(StartPane.class.getName()).log(Level.INFO, "No internet connection found");
     } catch (Exception ex) {
       Logger.getLogger(StartPane.class.getName()).log(Level.SEVERE, null, ex);
     }
