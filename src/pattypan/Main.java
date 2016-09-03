@@ -40,7 +40,7 @@ public class Main extends Application {
 
     Scene scene = new Scene(new StartPane(stage), Settings.getSettingInt("windowWidth"), Settings.getSettingInt("windowHeight"));
     stage.setResizable(true);
-    stage.setTitle("pattypan");
+    stage.setTitle("pattypan " + Settings.VERSION);
     stage.getIcons().add(logo);
     stage.setScene(scene);
     stage.show();
