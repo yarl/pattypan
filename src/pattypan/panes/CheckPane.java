@@ -23,6 +23,7 @@
  */
 package pattypan.panes;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.logging.Level;
@@ -30,6 +31,8 @@ import java.util.logging.Logger;
 import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -95,6 +98,37 @@ public class CheckPane extends WikiPane {
    */
   
   /**
+   * Gets thumbnail of file
+   * 
+   * @param file
+   * @return 
+   */
+  private ImageView getScaledThumbnail(File file) {
+    Image img = new Image(file.toURI().toString());
+    ImageView view = new ImageView(img);
+    
+    int originalWidth = (int) img.getWidth();
+    int originalHeight = (int) img.getHeight();
+    int boundWidth = 400;
+    int boundHeight = 400;
+    int width = originalWidth;
+    int height = originalHeight;
+
+    if (originalWidth > boundWidth) {
+      width = boundWidth;
+      height = (width * originalHeight) / originalWidth;
+    }
+    if (height > boundHeight) {
+      height = boundHeight;
+      width = (height * originalWidth) / originalHeight;
+    }
+    
+    view.setFitHeight(height);
+    view.setFitWidth(width);
+    return view;
+  }
+  
+  /**
    * Shows details of selected file
    * 
    * @param ue 
@@ -102,6 +136,7 @@ public class CheckPane extends WikiPane {
   private void setDetails(UploadElement ue, Hyperlink label) {
     
     WikiLabel title = new WikiLabel(ue.getData("name")).setClass("header").setAlign("left");
+    WikiLabel path = new WikiLabel(ue.getData("path")).setAlign("left");
     Hyperlink preview = new Hyperlink(Util.text("check-preview"));
     WikiLabel wikitext = new WikiLabel(ue.getWikicode()).setAlign("left");
     
@@ -121,6 +156,6 @@ public class CheckPane extends WikiPane {
     });
 
     detailsContainer.getChildren().clear();
-    detailsContainer.getChildren().addAll(title, preview, wikitext);
+    detailsContainer.getChildren().addAll(title, path, getScaledThumbnail(ue.getFile()), preview, wikitext);
   }
 }
