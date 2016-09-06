@@ -138,7 +138,7 @@ public class CheckPane extends WikiPane {
     WikiLabel title = new WikiLabel(ue.getData("name")).setClass("header").setAlign("left");
     WikiLabel path = new WikiLabel(ue.getData("path")).setAlign("left");
     Hyperlink preview = new Hyperlink(Util.text("check-preview"));
-    WikiLabel wikitext = new WikiLabel(ue.getWikicode()).setAlign("left");
+    WikiLabel wikitext = new WikiLabel(ue.getWikicode()).setClass("monospace").setAlign("left");
     
     prevLabel.getStyleClass().remove("bold");
     prevLabel = label;

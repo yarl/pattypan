@@ -63,6 +63,10 @@ THE SOFTWARE.
   -fx-font-weight: bold;
 }
 
+.monospace {
+  -fx-font-family: "monospace";
+}
+
 .message {
   -fx-padding: .5em 1em .5em 1em;
   -fx-border-width: 2px;
