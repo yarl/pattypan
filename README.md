@@ -28,7 +28,7 @@ java -jar pattypan.jar -test
 java -jar pattypan.jar "test.wikipedia.org"
 ```
 
-If you have problems with program running, check [article on project wiki](https://github.com/yarl/pattypan/wiki/Run).
+Please note, that on test server file upload may be disabled for regular users. Admin account is suggested, you can request rights [here](https://test.wikipedia.org/wiki/Wikipedia:Requests/Permissions). If you have problems with program running, check [article on project wiki](https://github.com/yarl/pattypan/wiki/Run).
 
 ### License
 Copyright (c) 2016 Paweł Marynowski.
