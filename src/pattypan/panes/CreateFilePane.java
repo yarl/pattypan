@@ -62,7 +62,7 @@ public class CreateFilePane extends WikiPane {
   WikiLabel descLabel;
   WikiTextField fileName = new WikiTextField("").setPlaceholder("create-file-filename").setWidth(300);
   WikiButton createButton = new WikiButton("create-file-button", "primary").setWidth(300);
-  
+
   public CreateFilePane(Stage stage) {
     super(stage, 1.0);
     this.stage = stage;
@@ -132,19 +132,19 @@ public class CreateFilePane extends WikiPane {
   private void createSpreadsheet() throws IOException, BiffException, WriteException {
     File f = new File(Session.DIRECTORY, fileName.getText() + ".xls");
     WritableWorkbook workbook = Workbook.createWorkbook(f);
-    
+
     createDataSheet(workbook);
     createTemplateSheet(workbook);
-    
+
     workbook.write();
     workbook.close();
     Session.FILE = f;
   }
 
   /**
-   * 
+   *
    * @param workbook
-   * @throws WriteException 
+   * @throws WriteException
    */
   private void createDataSheet(WritableWorkbook workbook) throws WriteException {
     WritableSheet sheet = workbook.createSheet("Data", 0);
@@ -161,11 +161,11 @@ public class CreateFilePane extends WikiPane {
       sheet.addCell(new Label(0, row, file.getAbsolutePath()));
       sheet.addCell(new Label(1, row++, Util.getNameFromFilename(file.getName())));
     }
-    
+
     if (Session.METHOD.equals("template")) {
       Template template = Settings.TEMPLATES.get(Session.TEMPLATE);
       for (TemplateField tf : template.variables) {
-        if(tf.isSelected && !tf.value.isEmpty()) {
+        if (tf.isSelected && !tf.value.isEmpty()) {
           column = Session.VARIABLES.indexOf(tf.name);
           row = 1;
           for (File file : Session.FILES) {
@@ -174,24 +174,24 @@ public class CreateFilePane extends WikiPane {
         }
       }
     }
-    
+
     column = Session.VARIABLES.indexOf("date");
-    if(column >= 0 && !Settings.getSetting("exifDate").isEmpty()) {
+    if (column >= 0 && !Settings.getSetting("exifDate").isEmpty()) {
       row = 1;
       for (File file : Session.FILES) {
         sheet.addCell(new Label(column, row++, getExifDate(file)));
       }
     }
-    
+
     for (int num = 0; num < sheet.getColumns(); num++) {
       autoSizeColumn(num, sheet);
     }
   }
-  
+
   /**
-   * 
+   *
    * @param workbook
-   * @throws WriteException 
+   * @throws WriteException
    */
   private void createTemplateSheet(WritableWorkbook workbook) throws WriteException {
     WritableSheet templateSheet = workbook.createSheet("Template", 1);
@@ -201,18 +201,18 @@ public class CreateFilePane extends WikiPane {
 
     autoSizeColumn(0, templateSheet);
   }
-  
+
   /**
-   * 
+   *
    * @param filePath
-   * @return 
+   * @return
    */
   private String getExifDate(File file) {
     try {
       Metadata metadata = ImageMetadataReader.readMetadata(file);
       Directory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
       int dateTag = ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL;
-      
+
       if (directory != null && directory.containsTag(dateTag)) {
         Date date = directory.getDate(dateTag, TimeZone.getDefault());
         return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(date);

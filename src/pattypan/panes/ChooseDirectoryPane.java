@@ -100,7 +100,6 @@ public class ChooseDirectoryPane extends WikiPane {
    * methods
    *****************************************************************************
    */
-  
   /**
    * Opens directory chooser
    */

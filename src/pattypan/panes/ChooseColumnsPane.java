@@ -66,11 +66,10 @@ public class ChooseColumnsPane extends WikiPane {
    * set content and actions
    *****************************************************************************
    */
-  
   public WikiPane getContent() {
     return this;
   }
-  
+
   private WikiPane setActions() {
     wikicodeLink.setOnAction(event -> {
       templateDescContainer.getChildren().clear();
@@ -141,12 +140,11 @@ public class ChooseColumnsPane extends WikiPane {
     wikicodePane.getChildren().addAll(templateBox, wikicodeText);
     return this;
   }
-  
+
   /*
    * methods
    *****************************************************************************
    */
-
   /**
    * Adds checkboxes with wikitemplate fields.
    *

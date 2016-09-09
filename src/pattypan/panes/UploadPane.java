@@ -128,7 +128,7 @@ public class UploadPane extends WikiPane {
 
   /**
    * Retuns human-readable error from MediaWiki API
-   * 
+   *
    * @url https://www.mediawiki.org/wiki/API:Errors_and_warnings#Errors
    * @param error raw MediaWiki error
    * @return error string
@@ -157,7 +157,7 @@ public class UploadPane extends WikiPane {
       return false;
     }
   }
-  
+
   private void uploadFiles() {
     Task task = new Task() {
       @Override
@@ -165,7 +165,7 @@ public class UploadPane extends WikiPane {
         final String summary = Settings.NAME + " " + Settings.VERSION;
         int current = 0;
         int max = Session.FILES_TO_UPLOAD.size();
-        
+
         int uploaded = 0;
         int skipped = 0;
 
@@ -186,13 +186,19 @@ public class UploadPane extends WikiPane {
               uploaded++;
             } catch (InterruptedException | IOException | LoginException ex) {
               updateMessage(Util.text("upload-log-error", current, max, getMediaWikiError(ex)));
-              try { Thread.sleep(10); } catch (InterruptedException e) {}
+              try {
+                Thread.sleep(10);
+              } catch (InterruptedException e) {
+              }
               skipped++;
             }
           }
         }
         updateMessage("_COMPLETE_UPLOAD");
-        try { Thread.sleep(10); } catch (InterruptedException e) {}
+        try {
+          Thread.sleep(10);
+        } catch (InterruptedException e) {
+        }
         updateMessage(Util.text("upload-log-done", uploaded, skipped));
         return true;
       }

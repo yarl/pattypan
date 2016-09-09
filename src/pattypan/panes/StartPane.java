@@ -90,10 +90,10 @@ public class StartPane extends GridPane {
 
     this.addRow(0, new WikiLabel("pattypan").setClass("title"));
     this.addRow(1, new WikiLabel("v. " + Settings.VERSION));
-    if(!Session.WIKI.getDomain().equals("commons.wikimedia.org")) {
+    if (!Session.WIKI.getDomain().equals("commons.wikimedia.org")) {
       this.addRow(3, new WikiLabel(Session.WIKI.getDomain()));
     }
-    
+
     this.addRow(20, new HBox(20,
             new WikiButton("start-generate-button", "primary").setWidth(300).linkTo("ChooseDirectoryPane", stage),
             new WikiButton("start-validate-button").setWidth(300).linkTo("LoadPane", stage)));
@@ -115,7 +115,6 @@ public class StartPane extends GridPane {
    * methods
    *****************************************************************************
    */
-  
   /**
    * Checks if this Pattypan version is the lastest one. If no, show alert.
    */

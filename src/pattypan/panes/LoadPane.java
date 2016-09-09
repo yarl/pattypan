@@ -80,16 +80,15 @@ public class LoadPane extends WikiPane {
     setContent();
     setActions();
   }
-  
+
   /*
    * set content and actions
    *****************************************************************************
    */
-  
   public WikiPane getContent() {
     return this;
   }
-  
+
   private void setActions() {
     browseButton.setOnAction(event -> {
       selectSpreadSheetFile();
@@ -115,12 +114,11 @@ public class LoadPane extends WikiPane {
     nextButton.linkTo("CheckPane", stage);
     nextButton.setDisable(true);
   }
-  
+
   /*
    * methods
    *****************************************************************************
    */
-  
   private boolean checkIfFileExist(String path) {
     String fixedPath = path.trim()
             .replace("/", File.separator)
@@ -128,7 +126,7 @@ public class LoadPane extends WikiPane {
     File file = new File(fixedPath);
     return file.isFile();
   }
-  
+
   /**
    *
    * @param descriptions
@@ -161,7 +159,7 @@ public class LoadPane extends WikiPane {
         if (!checkIfFileExist(description.get("path"))) {
           throw new Exception("file not found");
         }
-        
+
         Set<String> keys = Util.getKeysByValue(description, "");
         if (keys.size() > 0) {
           String values = keys.toString();
@@ -181,8 +179,8 @@ public class LoadPane extends WikiPane {
         }
 
         Session.FILES_TO_UPLOAD.add(new UploadElement(description, wikicode));
-        
-      } catch(Exception ex) {
+
+      } catch (Exception ex) {
         errors.add(namePath + ex.getMessage());
       }
     }
@@ -202,7 +200,7 @@ public class LoadPane extends WikiPane {
       nextButton.setDisable(false);
     }
   }
-  
+
   private void addInfo(String text) {
     addInfo(text, "");
   }
@@ -210,7 +208,7 @@ public class LoadPane extends WikiPane {
   private void addInfo(String text, String cssClass) {
     infoContainer.getChildren().add(new WikiLabel(text).setAlign("left").setClass(cssClass));
   }
-  
+
   /**
    * Checks headers of data sheet (first row).
    *
@@ -260,10 +258,10 @@ public class LoadPane extends WikiPane {
     }
     return value;
   }
-  
+
   /**
    * Sets all session stuff and reads spreadsheet.
-   * 
+   *
    * @param file spreadsheet file
    */
   private void loadSpreadsheet(File file) {
@@ -271,7 +269,7 @@ public class LoadPane extends WikiPane {
     Session.FILE = file;
     browsePath.setText(file.getAbsolutePath());
     Settings.setSetting("path", Session.DIRECTORY.getAbsolutePath());
-    
+
     try {
       readSpreadSheet();
     } catch (IOException ex) {
@@ -284,10 +282,10 @@ public class LoadPane extends WikiPane {
       addInfo(ex.getMessage());
     }
   }
-  
+
   /**
    * Reads file descriptions from data sheet
-   * 
+   *
    * @param sheet sheet with file descriptions
    * @return
    * @throws Exception
@@ -311,7 +309,7 @@ public class LoadPane extends WikiPane {
     }
     return descriptions;
   }
-  
+
   /**
    * Reads spreadsheet stored in Session.FILE.
    */
@@ -331,10 +329,10 @@ public class LoadPane extends WikiPane {
 
     reloadButton.setDisable(false);
   }
-  
+
   /**
    * Reads wikitemplate from template sheet
-   * 
+   *
    * @param sheet sheet with wikitemplate
    * @return
    * @throws IOException
@@ -343,7 +341,7 @@ public class LoadPane extends WikiPane {
     String text = sheet.getCell(0, 0).getContents();
     return new Template("wikitemplate", new StringReader(text), cfg);
   }
-  
+
   /**
    * Shows spreadsheet shooser dialog.
    */

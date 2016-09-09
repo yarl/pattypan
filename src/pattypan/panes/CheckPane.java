@@ -64,7 +64,7 @@ public class CheckPane extends WikiPane {
   public WikiPane getContent() {
     return this;
   }
-  
+
   private void setContent() {
     addElement("check-intro", 40);
 
@@ -96,17 +96,16 @@ public class CheckPane extends WikiPane {
    * methods
    *****************************************************************************
    */
-  
   /**
    * Gets thumbnail of file
-   * 
+   *
    * @param file
-   * @return 
+   * @return
    */
   private ImageView getScaledThumbnail(File file) {
     Image img = new Image(file.toURI().toString());
     ImageView view = new ImageView(img);
-    
+
     int originalWidth = (int) img.getWidth();
     int originalHeight = (int) img.getHeight();
     int boundWidth = 400;
@@ -122,28 +121,28 @@ public class CheckPane extends WikiPane {
       height = boundHeight;
       width = (height * originalWidth) / originalHeight;
     }
-    
+
     view.setFitHeight(height);
     view.setFitWidth(width);
     return view;
   }
-  
+
   /**
    * Shows details of selected file
-   * 
-   * @param ue 
+   *
+   * @param ue
    */
   private void setDetails(UploadElement ue, Hyperlink label) {
-    
+
     WikiLabel title = new WikiLabel(ue.getData("name")).setClass("header").setAlign("left");
     WikiLabel path = new WikiLabel(ue.getData("path")).setAlign("left");
     Hyperlink preview = new Hyperlink(Util.text("check-preview"));
     WikiLabel wikitext = new WikiLabel(ue.getWikicode()).setClass("monospace").setAlign("left");
-    
+
     prevLabel.getStyleClass().remove("bold");
     prevLabel = label;
     prevLabel.getStyleClass().add("bold");
-    
+
     preview.setOnAction(event -> {
       try {
         Util.openUrl("https://commons.wikimedia.org/wiki/Special:ExpandTemplates"
