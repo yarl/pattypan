@@ -124,7 +124,7 @@ public final class Util {
 
   /* file utils */
   private final static ArrayList<String> allowedExtentionImage
-          = new ArrayList<>(Arrays.asList("png", "gif", "jpg", "jpeg", "tiff", "tif", "xcf"));
+          = new ArrayList<>(Arrays.asList("png", "gif", "jpg", "jpeg", "ogg", "tiff", "tif", "wav", "xcf"));
 
   public static String getNameFromFilename(String filename) {
     int pos = filename.lastIndexOf(".");
