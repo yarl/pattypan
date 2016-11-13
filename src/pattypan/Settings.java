@@ -147,6 +147,83 @@ public final class Settings {
                     + "</#if>"
             )
     );
+    TEMPLATES.put(
+            "Book",
+            new Template("Book",
+                    new TemplateField[]{
+                      new TemplateField("author", "Author"),
+                      new TemplateField("translator", "Translator"),
+                      new TemplateField("editor", "Editor"),
+                      new TemplateField("illustrator", "Illustrator"),
+                      new TemplateField("title", "Title"),
+                      new TemplateField("subtitle", "Subtitle"),
+                      new TemplateField("series_title", "Series title"),
+                      new TemplateField("volume", "Volume"),
+                      new TemplateField("edition", "Edition"),
+                      new TemplateField("publisher", "Publisher"),
+                      new TemplateField("printer", "Printer"),
+                      new TemplateField("date", "Date"),
+                      new TemplateField("city", "City"),
+                      new TemplateField("language", "Language"),
+                      new TemplateField("description", "Description"),
+                      new TemplateField("source", "Source"),
+                      new TemplateField("permission", "Permission"),
+                      new TemplateField("image", "Image"),
+                      new TemplateField("image_page", "Image page"),
+                      new TemplateField("pageoverview", "Page overview"),
+                      new TemplateField("wikisource", "Wikisource"),
+                      new TemplateField("homecat", "Home category"),
+                      new TemplateField("other_versions", "Other versions"),
+                      new TemplateField("isbn", "ISBN"),
+                      new TemplateField("lccn", "LCCN"),
+                      new TemplateField("oclc", "OCLC"),
+                      new TemplateField("references", "References"),
+                      new TemplateField("linkback", "Linkback"),
+                      new TemplateField("wikidata", "Wikidata"),
+                    }, "=={{int:filedesc}}==\n"
+                    + "{{Book\n"
+                    + " |Author = ${author}\n"
+                    + " |Translator = ${translator}\n"
+                    + " |Editor = ${editor}\n"
+                    + " |Illustrator = ${illustrator}\n"
+                    + " |Title = ${title}\n"
+                    + " |Subtitle = ${subtitle}\n"
+                    + " |Series title = ${series_title}\n"
+                    + " |Volume = ${volume}\n"
+                    + " |Edition = ${edition}\n"
+                    + " |Publisher = ${publisher}\n"
+                    + " |Printer = ${printer}\n"
+                    + " |Date = ${date}\n"
+                    + " |City = ${city}\n"
+                    + " |Language = ${language}\n"
+                    + " |Description = ${description}\n"
+                    + " |Source = ${source}\n"
+                    + " |Permission = ${permission}\n"
+                    + " |Image = ${image}\n"
+                    + " |Image page = ${image_page}\n"
+                    + " |Pageoverview = ${pageoverview}\n"
+                    + " |Wikisource = ${wikisource}\n"
+                    + " |Homecat = ${homecat}\n"
+                    + " |Other_versions = ${other_versions}\n"
+                    + " |ISBN = ${isbn}\n"
+                    + " |LCCN = ${lccn}\n"
+                    + " |OCLC = ${oclc}\n"
+                    + " |References = ${references}\n"
+                    + " |Linkback = ${linkback}\n"
+                    + " |Wikidata = ${wikidata}\n"
+                    + "}}\n\n"
+                    + "=={{int:license-header}}==\n"
+                    + "${license}${partnership}"
+                    + "\n\n"
+                    + "<#if categories ? has_content>\n"
+                    + "<#list categories ? split(\";\") as category>\n"
+                    + "[[Category:${category?trim}]]\n"
+                    + "</#list>\n"
+                    + "<#else>{{subst:unc}}\n"
+                    + "</#if>"
+            )
+    );
+
     TEMPLATES.put("Photograph",
             new Template("Photograph",
                     new TemplateField[]{
