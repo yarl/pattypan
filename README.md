@@ -6,13 +6,22 @@ __[:arrow_down: Download](https://github.com/yarl/pattypan/releases)__
 
 ----
 
+This program is being developed using [NetBeans IDE](https://netbeans.org/).
+
 ### Build and run
-Program is being written using [NetBeans IDE](https://netbeans.org/) and [Apache Ant](https://ant.apache.org/) is used for building. In order to download and build source code, do following:
+In order to build Pattypan, please:
+
+Download and install:
+
+- [Apache Ant](https://ant.apache.org/)
+- the JavaFX libraries (included in Oracle's JDK but not in OpenJDK)
+
+Then run these commands in a terminal:
 
 ```
 git clone https://github.com/yarl/pattypan.git
 cd pattypan
-ant package-for-store
+ant javafx.deploy.includeDT=true package-for-store
 ```
 You will find compiled `.jar` file in `store` directory.
 
