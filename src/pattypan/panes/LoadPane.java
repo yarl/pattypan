@@ -181,7 +181,7 @@ public class LoadPane extends WikiPane {
         Session.FILES_TO_UPLOAD.add(new UploadElement(description, wikicode));
 
       } catch (Exception ex) {
-        errors.add(namePath + ex.getMessage());
+        errors.add(namePath + " " + ex.getMessage());
       }
     }
 
