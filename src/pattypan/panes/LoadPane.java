@@ -340,9 +340,13 @@ public class LoadPane extends WikiPane {
    * @return
    * @throws IOException
    */
-  private Template readTemplate(Sheet sheet) throws IOException {
-    String text = sheet.getCell(0, 0).getContents();
-    return new Template("wikitemplate", new StringReader(text), cfg);
+  private Template readTemplate(Sheet sheet) throws Exception {
+    try {
+      String text = sheet.getCell(0, 0).getContents();
+      return new Template("wikitemplate", new StringReader(text), cfg);
+    } catch (ArrayIndexOutOfBoundsException ex) {
+      throw new Exception("Error: template in spreadsheet looks empty. Check if wikitemplate is present in second tab of your spreadsheet (first row and first column).");
+    }
   }
 
   /**
