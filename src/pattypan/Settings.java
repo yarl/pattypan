@@ -180,6 +180,8 @@ public final class Settings {
                       new TemplateField("references", "References"),
                       new TemplateField("linkback", "Linkback"),
                       new TemplateField("wikidata", "Wikidata"),
+                      new TemplateField("license", "License"),
+                      new TemplateField("partnership", "Partnership")
                     }, "=={{int:filedesc}}==\n"
                     + "{{Book\n"
                     + " |Author = ${author}\n"
@@ -298,7 +300,7 @@ public final class Settings {
 
   /**
    * Gets directory for local user settings
-   * 
+   *
    * @source http://stackoverflow.com/a/16660314/1418878
    * @return path to local Pattypan directory
    */
@@ -308,7 +310,7 @@ public final class Settings {
 
     if (OS.contains("WIN")) {
       dir = System.getenv("AppData") + "/Pattypan";
-    } else if(OS.contains("NUX")) {
+    } else if (OS.contains("NUX")) {
       dir = System.getProperty("user.home") + "/.pattypan";
     } else {
       dir = System.getProperty("user.home");
