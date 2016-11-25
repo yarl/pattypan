@@ -320,12 +320,15 @@ public class LoadPane extends WikiPane {
     WorkbookSettings ws = new WorkbookSettings();
     ws.setEncoding("Cp1252");
 
-    Workbook workbook = Workbook.getWorkbook(Session.FILE, ws);
-    Sheet dataSheet = workbook.getSheet(0);
-    Sheet templateSheet = workbook.getSheet(1);
-
-    readHeaders(dataSheet);
-    addFilesToUpload(readDescriptions(dataSheet), readTemplate(templateSheet));
+    try {
+      Workbook workbook = Workbook.getWorkbook(Session.FILE, ws);
+      Sheet dataSheet = workbook.getSheet(0);
+      Sheet templateSheet = workbook.getSheet(1);
+      readHeaders(dataSheet);
+      addFilesToUpload(readDescriptions(dataSheet), readTemplate(templateSheet));
+    } catch (IndexOutOfBoundsException ex) {
+      throw new Exception("Error: your spreadsheet should have minimum two tabs.");
+    }
 
     reloadButton.setDisable(false);
   }
