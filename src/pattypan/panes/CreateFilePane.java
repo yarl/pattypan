@@ -36,7 +36,11 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import jxl.CellView;
 import jxl.Workbook;
@@ -99,8 +103,8 @@ public class CreateFilePane extends WikiPane {
     createButton.setOnAction(event -> {
       try {
         createSpreadsheet();
-        addElement(new WikiLabel("create-file-success"));
         showOpenFileButton();
+        Settings.saveProperties();
       } catch (IOException | BiffException | WriteException ex) {
         addElement(new WikiLabel("create-file-error"));
         Logger.getLogger(CreateFilePane.class.getName()).log(Level.SEVERE, null, ex);
@@ -111,16 +115,20 @@ public class CreateFilePane extends WikiPane {
   }
 
   private void showOpenFileButton() {
-    nextButton.setText(Util.text("create-file-open"));
-    nextButton.setVisible(true);
-    nextButton.setOnAction(event -> {
+    Hyperlink link = new Hyperlink(Util.text("create-file-open"));
+    TextFlow flow = new TextFlow(new WikiLabel("create-file-success"), link);
+    flow.setTextAlignment(TextAlignment.CENTER);
+    addElement(flow);
+    link.setOnAction(ev -> {
       try {
         Desktop.getDesktop().open(Session.FILE);
-        //stage.close();
       } catch (IOException ex) {
         Logger.getLogger(CreateFilePane.class.getName()).log(Level.SEVERE, null, ex);
       }
     });
+    
+    nextButton.linkTo("StartPane", stage).setText(Util.text("create-file-back-to-start"));
+    nextButton.setVisible(true);
   }
 
   private void autoSizeColumn(int column, WritableSheet sheet) {
@@ -208,6 +216,7 @@ public class CreateFilePane extends WikiPane {
    * @return
    */
   private String getExifDate(File file) {
+
     try {
       Metadata metadata = ImageMetadataReader.readMetadata(file);
       Directory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
