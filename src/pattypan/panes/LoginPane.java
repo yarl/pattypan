@@ -26,8 +26,12 @@ package pattypan.panes;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import pattypan.Session;
 import pattypan.Settings;
@@ -42,6 +46,7 @@ public class LoginPane extends WikiPane {
 
   Stage stage;
 
+  Hyperlink link = new Hyperlink(Util.text("login-2fa"));
   WikiTextField loginText = new WikiTextField("").setPlaceholder("login-login-field").setWidth(300);
   WikiPasswordField passwordText = new WikiPasswordField().setPlaceholder("login-password-field").setWidth(300);
   WikiButton loginButton = new WikiButton("login-login-button").setWidth(300);
@@ -64,6 +69,10 @@ public class LoginPane extends WikiPane {
   }
 
   private void setActions() {
+    link.setOnAction(event -> {
+      Util.openUrl("https://commons.wikimedia.org/wiki/Commons:Pattypan/Two-factor_authentication");
+    });
+    
     passwordText.setOnKeyPressed((KeyEvent event) -> {
       if (event.getCode().equals(KeyCode.ENTER)) {
         logIn();
@@ -79,7 +88,10 @@ public class LoginPane extends WikiPane {
   }
 
   private void setContent() {
-    addElement("login-intro", 40);
+    TextFlow flow = new TextFlow(new Text(Util.text("login-intro")), link);
+    flow.setTextAlignment(TextAlignment.CENTER);
+    addElement(flow);
+
     addElement(loginText);
     addElement(passwordText);
     addElement(loginButton);
