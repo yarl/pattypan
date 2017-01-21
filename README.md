@@ -1,6 +1,8 @@
 ![Logo](http://i.imgur.com/Wjti8vi.png)
 
-Tool that will enable the volunteer or employee working in a GLAM institution to simplify choosing and uploading selected files to [Wikimedia Commons](https://commons.wikimedia.org/). Created thanks to Wikimedia Foundation [IEG Grant](https://meta.wikimedia.org/wiki/Grants:IEG/Batch_uploader_for_small_GLAM_projects).
+Tool that simplifies [Wikimedia Commons](https://commons.wikimedia.org/) batch file uploading for [GLAM institution](https://outreach.wikimedia.org/wiki/GLAM) volunteers and employees. Created thanks to Wikimedia Foundation [IEG Grant](https://meta.wikimedia.org/wiki/Grants:IEG/Batch_uploader_for_small_GLAM_projects).
+
+For more information on usage, see [Commons:Pattypan](https://commons.wikimedia.org/wiki/Commons:Pattypan).
 
 __[:arrow_down: Download](https://github.com/yarl/pattypan/releases)__
 
