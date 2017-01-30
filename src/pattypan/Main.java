@@ -23,6 +23,8 @@
  */
 package pattypan;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -32,6 +34,8 @@ import org.wikipedia.Wiki;
 import pattypan.panes.StartPane;
 
 public class Main extends Application {
+
+  private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
 
   @Override
   public void start(Stage stage) {
@@ -56,9 +60,27 @@ public class Main extends Application {
    * @param args the command line arguments
    */
   public static void main(String[] args) {
-    if (args.length > 0) {
-      Session.WIKI = new Wiki(args[0].equals("-test") ? "test.wikipedia.org" : args[0]);
+    String wiki = "commons.wikimedia.org";
+    String protocol = "https://";
+    String scriptPath = "/w";
+
+    for (String arg : args) {
+      String[] pair = arg.split("=");
+      if (pair[0].contains("wiki")) {
+        wiki = pair[1];
+      } else if (pair[0].contains("protocol")) {
+        protocol = pair[1];
+      } else if (pair[0].contains("scriptPath")) {
+        scriptPath = pair[1];
+      }
     }
+
+    LOGGER.log(Level.INFO,
+            "Wiki set as: {0}\nProtocol set as: {1}\nScript path set as: {2}",
+            new String[]{wiki, protocol, scriptPath}
+    );
+    
+    Session.WIKI = new Wiki(wiki, scriptPath, protocol);
     launch(args);
   }
 
