@@ -102,7 +102,7 @@ public class StartPane extends GridPane {
             new WikiLabel("start-generate-description").setWidth(300),
             new WikiLabel("start-validate-description").setWidth(300)));
 
-    this.addRow(40, new WikiLabel("2016 // Pawel Marynowski").setClass("muted"));
+    this.addRow(40, new WikiLabel("2017 // Pawel Marynowski").setClass("muted"));
 
     TextFlow flow = new TextFlow(new Text(Util.text("start-bug-found")), link);
     flow.setTextAlignment(TextAlignment.CENTER);
