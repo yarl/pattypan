@@ -176,29 +176,23 @@ public class UploadPane extends WikiPane {
             try {
               if (isFileNameTaken(ue.getData("name"))) {
                 updateMessage(Util.text("upload-log-error", current, max, Util.text("upload-log-error-name-taken")));
-                Thread.sleep(10);
+                Thread.sleep(500);
                 skipped++;
                 continue;
               }
               Session.WIKI.upload(ue.getFile(), ue.getData("name"), ue.getWikicode(), summary);
-              Thread.sleep(10);
+              Thread.sleep(500);
               updateMessage(Util.text("upload-log-success", current, max));
               uploaded++;
             } catch (InterruptedException | IOException | LoginException ex) {
               updateMessage(Util.text("upload-log-error", current, max, getMediaWikiError(ex)));
-              try {
-                Thread.sleep(10);
-              } catch (InterruptedException e) {
-              }
+              try { Thread.sleep(500); } catch (InterruptedException e) {}
               skipped++;
             }
           }
         }
         updateMessage("_COMPLETE_UPLOAD");
-        try {
-          Thread.sleep(10);
-        } catch (InterruptedException e) {
-        }
+        try { Thread.sleep(500); } catch (InterruptedException e) {}
         updateMessage(Util.text("upload-log-done", uploaded, skipped));
         return true;
       }
