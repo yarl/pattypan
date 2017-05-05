@@ -123,8 +123,11 @@ public final class Util {
   }
 
   /* file utils */
-  private final static ArrayList<String> allowedExtentionImage
-          = new ArrayList<>(Arrays.asList("png", "gif", "jpg", "jpeg", "ogg", "svg", "tiff", "tif", "wav", "xcf"));
+  private final static ArrayList<String> allowedExtentionImage = new ArrayList<>(
+          Arrays.asList("djvu", "flac", "gif", "jpg", "jpeg", "mid",
+                  "oga", "ogg","ogv", "opus", "png", "svg", "tiff",
+                  "tif", "wav", "webm", "webp", "xcf")
+  );
 
   public static String getNameFromFilename(String filename) {
     int pos = filename.lastIndexOf(".");
