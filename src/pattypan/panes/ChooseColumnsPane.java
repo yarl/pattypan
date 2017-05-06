@@ -73,6 +73,10 @@ public class ChooseColumnsPane extends WikiPane {
   }
 
   private WikiPane setActions() {
+    if (!Settings.getSetting("template").isEmpty()) {
+      Session.TEMPLATE = Settings.getSetting("template");
+    }
+
     wikicodeLink.setOnAction(event -> {
       templateDescContainer.getChildren().clear();
       templateDescContainer.getChildren().add(wikicodePane);
@@ -91,11 +95,16 @@ public class ChooseColumnsPane extends WikiPane {
         Template template = Settings.TEMPLATES.get(Session.TEMPLATE);
         Session.VARIABLES = template.getComputedVariables();
         Session.WIKICODE = template.getComputedWikicode();
+
+        for (TemplateField tf : template.variables) {
+          Settings.setSetting("var-" + tf.name + "-value", tf.value);
+          Settings.setSetting("var-" + tf.name + "-selection", tf.selection);
+        }
       }
 
       nextButton.goTo("CreateFilePane", stage);
     });
-    showTemplateFieldsChoose(Session.TEMPLATE);
+    showTemplateFields(Session.TEMPLATE);
     return this;
   }
 
@@ -107,15 +116,24 @@ public class ChooseColumnsPane extends WikiPane {
     Settings.TEMPLATES.forEach((key, value) -> {
       Hyperlink label = new Hyperlink(key);
       label.setOnAction(event -> {
+
+        Template template = Settings.TEMPLATES.get(Session.TEMPLATE);
+        for (TemplateField tf : template.variables) {
+          Settings.setSetting("var-" + tf.name + "-value", tf.value);
+          Settings.setSetting("var-" + tf.name + "-selection", tf.selection);
+        }
+
         Session.METHOD = "template";
         Session.TEMPLATE = key;
-        showTemplateFieldsChoose(Session.TEMPLATE);
+        Settings.setSetting("template", Session.TEMPLATE);
+
         if (prevLabel != null) {
           prevLabel.getStyleClass().remove("bold");
         }
         prevLabel = label;
         prevLabel.getStyleClass().add("bold");
 
+        showTemplateFields(Session.TEMPLATE);
       });
       rightContainer.getChildren().add(label);
     });
@@ -159,7 +177,7 @@ public class ChooseColumnsPane extends WikiPane {
    * @param templateName name of wikitemplate
    * @return true, if template exists
    */
-  private boolean showTemplateFieldsChoose(String templateName) {
+  private boolean showTemplateFields(String templateName) {
     Template template = Settings.TEMPLATES.get(templateName);
 
     Hyperlink docLink = new Hyperlink(Util.text("choose-columns-template-doc"));
