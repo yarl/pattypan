@@ -51,6 +51,8 @@ public class ChooseColumnsPane extends WikiPane {
   VBox rightContainer = new VBox(4);
   Hyperlink wikicodeLink;
 
+  Hyperlink prevLabel = null;
+
   VBox wikicodePane = new VBox(10);
   TextArea wikicodeText = new TextArea("");
 
@@ -108,6 +110,12 @@ public class ChooseColumnsPane extends WikiPane {
         Session.METHOD = "template";
         Session.TEMPLATE = key;
         showTemplateFieldsChoose(Session.TEMPLATE);
+        if (prevLabel != null) {
+          prevLabel.getStyleClass().remove("bold");
+        }
+        prevLabel = label;
+        prevLabel.getStyleClass().add("bold");
+
       });
       rightContainer.getChildren().add(label);
     });
