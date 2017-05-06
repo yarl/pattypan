@@ -81,6 +81,7 @@ public class UploadPane extends WikiPane {
       uploadButton.setDisable(true);
       stopButton.setDisable(false);
       uploadFiles();
+      nextButton.setVisible(false);
     });
 
     stopButton.setOnAction((ActionEvent e) -> {
@@ -97,6 +98,9 @@ public class UploadPane extends WikiPane {
           stopButton.setDisable(true);
         } else {
           addInfo(newValue);
+
+          nextButton.linkTo("StartPane", stage, true).setText(Util.text("upload-next-sheet"));
+          nextButton.setVisible(true);
         }
       }
     });

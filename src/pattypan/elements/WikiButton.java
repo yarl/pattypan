@@ -26,6 +26,7 @@ package pattypan.elements;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
@@ -87,7 +88,17 @@ public class WikiButton extends Button {
     });
     return this;
   }
-
+  
+  public WikiButton linkTo(String paneName, Stage stage, boolean clearScenes) {
+    this.setOnAction((ActionEvent event) -> {
+      if(clearScenes) {
+        Session.SCENES = new HashMap<>();
+      }
+      goTo(paneName, stage);
+    });
+    return this;
+  }
+  
   public void goTo(String paneName, Stage stage) {
     Scene scene = Session.SCENES.containsKey(paneName)
             ? Session.SCENES.get(paneName)

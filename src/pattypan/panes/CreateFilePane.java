@@ -134,7 +134,7 @@ public class CreateFilePane extends WikiPane {
       }
     });
     
-    nextButton.linkTo("StartPane", stage).setText(Util.text("create-file-back-to-start"));
+    nextButton.linkTo("StartPane", stage, true).setText(Util.text("create-file-back-to-start"));
     nextButton.setVisible(true);
   }
 
