@@ -225,7 +225,51 @@ public final class Settings {
                     + "</#if>"
             )
     );
-
+    TEMPLATES.put("Musical work",
+            new Template("Musical work",
+                    new TemplateField[]{
+                      new TemplateField("composer", "Composer"),
+                      new TemplateField("lyrics_writer", "Lyrics writer"),
+                      new TemplateField("performer", "Performer"),
+                      new TemplateField("title", "Title"),
+                      new TemplateField("description", "Description"),
+                      new TemplateField("composition_date", "Composition date"),
+                      new TemplateField("performance_date", "Performance date"),
+                      new TemplateField("notes", "Notes"),
+                      new TemplateField("record_ID", "Record ID"),
+                      new TemplateField("image", "Image"),
+                      new TemplateField("references", "References"),
+                      new TemplateField("source", "Source"),
+                      new TemplateField("permission", "Permission"),
+                      new TemplateField("other_versions", "Other versions"),
+                    }, "=={{int:filedesc}}==\n"
+                    + "{{Musical work\n"
+                    + " |composer = ${composer}\n"
+                    + " |lyrics_writer = ${lyrics_writer}\n"
+                    + " |performer = ${performer}\n"
+                    + " |title = ${title}\n"
+                    + " |description = ${description}\n"
+                    + " |composition_date = ${composition_date}\n"
+                    + " |performance_date = ${performance_date}\n"
+                    + " |notes = ${notes}\n"
+                    + " |record_ID = ${record_id}\n"
+                    + " |image = ${image}\n"
+                    + " |references = ${references}\n"
+                    + " |source = ${source}\n"
+                    + " |permission = ${permission}\n"
+                    + " |other_versions = ${other_versions}\n"
+                    + "}}\n\n"
+                    + "=={{int:license-header}}==\n"
+                    + "${license}${partnership}"
+                    + "\n\n"
+                    + "<#if categories ? has_content>\n"
+                    + "<#list categories ? split(\";\") as category>\n"
+                    + "[[Category:${category?trim}]]\n"
+                    + "</#list>\n"
+                    + "<#else>{{subst:unc}}\n"
+                    + "</#if>"
+            )
+    );
     TEMPLATES.put("Photograph",
             new Template("Photograph",
                     new TemplateField[]{
