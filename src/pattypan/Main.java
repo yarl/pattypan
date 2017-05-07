@@ -83,5 +83,4 @@ public class Main extends Application {
     Session.WIKI = new Wiki(wiki, scriptPath, protocol);
     launch(args);
   }
-
 }
