@@ -238,7 +238,7 @@ public final class Settings {
                       new TemplateField("composition_date", "Composition date"),
                       new TemplateField("performance_date", "Performance date"),
                       new TemplateField("notes", "Notes"),
-                      new TemplateField("record_ID", "Record ID"),
+                      new TemplateField("record_id", "Record ID"),
                       new TemplateField("image", "Image"),
                       new TemplateField("references", "References"),
                       new TemplateField("source", "Source"),
