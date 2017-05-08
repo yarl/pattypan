@@ -28,7 +28,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.geometry.Pos;
@@ -102,7 +104,8 @@ public class StartPane extends GridPane {
             new WikiLabel("start-generate-description").setWidth(300),
             new WikiLabel("start-validate-description").setWidth(300)));
 
-    this.addRow(40, new WikiLabel("2016 // Pawel Marynowski").setClass("muted"));
+    String year = new SimpleDateFormat("yyyy").format(new Date());
+    this.addRow(40, new WikiLabel(year + " // Pawel Marynowski").setClass("muted"));
 
     TextFlow flow = new TextFlow(new Text(Util.text("start-bug-found")), link);
     flow.setTextAlignment(TextAlignment.CENTER);

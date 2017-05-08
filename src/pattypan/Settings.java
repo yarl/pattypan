@@ -41,7 +41,7 @@ public final class Settings {
   private Settings() {};
 
   public static final String NAME = "pattypan";
-  public static final String VERSION = "0.6.0";
+  public static final String VERSION = "17.05";
   public static final String USERAGENT = NAME + "/" + VERSION + " (https://github.com/yarl/pattypan)";
 
   public static final Map<String, String> SETTINGS = new HashMap<>();
@@ -181,6 +181,8 @@ public final class Settings {
                       new TemplateField("linkback", "Linkback"),
                       new TemplateField("wikidata", "Wikidata"),
                       new TemplateField("license", "License"),
+                      new TemplateField("partnership", "Partnership"),
+                      new TemplateField("license", "License"),
                       new TemplateField("partnership", "Partnership")
                     }, "=={{int:filedesc}}==\n"
                     + "{{Book\n"
@@ -225,7 +227,53 @@ public final class Settings {
                     + "</#if>"
             )
     );
-
+    TEMPLATES.put("Musical work",
+            new Template("Musical work",
+                    new TemplateField[]{
+                      new TemplateField("composer", "Composer"),
+                      new TemplateField("lyrics_writer", "Lyrics writer"),
+                      new TemplateField("performer", "Performer"),
+                      new TemplateField("title", "Title"),
+                      new TemplateField("description", "Description"),
+                      new TemplateField("composition_date", "Composition date"),
+                      new TemplateField("performance_date", "Performance date"),
+                      new TemplateField("notes", "Notes"),
+                      new TemplateField("record_id", "Record ID"),
+                      new TemplateField("image", "Image"),
+                      new TemplateField("references", "References"),
+                      new TemplateField("source", "Source"),
+                      new TemplateField("permission", "Permission"),
+                      new TemplateField("other_versions", "Other versions"),
+                      new TemplateField("license", "License"),
+                      new TemplateField("partnership", "Partnership")
+                    }, "=={{int:filedesc}}==\n"
+                    + "{{Musical work\n"
+                    + " |composer = ${composer}\n"
+                    + " |lyrics_writer = ${lyrics_writer}\n"
+                    + " |performer = ${performer}\n"
+                    + " |title = ${title}\n"
+                    + " |description = ${description}\n"
+                    + " |composition_date = ${composition_date}\n"
+                    + " |performance_date = ${performance_date}\n"
+                    + " |notes = ${notes}\n"
+                    + " |record_ID = ${record_id}\n"
+                    + " |image = ${image}\n"
+                    + " |references = ${references}\n"
+                    + " |source = ${source}\n"
+                    + " |permission = ${permission}\n"
+                    + " |other_versions = ${other_versions}\n"
+                    + "}}\n\n"
+                    + "=={{int:license-header}}==\n"
+                    + "${license}${partnership}"
+                    + "\n\n"
+                    + "<#if categories ? has_content>\n"
+                    + "<#list categories ? split(\";\") as category>\n"
+                    + "[[Category:${category?trim}]]\n"
+                    + "</#list>\n"
+                    + "<#else>{{subst:unc}}\n"
+                    + "</#if>"
+            )
+    );
     TEMPLATES.put("Photograph",
             new Template("Photograph",
                     new TemplateField[]{

@@ -42,6 +42,7 @@ public class TemplateField {
   public String name;
   public String label;
   public boolean isSelected;
+  public String selection;
   public String value;
 
   CheckBox cb;
@@ -57,36 +58,17 @@ public class TemplateField {
     this.name = name;
     this.label = label;
     this.isSelected = isSelected;
+    this.selection = "YES";
     this.value = constant;
-    
+
     labelElement = new WikiLabel(label).setWidth(200, 500).setHeight(35);
     buttonYes.setSelected(true);
 
     group.selectedToggleProperty().addListener((ObservableValue<? extends Toggle> ov, Toggle tOld, Toggle tNew) -> {
       RadioButton btn = (RadioButton) tNew.getToggleGroup().getSelectedToggle();
-      String id = btn.getId();
-      switch (id) {
-        case "YES":
-          valueText.setVisible(true);
-          labelElement.setDisable(false);
-          this.isSelected = true;
-          break;
-        case "CONST":
-          valueText.setVisible(true);
-          labelElement.setDisable(true);
-          this.isSelected = false;
-          break;
-        case "NO":
-          valueText.setVisible(false);
-          valueText.setText("");
-          labelElement.setDisable(true);
-          this.isSelected = false;
-          break;
-        default:
-          break;
-      }
+      setSelection(btn.getId());
     });
-    
+
     valueText.setOnKeyReleased((KeyEvent event) -> {
       this.value = valueText.getText();
     });
@@ -103,23 +85,28 @@ public class TemplateField {
     VBox vb = new VBox(5);
     HBox hb = new HBox(10);
     HBox hbCheckbox = new HBox(10);
-    
+
+    valueText.setText(Settings.getSetting("var-" + name + "-value"));
+    value = Settings.getSetting("var-" + name + "-value");
+    setSelection(Settings.getSetting("var-" + name + "-selection"));
+
     hb.getChildren().addAll(labelElement,
             buttonYes, buttonConst, buttonNo,
             spacer, valueText, new Region());
     vb.getChildren().add(hb);
-    
-    if(name.equals("date")) {
+
+    if (name.equals("date")) {
       Region r = new Region();
       r.setMaxWidth(622);
       r.setPrefWidth(622);
       r.setMinWidth(420);
       r.setMinHeight(30);
-      
+
       CheckBox checkbox = new CheckBox("Preload date from Exif");
       checkbox.setMaxWidth(500);
       checkbox.setPrefWidth(500);
       checkbox.setMinWidth(305);
+      checkbox.setSelected(Settings.getSetting("exifDate").equals("true"));
       checkbox.setOnAction((ActionEvent e) -> {
         Settings.setSetting("exifDate", checkbox.isSelected() ? "true" : "");
       });
@@ -127,7 +114,34 @@ public class TemplateField {
       hbCheckbox.getChildren().addAll(r, checkbox);
       vb.getChildren().add(hbCheckbox);
     }
-    
+
     return vb;
+  }
+
+  public void setSelection(String id) {
+    this.selection = id;
+    switch (id) {
+      case "YES":
+        valueText.setVisible(true);
+        labelElement.setDisable(false);
+        buttonYes.setSelected(true);
+        this.isSelected = true;
+        break;
+      case "CONST":
+        valueText.setVisible(true);
+        labelElement.setDisable(true);
+        buttonConst.setSelected(true);
+        this.isSelected = false;
+        break;
+      case "NO":
+        valueText.setVisible(false);
+        valueText.setText("");
+        labelElement.setDisable(true);
+        buttonNo.setSelected(true);
+        this.isSelected = false;
+        break;
+      default:
+        break;
+    }
   }
 }

@@ -45,8 +45,8 @@ public class WikiPane extends BorderPane {
   public VBox centerContainer = new VBox(15);
   public HBox bottomContainer = new HBox();
 
-  public WikiButton prevButton = new WikiButton("generic-back", "inversed").setWidth(150);
-  public WikiButton nextButton = new WikiButton("generic-next", "inversed").setWidth(150);
+  public WikiButton prevButton = new WikiButton("generic-back", "inversed").setWidth(250);
+  public WikiButton nextButton = new WikiButton("generic-next", "inversed").setWidth(250);
 
   private final String[] progressBarLabels = {
     Util.text("choose-directory-name"),

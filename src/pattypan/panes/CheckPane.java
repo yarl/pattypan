@@ -145,7 +145,7 @@ public class CheckPane extends WikiPane {
 
     preview.setOnAction(event -> {
       try {
-        Util.openUrl("https://commons.wikimedia.org/wiki/Special:ExpandTemplates"
+        Util.openUrl(Session.WIKI.getProtocol() + Session.WIKI.getDomain() + "/wiki/Special:ExpandTemplates"
                 + "?wpRemoveComments=true"
                 + "&wpInput=" + URLEncoder.encode(ue.getWikicode(), "UTF-8")
                 + "&wpContextTitle=" + URLEncoder.encode(ue.getData("name"), "UTF-8"));

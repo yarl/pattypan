@@ -24,6 +24,8 @@
 package pattypan.panes;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,14 +52,25 @@ import pattypan.elements.WikiScrollPane;
 
 public class UploadPane extends WikiPane {
 
+  private static final Logger LOGGER = Logger.getLogger(UploadPane.class.getName());
+
   Stage stage;
+
   volatile boolean stopRq = false;
+
+  int current = 0;
+  int uploaded = 0;
+  int skipped = 0;
+  ArrayList<UploadElement> failedElements = new ArrayList<>();
+
   WikiLabel fakeLoger = new WikiLabel("");
 
   WikiButton uploadButton = new WikiButton("upload-button", "primary").setWidth(150);
   WikiButton stopButton = new WikiButton("upload-stop").setWidth(150);
 
   VBox infoContainer = new VBox(4);
+  WikiScrollPane infoContainerScroll = new WikiScrollPane(infoContainer);
+  WikiLabel statusLabel = new WikiLabel("").setClass("bold");
 
   public UploadPane(Stage stage) {
     super(stage, 2.0);
@@ -75,28 +88,84 @@ public class UploadPane extends WikiPane {
     return this;
   }
 
+  private void resetInfo() {
+    infoContainer.getChildren().clear();
+    current = 0;
+    uploaded = 0;
+    skipped = 0;
+  }
+
   private void setActions() {
     uploadButton.setOnAction((ActionEvent e) -> {
       stopRq = false;
       uploadButton.setDisable(true);
       stopButton.setDisable(false);
-      uploadFiles();
+      nextButton.setVisible(false);
+      uploadFiles(Session.FILES_TO_UPLOAD);
     });
 
     stopButton.setOnAction((ActionEvent e) -> {
       stopButton.setDisable(true);
-      addInfo("upload-log-canceled");
+      statusLabel.setText(Util.text("upload-log-canceled"));
       stopRq = true;
     });
 
     fakeLoger.textProperty().addListener(new ChangeListener<String>() {
       @Override
-      public void changed(ObservableValue<? extends String> ov, String oldValue, String newValue) {
-        if (newValue.equals("_COMPLETE_UPLOAD")) {
-          uploadButton.setDisable(false);
+      public void changed(ObservableValue<? extends String> ov, String oldValue, String value) {
+        String[] data = value.split(" \\| ");
+        String max = String.valueOf(Session.FILES_TO_UPLOAD.size());
+
+        if (value.contains("UPLOAD_START")) {
+          String text = String.format("[%s/%s] ", data[1], max) + Util.text("upload-log-uploading", data[2]);
+          WikiLabel label = new WikiLabel(text).setAlign("left");
+          addInfo(label);
+          statusLabel.setText(Util.text("upload-log-uploading", "") + String.format(" (%s/%s) ", data[1], max));
+        } else if (value.contains("UPLOAD_NAME_TAKEN")) {
+          String text = String.format("[%s/%s] ", data[1], max) + Util.text("upload-log-error", Util.text("upload-log-error-name-taken"));
+          WikiLabel label = new WikiLabel(text).setAlign("left");
+          addInfo(label);
+          addInfo(new WikiLabel(""));
+        } else if (value.contains("UPLOAD_SUCCESS")) {
+          String text = String.format("[%s/%s] ", data[1], max) + Util.text("upload-log-success");
+          WikiLabel label = new WikiLabel(text).setAlign("left");
+          addInfo(label);
+          addInfo(new WikiLabel(""));
+        } else if (value.contains("UPLOAD_ERROR")) {
+          String text = String.format("[%s/%s] ", data[1], max) + Util.text("upload-log-error", data[3]);
+          WikiLabel label = new WikiLabel(text).setAlign("left").setClass("bold");
+          addInfo(label);
+          addInfo(new WikiLabel(""));
+        } else if (value.contains("UPLOAD_COMPLETED")) {
+          int uploaded = Integer.parseInt(data[1]);
+          int skipped = Integer.parseInt(data[2]);
+          int total = Session.FILES_TO_UPLOAD.size();
+
+          uploadButton.setDisable(uploaded == total);
+          if (uploaded + skipped == total && skipped > 0) {
+            uploadButton.setText(Util.text("upload-retry"));
+            uploadButton.setOnAction((ActionEvent e) -> {
+              stopRq = false;
+              uploadButton.setDisable(true);
+              stopButton.setDisable(false);
+              resetInfo();
+              uploadFiles(failedElements);
+            });
+          } else if (uploaded + skipped < total) {
+            uploadButton.setText(Util.text("upload-continue"));
+          } else if (uploaded == total) {
+            uploadButton.setText(Util.text("upload-button"));
+          }
+
           stopButton.setDisable(true);
-        } else {
-          addInfo(newValue);
+          String text = Util.text("upload-log-done", data[1], data[2]);
+          WikiLabel label = new WikiLabel(text).setAlign("left").setClass("bold");
+          addInfo(label);
+          addInfo(new WikiLabel(""));
+          statusLabel.setText(text);
+
+          nextButton.linkTo("StartPane", stage, true).setText(Util.text("upload-next-sheet"));
+          nextButton.setVisible(true);
         }
       }
     });
@@ -113,7 +182,8 @@ public class UploadPane extends WikiPane {
             new Node[]{new Region(), uploadButton, stopButton, new Region()},
             new Priority[]{Priority.ALWAYS, Priority.NEVER, Priority.NEVER, Priority.ALWAYS}
     );
-    addElement(new WikiScrollPane(infoContainer));
+    addElement(infoContainerScroll);
+    addElement(statusLabel);
 
     nextButton.setVisible(false);
   }
@@ -122,8 +192,9 @@ public class UploadPane extends WikiPane {
    * methods
    *****************************************************************************
    */
-  private void addInfo(String text) {
-    infoContainer.getChildren().add(new WikiLabel(text).setAlign("left"));
+  private void addInfo(WikiLabel label) {
+    infoContainer.getChildren().add(label);
+    infoContainerScroll.setVvalue(1.0);
   }
 
   /**
@@ -152,54 +223,78 @@ public class UploadPane extends WikiPane {
     try {
       Map map = Session.WIKI.getPageInfo("File:" + name);
       return (boolean) map.get("exists");
+    } catch (UnknownHostException ex) {
+      LOGGER.log(Level.WARNING,
+              "Error occurred during file name check: {0}",
+              new String[]{"no internet connection"}
+      );
+      return false;
     } catch (IOException ex) {
-      Logger.getLogger(UploadPane.class.getName()).log(Level.SEVERE, null, ex);
+      LOGGER.log(Level.WARNING,
+              "Error occurred during file name check: {0}",
+              new String[]{ex.getLocalizedMessage()}
+      );
       return false;
     }
   }
 
-  private void uploadFiles() {
+  private void uploadFiles(ArrayList<UploadElement> fileList) {
     Task task = new Task() {
       @Override
       protected Object call() {
         final String summary = Settings.NAME + " " + Settings.VERSION;
-        int current = 0;
-        int max = Session.FILES_TO_UPLOAD.size();
 
-        int uploaded = 0;
-        int skipped = 0;
-
-        for (UploadElement ue : Session.FILES_TO_UPLOAD) {
-          current++;
+        // for (UploadElement ue : Session.FILES_TO_UPLOAD) {
+        for (; current < fileList.size(); current++) {
+          UploadElement ue = fileList.get(current);
           if (!stopRq) {
-            updateMessage(Util.text("upload-log-uploading", current, max, ue.getData("name")));
+            updateMessage(String.format(
+                    "UPLOAD_START | %s | %s",
+                    current + 1, ue.getData("name")
+            ));
             try {
               if (isFileNameTaken(ue.getData("name"))) {
-                updateMessage(Util.text("upload-log-error", current, max, Util.text("upload-log-error-name-taken")));
-                Thread.sleep(10);
+                updateMessage(String.format(
+                        "UPLOAD_NAME_TAKEN | %s | %s",
+                        current + 1, ue.getData("name")
+                ));
+                Thread.sleep(500);
                 skipped++;
                 continue;
               }
               Session.WIKI.upload(ue.getFile(), ue.getData("name"), ue.getWikicode(), summary);
-              Thread.sleep(10);
-              updateMessage(Util.text("upload-log-success", current, max));
+              Thread.sleep(500);
+              updateMessage(String.format(
+                      "UPLOAD_SUCCESS | %s | %s",
+                      current + 1, ue.getData("name")
+              ));
               uploaded++;
             } catch (InterruptedException | IOException | LoginException ex) {
-              updateMessage(Util.text("upload-log-error", current, max, getMediaWikiError(ex)));
+              updateMessage(String.format(
+                      "UPLOAD_ERROR | %s | %s | %s",
+                      current + 1, ue.getData("name"), getMediaWikiError(ex)
+              ));
               try {
-                Thread.sleep(10);
+                Thread.sleep(500);
               } catch (InterruptedException e) {
+              }
+              if (!failedElements.contains(ue)) {
+                failedElements.add(ue);
               }
               skipped++;
             }
+          } else {
+            break;
           }
         }
-        updateMessage("_COMPLETE_UPLOAD");
         try {
-          Thread.sleep(10);
+          Thread.sleep(500);
         } catch (InterruptedException e) {
         }
-        updateMessage(Util.text("upload-log-done", uploaded, skipped));
+        updateMessage(String.format(
+                "UPLOAD_COMPLETED | %s | %s",
+                uploaded, skipped
+        ));
         return true;
       }
     };
