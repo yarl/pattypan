@@ -181,6 +181,8 @@ public final class Settings {
                       new TemplateField("linkback", "Linkback"),
                       new TemplateField("wikidata", "Wikidata"),
                       new TemplateField("license", "License"),
+                      new TemplateField("partnership", "Partnership"),
+                      new TemplateField("license", "License"),
                       new TemplateField("partnership", "Partnership")
                     }, "=={{int:filedesc}}==\n"
                     + "{{Book\n"
@@ -242,6 +244,8 @@ public final class Settings {
                       new TemplateField("source", "Source"),
                       new TemplateField("permission", "Permission"),
                       new TemplateField("other_versions", "Other versions"),
+                      new TemplateField("license", "License"),
+                      new TemplateField("partnership", "Partnership")
                     }, "=={{int:filedesc}}==\n"
                     + "{{Musical work\n"
                     + " |composer = ${composer}\n"
