@@ -24,9 +24,15 @@
 package pattypan;
 
 import java.io.File;
+import java.net.URL;
+import java.net.MalformedURLException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class UploadElement {
+
+  private static final Logger LOGGER = Logger.getLogger(UploadElement.class.getName());
 
   private Map<String, String> data;
   private String wikicode;
@@ -55,7 +61,17 @@ public final class UploadElement {
   public File getFile() {
     return new File(getData("path"));
   }
-  
+
+  public URL getUrl() {
+    try {
+      return new URL(getData("path"));
+    } catch(MalformedURLException e) {
+      LOGGER.log(Level.SEVERE, null, e);
+      return null;
+    }
+    
+  }
+
   public String getData(String key) {
     return data.get(key);
   }

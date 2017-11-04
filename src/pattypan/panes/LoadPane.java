@@ -156,8 +156,19 @@ public class LoadPane extends WikiPane {
         if (description.get("name").isEmpty()) {
           throw new Exception("empty name");
         }
-        if (!checkIfFileExist(description.get("path"))) {
-          throw new Exception("file not found");
+        if (!description.get("path").startsWith("https://") && !description.get("path").startsWith("http://")) {
+          if (!checkIfFileExist(description.get("path"))) {
+            throw new Exception("file not found");
+          }
+        } else {
+          if (!Util.validateUrl(description.get("path"))) {
+            throw new Exception("invalid URL");
+          }
+
+          // when uploaded from URL the extension is not automatically added
+          if (!Util.stringHasValidFileExtension(description.get("name"))) {
+            throw new Exception("filename does not include a valid file extension");
+          }
         }
 
         Set<String> keys = Util.getKeysByValue(description, "");
