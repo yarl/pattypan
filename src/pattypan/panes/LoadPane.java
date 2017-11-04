@@ -32,6 +32,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,8 +125,12 @@ public class LoadPane extends WikiPane {
     String fixedPath = path.trim()
             .replace("/", File.separator)
             .replace("\\", File.separator);
-    File file = new File(fixedPath);
-    return file.isFile();
+    try {
+      URL url = new URL(fixedPath);
+      return true;
+    } catch (MalformedURLException ex) {
+      return false;
+    }
   }
 
   /**
