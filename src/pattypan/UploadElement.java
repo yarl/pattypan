@@ -49,7 +49,7 @@ public final class UploadElement {
     String pathExt = Util.getExtFromFilename(getData("path"));
     String nameExt = Util.getExtFromFilename(getData("name"));
     
-    if(!pathExt.equals(nameExt)) {
+    if (!pathExt.equals(nameExt) && !Util.validUrl(getData("path"))) {
       setData("name", getData("name") + "." + pathExt);
     }
   }
