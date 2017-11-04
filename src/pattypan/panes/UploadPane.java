@@ -262,7 +262,13 @@ public class UploadPane extends WikiPane {
                 skipped++;
                 continue;
               }
-              Session.WIKI.upload(ue.getFile(), ue.getData("name"), ue.getWikicode(), summary);
+
+              if (ue.getData("path").startsWith("https://") || ue.getData("path").startsWith("http://")) {
+                Session.WIKI.upload(ue.getUrl(), ue.getData("name"), ue.getWikicode(), summary);
+              } else {
+                Session.WIKI.upload(ue.getFile(), ue.getData("name"), ue.getWikicode(), summary);
+              }
+
               Thread.sleep(500);
               updateMessage(String.format(
                       "UPLOAD_SUCCESS | %s | %s",

@@ -129,6 +129,10 @@ public final class Util {
                   "tif", "wav", "webm", "webp", "xcf")
   );
 
+  public static boolean stringHasValidFileExtension(String string) {
+    return allowedExtentionImage.parallelStream().anyMatch(string::endsWith);
+  }
+
   public static String getNameFromFilename(String filename) {
     int pos = filename.lastIndexOf(".");
     if (pos > 0) {
@@ -206,6 +210,16 @@ public final class Util {
       if (reader != null) {
         reader.close();
       }
+    }
+  }
+
+  public static boolean validateUrl(String path) {
+    try {
+      URL url = new URL(path);
+      url.toURI();
+      return true;
+    } catch(Exception e) {
+      return false;
     }
   }
 
