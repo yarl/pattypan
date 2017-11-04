@@ -167,7 +167,7 @@ public class LoadPane extends WikiPane {
             throw new Exception("file not found");
           }
         } else {
-          if (!Util.validateUrl(description.get("path"))) {
+          if (!Util.validUrl(description.get("path"))) {
             throw new Exception("invalid URL");
           }
 
