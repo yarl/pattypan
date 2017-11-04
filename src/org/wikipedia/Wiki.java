@@ -630,6 +630,11 @@ public class Wiki implements Serializable
     {
         return domain;
     }
+    
+    public String getProtocol()
+    {
+        return protocol;
+    }
 
     /**
      *  Gets the editing throttle.
