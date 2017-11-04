@@ -156,7 +156,7 @@ public class LoadPane extends WikiPane {
         if (description.get("name").isEmpty()) {
           throw new Exception("empty name");
         }
-        if (!description.get("path").startsWith("https://") && !description.get("path").startsWith("http://")) {
+        if (description.get("path").startsWith("https://") || description.get("path").startsWith("http://")) {
           if (!checkIfFileExist(description.get("path"))) {
             throw new Exception("file not found");
           }
