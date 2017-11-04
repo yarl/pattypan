@@ -213,7 +213,7 @@ public final class Util {
     }
   }
 
-  public static boolean validateUrl(String path) {
+  public static boolean validUrl(String path) {
     try {
       URL url = new URL(path);
       url.toURI();

@@ -32,8 +32,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,12 +123,9 @@ public class LoadPane extends WikiPane {
     String fixedPath = path.trim()
             .replace("/", File.separator)
             .replace("\\", File.separator);
-    try {
-      URL url = new URL(fixedPath);
-      return true;
-    } catch (MalformedURLException ex) {
-      return false;
-    }
+
+      File file = new File(fixedPath);
+      return file.isFile();
   }
 
   /**
@@ -163,17 +158,17 @@ public class LoadPane extends WikiPane {
           throw new Exception("empty name");
         }
         if (description.get("path").startsWith("https://") || description.get("path").startsWith("http://")) {
-          if (!checkIfFileExist(description.get("path"))) {
-            throw new Exception("file not found");
-          }
-        } else {
-          if (!Util.validateUrl(description.get("path"))) {
+          if (!Util.validUrl(description.get("path"))) {
             throw new Exception("invalid URL");
           }
 
           // when uploaded from URL the extension is not automatically added
           if (!Util.stringHasValidFileExtension(description.get("name"))) {
             throw new Exception("filename does not include a valid file extension");
+          }
+        } else {
+          if (!checkIfFileExist(description.get("path"))) {
+            throw new Exception("file not found");
           }
         }
 
