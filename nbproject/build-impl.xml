@@ -1390,6 +1390,8 @@ is divided into following sections:
         </propertyfile>
     </target>
     <target depends="init" name="-do-clean">
+        <property name="store.dir" value="store"/>
+        <delete dir="${store.dir}"/>
         <delete dir="${build.dir}"/>
         <delete dir="${dist.dir}" followsymlinks="false" includeemptydirs="true"/>
     </target>
