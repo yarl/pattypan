@@ -123,8 +123,9 @@ public class LoadPane extends WikiPane {
     String fixedPath = path.trim()
             .replace("/", File.separator)
             .replace("\\", File.separator);
-    File file = new File(fixedPath);
-    return file.isFile();
+
+      File file = new File(fixedPath);
+      return file.isFile();
   }
 
   /**
@@ -156,8 +157,23 @@ public class LoadPane extends WikiPane {
         if (description.get("name").isEmpty()) {
           throw new Exception("empty name");
         }
-        if (!checkIfFileExist(description.get("path"))) {
-          throw new Exception("file not found");
+        if (description.get("path").startsWith("https://") || description.get("path").startsWith("http://")) {
+          if (!Util.validUrl(description.get("path"))) {
+            throw new Exception("invalid URL");
+          }
+
+          // when uploaded from URL the extension is not automatically added
+          if (!Util.stringHasValidFileExtension(description.get("name"))) {
+            throw new Exception("filename does not include a valid file extension");
+          }
+        } else {
+          if (!checkIfFileExist(description.get("path"))) {
+            throw new Exception("file not found");
+          }
+        }
+
+        if (Util.isPossibleBadFilename(description.get("name"))) {
+          warnings.add(description.get("name") + ": filename shouldn't have name from camera (DSC, DSCF, etc");
         }
 
         Set<String> keys = Util.getKeysByValue(description, "");

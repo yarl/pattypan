@@ -136,6 +136,7 @@ public class CheckPane extends WikiPane {
 
     WikiLabel title = new WikiLabel(ue.getData("name")).setClass("header").setAlign("left");
     WikiLabel path = new WikiLabel(ue.getData("path")).setAlign("left");
+    Hyperlink pathURL = new Hyperlink(ue.getData("path"));
     Hyperlink preview = new Hyperlink(Util.text("check-preview"));
     WikiLabel wikitext = new WikiLabel(ue.getWikicode()).setClass("monospace").setAlign("left");
 
@@ -153,8 +154,17 @@ public class CheckPane extends WikiPane {
         Logger.getLogger(CheckPane.class.getName()).log(Level.SEVERE, null, ex);
       }
     });
+    
+    pathURL.setOnAction(event -> {
+      Util.openUrl(ue.getData("path"));
+    });
 
     detailsContainer.getChildren().clear();
-    detailsContainer.getChildren().addAll(title, path, getScaledThumbnail(ue.getFile()), preview, wikitext);
+    
+    if (ue.getData("path").startsWith("https://") || ue.getData("path").startsWith("http://")) {
+      detailsContainer.getChildren().addAll(title, pathURL, preview, wikitext);
+    } else {
+      detailsContainer.getChildren().addAll(title, path, getScaledThumbnail(ue.getFile()), preview, wikitext);
+    }
   }
 }
