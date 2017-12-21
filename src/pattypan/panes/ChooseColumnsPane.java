@@ -196,7 +196,7 @@ public class ChooseColumnsPane extends WikiPane {
     HBox headersContainer = new HBox(10);
     headersContainer.getChildren().addAll(
             new WikiLabel("choose-columns-fields-name").setClass("bold").setWidth(200, 495).setHeight(35),
-            new WikiLabel("choose-columns-radio-buttons").setClass("bold").setWidth(115).setHeight(35),
+            new WikiLabel("choose-columns-radio-buttons").setClass("bold").setWidth(150).setHeight(35),
             new WikiLabel("choose-columns-value").setClass("bold").setWidth(50, 500).setHeight(35));
     templateDescContainer.getChildren().add(headersContainer);
 
