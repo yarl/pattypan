@@ -58,7 +58,7 @@ import pattypan.elements.WikiPane;
 import pattypan.elements.WikiTextField;
 
 public class CreateFilePane extends WikiPane {
-  
+
   Stage stage;
 
   WikiLabel descLabel;
@@ -130,7 +130,7 @@ public class CreateFilePane extends WikiPane {
         );
       }
     });
-    
+
     nextButton.linkTo("StartPane", stage, true).setText(Util.text("create-file-back-to-start"));
     nextButton.setVisible(true);
   }

@@ -29,7 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Template {
-  
+
   public String name;
   public TemplateField[] variables;
   public String wikicode;
@@ -37,13 +37,13 @@ public class Template {
   public Template(String name) {
     this.name = name;
   }
-  
+
   public Template(String name, TemplateField[] variables, String wikicode) {
     this.name = name;
     this.variables = variables;
     this.wikicode = wikicode;
   }
-  
+
   /**
    * Returns list of variables
    * 
@@ -52,8 +52,7 @@ public class Template {
   public ArrayList<TemplateField> getVariables() {
     return new ArrayList<>(Arrays.asList(variables));
   }
-  
-  
+
   /**
    * Returns selected template variables with additional "path" and "name" vars
    * 
@@ -70,8 +69,7 @@ public class Template {
 
     return vars;
   }
-  
-  
+
   /**
    * Gets "raw" wikicode, removes variables set as "No" and sets constant 
    * strings for variables set as "Cont"
@@ -92,7 +90,7 @@ public class Template {
 
     return text;
   }
-  
+
   /**
    * 
    * 
@@ -102,7 +100,7 @@ public class Template {
   public static ArrayList<String> getComputedVariablesFromString(String text) {
     final Pattern pattern = Pattern.compile("\\$\\{(.*?)\\}");
     Matcher m = pattern.matcher(text);
-    
+
     ArrayList<String> results = new ArrayList<>();
     results.add("path");
     results.add("name");

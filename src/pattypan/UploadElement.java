@@ -45,16 +45,16 @@ public final class UploadElement {
   private void addNameExtention() {
     String pathExt = Util.getExtFromFilename(getData("path"));
     String nameExt = Util.getExtFromFilename(getData("name"));
-    
+
     if (!pathExt.equals(nameExt) && !Util.validUrl(getData("path"))) {
       setData("name", getData("name") + "." + pathExt);
     }
   }
-  
+
   public Map<String, String> getData() {
     return data;
   }
-  
+
   public File getFile() {
     return new File(getData("path"));
   }
@@ -66,23 +66,22 @@ public final class UploadElement {
       Session.LOGGER.log(Level.SEVERE, null, e);
       return null;
     }
-    
   }
 
   public String getData(String key) {
     return data.get(key);
   }
-  
+
   public String getWikicode() {
     return wikicode + "\n[[Category:Uploaded with pattypan]]";
   }
-  
+
   public UploadElement setData(Map<String, String> data) {
     this.data = data;
     addNameExtention();
     return this;
   }
-  
+
   public UploadElement setData(String key, String data) {
     this.data.put(key, data);
     return this;

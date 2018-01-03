@@ -153,13 +153,13 @@ public class CheckPane extends WikiPane {
         Session.LOGGER.log(Level.SEVERE, null, ex);
       }
     });
-    
+
     pathURL.setOnAction(event -> {
       Util.openUrl(ue.getData("path"));
     });
 
     detailsContainer.getChildren().clear();
-    
+
     if (ue.getData("path").startsWith("https://") || ue.getData("path").startsWith("http://")) {
       detailsContainer.getChildren().addAll(title, pathURL, preview, wikitext);
     } else {
