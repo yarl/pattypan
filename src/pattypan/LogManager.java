@@ -26,7 +26,6 @@ public class LogManager {
       logger.addHandler(fh);
       logger.addHandler(new ConsoleHandler());
       logger.setUseParentHandlers(false); // remove console prefix for privacy
-      logger.log(Level.WARNING, "Logger 3");
     } catch (SecurityException e) {
       e.printStackTrace();
     } catch (IOException e) {

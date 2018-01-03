@@ -96,6 +96,14 @@ public final class Util {
     }
   }
 
+  public static void openDirectory(Path path) {
+    try {
+      Desktop.getDesktop().open(new File(path.toString()));
+    } catch (IllegalArgumentException | IOException ex) {
+      Session.LOGGER.log(Level.WARNING, null, ex);
+    }
+  }
+
   /* row and column utils */
   public static ColumnConstraints newColumn(int value) {
     return newColumn(value, "%", HPos.CENTER);
