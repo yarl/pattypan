@@ -32,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
@@ -131,9 +130,9 @@ public class StartPane extends GridPane {
         }
       }
     } catch (UnknownHostException ex) {
-      Logger.getLogger(StartPane.class.getName()).log(Level.INFO, "No internet connection found");
+      Session.LOGGER.log(Level.INFO, "No internet connection found");
     } catch (Exception ex) {
-      Logger.getLogger(StartPane.class.getName()).log(Level.SEVERE, null, ex);
+      Session.LOGGER.log(Level.SEVERE, null, ex);
     }
   }
 

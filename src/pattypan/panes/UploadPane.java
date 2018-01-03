@@ -28,7 +28,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.beans.value.ChangeListener;
@@ -51,8 +50,6 @@ import pattypan.elements.WikiPane;
 import pattypan.elements.WikiScrollPane;
 
 public class UploadPane extends WikiPane {
-
-  private static final Logger LOGGER = Logger.getLogger(UploadPane.class.getName());
 
   Stage stage;
 
@@ -224,13 +221,13 @@ public class UploadPane extends WikiPane {
       Map map = Session.WIKI.getPageInfo("File:" + name);
       return (boolean) map.get("exists");
     } catch (UnknownHostException ex) {
-      LOGGER.log(Level.WARNING,
+      Session.LOGGER.log(Level.WARNING,
               "Error occurred during file name check: {0}",
               new String[]{"no internet connection"}
       );
       return false;
     } catch (IOException ex) {
-      LOGGER.log(Level.WARNING,
+      Session.LOGGER.log(Level.WARNING,
               "Error occurred during file name check: {0}",
               new String[]{ex.getLocalizedMessage()}
       );

@@ -24,7 +24,6 @@
 package pattypan;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -34,9 +33,6 @@ import org.wikipedia.Wiki;
 import pattypan.panes.StartPane;
 
 public class Main extends Application {
-
-  private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
-
   @Override
   public void start(Stage stage) {
     Settings.readProperties();
@@ -75,11 +71,11 @@ public class Main extends Application {
       }
     }
 
-    LOGGER.log(Level.INFO,
+    Session.LOGGER.log(Level.INFO,
             "Wiki set as: {0}\nProtocol set as: {1}\nScript path set as: {2}",
             new String[]{wiki, protocol, scriptPath}
     );
-    
+
     Session.WIKI = new Wiki(wiki, scriptPath, protocol);
     launch(args);
   }

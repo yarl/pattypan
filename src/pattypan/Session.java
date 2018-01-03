@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javafx.scene.Scene;
 import org.wikipedia.Wiki;
+import pattypan.LogManager;
+import java.util.logging.Logger;
 
 public final class Session {
   
@@ -41,7 +43,9 @@ public final class Session {
   public static File FILE;
   
   public static ArrayList<File> FILES = new ArrayList<>();
-  
+
+  public static Logger LOGGER = new LogManager().logger;
+
   public static String METHOD = "template";
   public static String TEMPLATE = "Artwork";
   public static String WIKICODE = "";
