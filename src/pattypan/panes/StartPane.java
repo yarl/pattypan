@@ -52,7 +52,7 @@ public class StartPane extends GridPane {
   String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
   Stage stage;
 
-  Hyperlink link = new Hyperlink(Util.text("start-bug-report"));
+  Hyperlink bugLink = new Hyperlink(Util.text("start-bug-report"));
   Hyperlink downloadLink = new Hyperlink(Util.text("start-new-version-available-download"));
   Hyperlink logFile = new Hyperlink(Util.text("log-file"));
 
@@ -73,8 +73,8 @@ public class StartPane extends GridPane {
   }
 
   private void setActions() {
-    link.setOnAction(event -> {
-      Util.openUrl("https://github.com/yarl/pattypan/issues");
+    bugLink.setOnAction(event -> {
+      Util.openUrl("https://github.com/yarl/pattypan/issues/new");
     });
 
     downloadLink.setOnAction(event -> {
@@ -112,7 +112,7 @@ public class StartPane extends GridPane {
     String year = new SimpleDateFormat("yyyy").format(new Date());
     this.addRow(40, new WikiLabel(year + " // Pawel Marynowski").setClass("muted"));
 
-    TextFlow flow = new TextFlow(new Text(Util.text("start-bug-found")), link, new Text("("), logFile, new Text(")"));
+    TextFlow flow = new TextFlow(new Text(Util.text("start-bug-found")), bugLink, new Text("("), logFile, new Text(")"));
     flow.setTextAlignment(TextAlignment.CENTER);
 
     this.addRow(41, flow);
