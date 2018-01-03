@@ -76,6 +76,13 @@ public class Main extends Application {
             new String[]{wiki, protocol, scriptPath}
     );
 
+    String os = System.getProperty("os.name");
+
+    Session.LOGGER.log(Level.INFO,
+            "Operating System: {0}\nPattyPan Version: {1}",
+            new String[]{os, Settings.VERSION}
+    );
+
     Session.WIKI = new Wiki(wiki, scriptPath, protocol);
     launch(args);
   }
