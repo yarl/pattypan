@@ -290,4 +290,25 @@ public final class Util {
             .map(Map.Entry::getKey)
             .collect(Collectors.toSet());
   }
+
+    /**
+   * Gets directory for local application files
+   *
+   * @source http://stackoverflow.com/a/16660314/1418878
+   * @return path to local Pattypan directory
+   */
+  public static String getApplicationDirectory() {
+    String dir;
+    String OS = (System.getProperty("os.name")).toUpperCase();
+
+    if (OS.contains("WIN")) {
+      dir = System.getenv("AppData") + "/Pattypan";
+    } else if (OS.contains("NUX")) {
+      dir = System.getProperty("user.home") + "/.pattypan";
+    } else {
+      dir = System.getProperty("user.home");
+      dir += "/Library/Application Support/Pattypan";
+    }
+    return dir;
+  }
 }

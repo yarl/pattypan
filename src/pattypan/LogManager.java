@@ -11,12 +11,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import pattypan.Util;
+
 public class LogManager {
   public Logger logger = Logger.getLogger(Main.class.getName());
 
   public LogManager() {
     try {
-      Path logFileLocation = Paths.get(System.getProperty("user.home") + "/.PattyPan");
+      Path logFileLocation = Paths.get(Util.getApplicationDirectory() + "/logs");
       if (!Files.exists(logFileLocation)) {
         Files.createDirectories(logFileLocation);
       }

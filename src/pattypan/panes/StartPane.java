@@ -82,7 +82,7 @@ public class StartPane extends GridPane {
     });
 
     logFile.setOnAction(event -> {
-      Util.openDirectory(Paths.get(System.getProperty("user.home") + "/.PattyPan"));
+      Util.openDirectory(Paths.get(Util.getApplicationDirectory() + "/logs"));
     });
   }
 
