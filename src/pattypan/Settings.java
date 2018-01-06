@@ -40,7 +40,7 @@ public final class Settings {
   private Settings() {};
 
   public static final String NAME = "pattypan";
-  public static final String VERSION = "17.05";
+  public static final String VERSION = "17.12";
   public static final String USERAGENT = NAME + "/" + VERSION + " (https://github.com/yarl/pattypan)";
 
   public static final Map<String, String> SETTINGS = new HashMap<>();
