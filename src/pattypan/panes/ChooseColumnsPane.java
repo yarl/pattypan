@@ -147,7 +147,10 @@ public class ChooseColumnsPane extends WikiPane {
     );
 
     addElementRow(templatePane, 10,
-            new Node[]{new WikiScrollPane(rightContainer).setWidth(150), new WikiScrollPane(templateDescContainer)},
+            new Node[]{
+                new WikiScrollPane(rightContainer).setWidth(150),
+                new WikiScrollPane(templateDescContainer)
+            },
             new Priority[]{Priority.NEVER, Priority.ALWAYS}
     );
     addElement(templatePane);
@@ -162,6 +165,7 @@ public class ChooseColumnsPane extends WikiPane {
     });
 
     wikicodeText.getStyleClass().add("mw-ui-input");
+    wikicodeText.setMinHeight(250);
     wikicodeText.setText(Session.WIKICODE);
     wikicodePane.getChildren().addAll(templateBox, wikicodeText);
     return this;
