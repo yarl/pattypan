@@ -102,7 +102,7 @@ public class TemplateField {
       r.setMinWidth(420);
       r.setMinHeight(30);
 
-      CheckBox checkbox = new CheckBox("Preload date from Exif");
+      CheckBox checkbox = new CheckBox(Util.text("choose-columns-exif"));
       checkbox.setMaxWidth(500);
       checkbox.setPrefWidth(500);
       checkbox.setMinWidth(305);
