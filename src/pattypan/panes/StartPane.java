@@ -102,8 +102,12 @@ public class StartPane extends GridPane {
     }
 
     this.addRow(20, new HBox(20,
-            new WikiButton("start-generate-button", "primary").setWidth(300).linkTo("ChooseDirectoryPane", stage),
-            new WikiButton("start-validate-button").setWidth(300).linkTo("LoadPane", stage)));
+            new WikiButton("start-generate-button", "primary")
+                    .setWidth(300)
+                    .linkTo("ChooseDirectoryPane", stage),
+            new WikiButton("start-validate-button")
+                    .setWidth(300)
+                    .linkTo("LoadPane", stage)));
 
     this.addRow(22, new HBox(20,
             new WikiLabel("start-generate-description").setWidth(300),
@@ -112,7 +116,9 @@ public class StartPane extends GridPane {
     String year = new SimpleDateFormat("yyyy").format(new Date());
     this.addRow(40, new WikiLabel(year + " // Pawel Marynowski").setClass("muted"));
 
-    TextFlow flow = new TextFlow(new Text(Util.text("start-bug-found")), bugLink, new Text("("), logFile, new Text(")"));
+    TextFlow flow = new TextFlow(
+            new Text(Util.text("start-bug-found")), bugLink,
+            new Text(" • "), logFile);
     flow.setTextAlignment(TextAlignment.CENTER);
 
     this.addRow(41, flow);
