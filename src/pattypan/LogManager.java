@@ -1,20 +1,16 @@
 package pattypan;
 
 import java.io.IOException;
-import java.lang.SecurityException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import pattypan.Util;
-
 public class LogManager {
-  public Logger logger = Logger.getLogger(Main.class.getName());
+  public static final Logger logger = Logger.getLogger(Main.class.getName());
 
   public LogManager() {
     try {

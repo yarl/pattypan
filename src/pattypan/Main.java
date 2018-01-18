@@ -79,7 +79,7 @@ public class Main extends Application {
     String os = System.getProperty("os.name");
 
     Session.LOGGER.log(Level.INFO,
-            "Operating System: {0}\nPattyPan Version: {1}",
+            "Operating System: {0}\nPattypan Version: {1}",
             new String[]{os, Settings.VERSION}
     );
 
