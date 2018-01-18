@@ -28,11 +28,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
@@ -52,8 +52,9 @@ public class StartPane extends GridPane {
   String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
   Stage stage;
 
-  Hyperlink link = new Hyperlink(Util.text("start-bug-report"));
+  Hyperlink bugLink = new Hyperlink(Util.text("start-bug-report"));
   Hyperlink downloadLink = new Hyperlink(Util.text("start-new-version-available-download"));
+  Hyperlink logFile = new Hyperlink(Util.text("log-file"));
 
   public StartPane(Stage stage) {
     this.stage = stage;
@@ -72,12 +73,16 @@ public class StartPane extends GridPane {
   }
 
   private void setActions() {
-    link.setOnAction(event -> {
-      Util.openUrl("https://github.com/yarl/pattypan/issues");
+    bugLink.setOnAction(event -> {
+      Util.openUrl("https://github.com/yarl/pattypan/issues/new");
     });
 
     downloadLink.setOnAction(event -> {
       Util.openUrl("https://github.com/yarl/pattypan/releases");
+    });
+
+    logFile.setOnAction(event -> {
+      Util.openDirectory(Paths.get(Util.getApplicationDirectory() + "/logs"));
     });
   }
 
@@ -107,7 +112,7 @@ public class StartPane extends GridPane {
     String year = new SimpleDateFormat("yyyy").format(new Date());
     this.addRow(40, new WikiLabel(year + " // Pawel Marynowski").setClass("muted"));
 
-    TextFlow flow = new TextFlow(new Text(Util.text("start-bug-found")), link);
+    TextFlow flow = new TextFlow(new Text(Util.text("start-bug-found")), bugLink, new Text("("), logFile, new Text(")"));
     flow.setTextAlignment(TextAlignment.CENTER);
 
     this.addRow(41, flow);
@@ -131,9 +136,9 @@ public class StartPane extends GridPane {
         }
       }
     } catch (UnknownHostException ex) {
-      Logger.getLogger(StartPane.class.getName()).log(Level.INFO, "No internet connection found");
+      Session.LOGGER.log(Level.INFO, "No internet connection found");
     } catch (Exception ex) {
-      Logger.getLogger(StartPane.class.getName()).log(Level.SEVERE, null, ex);
+      Session.LOGGER.log(Level.SEVERE, null, ex);
     }
   }
 

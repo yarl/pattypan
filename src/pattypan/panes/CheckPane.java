@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Tooltip;
@@ -151,16 +150,16 @@ public class CheckPane extends WikiPane {
                 + "&wpInput=" + URLEncoder.encode(ue.getWikicode(), "UTF-8")
                 + "&wpContextTitle=" + URLEncoder.encode(ue.getData("name"), "UTF-8"));
       } catch (UnsupportedEncodingException ex) {
-        Logger.getLogger(CheckPane.class.getName()).log(Level.SEVERE, null, ex);
+        Session.LOGGER.log(Level.SEVERE, null, ex);
       }
     });
-    
+
     pathURL.setOnAction(event -> {
       Util.openUrl(ue.getData("path"));
     });
 
     detailsContainer.getChildren().clear();
-    
+
     if (ue.getData("path").startsWith("https://") || ue.getData("path").startsWith("http://")) {
       detailsContainer.getChildren().addAll(title, pathURL, preview, wikitext);
     } else {

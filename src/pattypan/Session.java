@@ -30,26 +30,30 @@ import java.util.HashMap;
 import java.util.Map;
 import javafx.scene.Scene;
 import org.wikipedia.Wiki;
+import pattypan.LogManager;
+import java.util.logging.Logger;
 
 public final class Session {
-  
+
   private Session() {};
-  
+
   public static Map<String, Scene> SCENES = new HashMap<>();
-  
+
   public static File DIRECTORY;
   public static File FILE;
-  
+
   public static ArrayList<File> FILES = new ArrayList<>();
-  
+
+  public static Logger LOGGER = new LogManager().logger;
+
   public static String METHOD = "template";
   public static String TEMPLATE = "Artwork";
   public static String WIKICODE = "";
   public static ArrayList<String> VARIABLES = new ArrayList<>(Arrays.asList("path", "name"));
-  
+
   public static Wiki WIKI = new Wiki("commons.wikimedia.org");
   public static ArrayList<UploadElement> FILES_TO_UPLOAD = new ArrayList<>();
-  
+
   static {
     WIKI.setUserAgent(Settings.USERAGENT);
   }

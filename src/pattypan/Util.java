@@ -46,7 +46,6 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.geometry.HPos;
 import javafx.scene.layout.ColumnConstraints;
@@ -91,9 +90,17 @@ public final class Util {
         new BrowserLauncher().openURLinBrowser(url);
       }
     } catch (BrowserLaunchingInitializingException | UnsupportedOperatingSystemException ex) {
-      Logger.getLogger(Util.class.getName()).log(Level.WARNING, null, ex);
+      Session.LOGGER.log(Level.WARNING, null, ex);
     } catch (URISyntaxException | IOException ex) {
-      Logger.getLogger(Util.class.getName()).log(Level.WARNING, null, ex);
+      Session.LOGGER.log(Level.WARNING, null, ex);
+    }
+  }
+
+  public static void openDirectory(Path path) {
+    try {
+      Desktop.getDesktop().open(new File(path.toString()));
+    } catch (IllegalArgumentException | IOException ex) {
+      Session.LOGGER.log(Level.WARNING, null, ex);
     }
   }
 
@@ -282,5 +289,26 @@ public final class Util {
             .filter(entry -> Objects.equals(entry.getValue(), value))
             .map(Map.Entry::getKey)
             .collect(Collectors.toSet());
+  }
+
+    /**
+   * Gets directory for local application files
+   *
+   * @source http://stackoverflow.com/a/16660314/1418878
+   * @return path to local Pattypan directory
+   */
+  public static String getApplicationDirectory() {
+    String dir;
+    String OS = (System.getProperty("os.name")).toUpperCase();
+
+    if (OS.contains("WIN")) {
+      dir = System.getenv("AppData") + "/Pattypan";
+    } else if (OS.contains("NUX")) {
+      dir = System.getProperty("user.home") + "/.pattypan";
+    } else {
+      dir = System.getProperty("user.home");
+      dir += "/Library/Application Support/Pattypan";
+    }
+    return dir;
   }
 }

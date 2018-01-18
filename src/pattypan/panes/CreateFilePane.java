@@ -35,7 +35,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.Region;
 import javafx.scene.text.TextAlignment;
@@ -60,8 +59,6 @@ import pattypan.elements.WikiTextField;
 
 public class CreateFilePane extends WikiPane {
 
-  private static final Logger LOGGER = Logger.getLogger(CreateFilePane.class.getName());
-  
   Stage stage;
 
   WikiLabel descLabel;
@@ -108,7 +105,7 @@ public class CreateFilePane extends WikiPane {
         Settings.saveProperties();
       } catch (IOException | BiffException | WriteException ex) {
         addElement(new WikiLabel("create-file-error"));
-        LOGGER.log(Level.WARNING, 
+        Session.LOGGER.log(Level.WARNING, 
             "Error occurred during creation of spreadsheet file: {0}",
             new String[]{ex.getLocalizedMessage()}
         );
@@ -127,13 +124,13 @@ public class CreateFilePane extends WikiPane {
       try {
         Desktop.getDesktop().open(Session.FILE);
       } catch (IOException ex) {
-        LOGGER.log(Level.WARNING, 
+        Session.LOGGER.log(Level.WARNING, 
             "Cannot open file: {0}",
             new String[]{ex.getLocalizedMessage()}
         );
       }
     });
-    
+
     nextButton.linkTo("StartPane", stage, true).setText(Util.text("create-file-back-to-start"));
     nextButton.setVisible(true);
   }
@@ -236,7 +233,7 @@ public class CreateFilePane extends WikiPane {
         return "";
       }
     } catch (ImageProcessingException | IOException ex) {
-      LOGGER.log(Level.INFO, 
+      Session.LOGGER.log(Level.INFO, 
           "Exif error for {0}: {1}",
           new String[]{file.getName(), ex.getLocalizedMessage()}
       );

@@ -28,11 +28,8 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public final class UploadElement {
-
-  private static final Logger LOGGER = Logger.getLogger(UploadElement.class.getName());
 
   private Map<String, String> data;
   private String wikicode;
@@ -48,16 +45,16 @@ public final class UploadElement {
   private void addNameExtention() {
     String pathExt = Util.getExtFromFilename(getData("path"));
     String nameExt = Util.getExtFromFilename(getData("name"));
-    
+
     if (!pathExt.equals(nameExt) && !Util.validUrl(getData("path"))) {
       setData("name", getData("name") + "." + pathExt);
     }
   }
-  
+
   public Map<String, String> getData() {
     return data;
   }
-  
+
   public File getFile() {
     return new File(getData("path"));
   }
@@ -66,26 +63,25 @@ public final class UploadElement {
     try {
       return new URL(getData("path"));
     } catch(MalformedURLException e) {
-      LOGGER.log(Level.SEVERE, null, e);
+      Session.LOGGER.log(Level.SEVERE, null, e);
       return null;
     }
-    
   }
 
   public String getData(String key) {
     return data.get(key);
   }
-  
+
   public String getWikicode() {
     return wikicode + "\n[[Category:Uploaded with pattypan]]";
   }
-  
+
   public UploadElement setData(Map<String, String> data) {
     this.data = data;
     addNameExtention();
     return this;
   }
-  
+
   public UploadElement setData(String key, String data) {
     this.data.put(key, data);
     return this;
@@ -95,5 +91,4 @@ public final class UploadElement {
     this.wikicode = wikicode;
     return this;
   }
-
 }

@@ -34,7 +34,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import pattypan.Util;
 
 public final class Settings {
 
@@ -344,27 +345,6 @@ public final class Settings {
      */
   }
 
-  /**
-   * Gets directory for local user settings
-   *
-   * @source http://stackoverflow.com/a/16660314/1418878
-   * @return path to local Pattypan directory
-   */
-  private static String getPropertiesDirectiry() {
-    String dir;
-    String OS = (System.getProperty("os.name")).toUpperCase();
-
-    if (OS.contains("WIN")) {
-      dir = System.getenv("AppData") + "/Pattypan";
-    } else if (OS.contains("NUX")) {
-      dir = System.getProperty("user.home") + "/.pattypan";
-    } else {
-      dir = System.getProperty("user.home");
-      dir += "/Library/Application Support/Pattypan";
-    }
-    return dir;
-  }
-
   public static String getSetting(String key) {
     return SETTINGS.get(key) != null ? SETTINGS.get(key) : "";
   }
@@ -381,7 +361,7 @@ public final class Settings {
     InputStream input = null;
 
     try {
-      File f = new File(getPropertiesDirectiry() + "/config.properties");
+      File f = new File(Util.getApplicationDirectory() + "/config.properties");
       input = new FileInputStream(f);
       prop.load(input);
 
@@ -392,15 +372,15 @@ public final class Settings {
       });
 
     } catch (FileNotFoundException ex) {
-      Logger.getLogger(Settings.class.getName()).log(Level.INFO, "Settings file not found, use default");
+      Session.LOGGER.log(Level.INFO, "Settings file not found, use default");
     } catch (IOException ex) {
-      Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
+      Session.LOGGER.log(Level.SEVERE, null, ex);
     } finally {
       if (input != null) {
         try {
           input.close();
         } catch (IOException ex) {
-          Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
+          Session.LOGGER.log(Level.SEVERE, null, ex);
         }
       }
     }
@@ -414,21 +394,21 @@ public final class Settings {
     OutputStream output = null;
 
     try {
-      new File(getPropertiesDirectiry()).mkdirs();
-      File f = new File(getPropertiesDirectiry() + "/config.properties");
+      new File(Util.getApplicationDirectory()).mkdirs();
+      File f = new File(Util.getApplicationDirectory() + "/config.properties");
       output = new FileOutputStream(f);
       SETTINGS.forEach((key, value) -> {
         prop.setProperty(key, value);
       });
       prop.store(output, null);
     } catch (IOException ex) {
-      Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
+      Session.LOGGER.log(Level.SEVERE, null, ex);
     } finally {
       if (output != null) {
         try {
           output.close();
         } catch (IOException ex) {
-          Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
+          Session.LOGGER.log(Level.SEVERE, null, ex);
         }
       }
     }
