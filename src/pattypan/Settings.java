@@ -95,7 +95,7 @@ public final class Settings {
                       new TemplateField("medium", "Medium"),
                       new TemplateField("dimensions", "Dimensions"),
                       new TemplateField("institution", "Institution"),
-                      new TemplateField("departament", "Departament"),
+                      new TemplateField("department", "Department"),
                       new TemplateField("place_of_discovery", "Place of discovery"),
                       new TemplateField("object_history", "Object history"),
                       new TemplateField("exhibition_history", "Exhibition history"),
