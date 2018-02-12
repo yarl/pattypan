@@ -31,9 +31,8 @@ public class WikiScrollPane extends ScrollPane {
   public WikiScrollPane(Node content) {
     this.setFitToWidth(true);
     this.setContent(content);
-    this.setPrefHeight(600);
   }
-  
+
   public WikiScrollPane setWidth(int width) {
     this.setMaxWidth(width);
     this.setMinWidth(width);

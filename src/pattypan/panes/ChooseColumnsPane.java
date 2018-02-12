@@ -23,6 +23,7 @@
  */
 package pattypan.panes;
 
+import java.util.logging.Level;
 import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
@@ -165,9 +166,14 @@ public class ChooseColumnsPane extends WikiPane {
     });
 
     wikicodeText.getStyleClass().add("mw-ui-input");
-    wikicodeText.setMinHeight(250);
+    wikicodeText.setPrefHeight(this.stage.getHeight() - 350);
     wikicodeText.setText(Session.WIKICODE);
     wikicodePane.getChildren().addAll(templateBox, wikicodeText);
+
+    this.stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+      wikicodeText.setPrefHeight(this.stage.getHeight() - 350);
+    });
+
     return this;
   }
 
