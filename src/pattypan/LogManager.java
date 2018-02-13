@@ -8,6 +8,7 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+import pattypan.Settings;
 
 public class LogManager {
   public static final Logger logger = Logger.getLogger(Main.class.getName());
@@ -17,6 +18,10 @@ public class LogManager {
       Path logFileLocation = Paths.get(Util.getApplicationDirectory() + "/logs");
       if (!Files.exists(logFileLocation)) {
         Files.createDirectories(logFileLocation);
+      }
+
+      if (!Settings.getSetting("version").equals(Settings.VERSION)) {
+        Files.deleteIfExists(Paths.get(logFileLocation.toString() + "/pattypan.log"));
       }
 
       FileHandler fh = new FileHandler(logFileLocation.toString() + "/pattypan.log", true);
