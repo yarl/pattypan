@@ -226,6 +226,83 @@ public final class Settings {
                     + "</#if>"
             )
     );
+    TEMPLATES.put("Map",
+            new Template("Map",
+                    new TemplateField[]{
+                      new TemplateField("title", "Title"),
+                        new TemplateField("description", "Description"),
+                        new TemplateField("legend", "Legend"),
+                        new TemplateField("author", "Author"),
+                        new TemplateField("date", "Date"),
+                        new TemplateField("source", "Source"),
+                        new TemplateField("permission", "Permission"),
+                        new TemplateField("map_date", "Map date"),
+                        new TemplateField("location", "Location"),
+                        new TemplateField("projection", "Projection"),
+                        new TemplateField("scale", "Scale"),
+                        new TemplateField("heading", "Heading"),
+                        new TemplateField("latitude", "Latitude"),
+                        new TemplateField("longitude", "Longitude"),
+                        new TemplateField("warp_status", "Warp status"),
+                        new TemplateField("set", "Set"),
+                        new TemplateField("sheet", "Sheet"),
+                        new TemplateField("type", "Type"),
+                        new TemplateField("language", "Language"),
+                        new TemplateField("publisher", "Publisher"),
+                        new TemplateField("printer", "Printer"),
+                        new TemplateField("print_date", "Print date"),
+                        new TemplateField("institution", "Institution"),
+                        new TemplateField("accession_number", "Accession number"),
+                        new TemplateField("dimensions", "Dimensions"),
+                        new TemplateField("medium", "Medium"),
+                        new TemplateField("inscriptions", "Inscriptions"),
+                        new TemplateField("notes", "Notes"),
+                        new TemplateField("other_versions", "Other versions"),
+                        new TemplateField("license", "License"),
+                        new TemplateField("partnership", "Partnership")
+                    }, "=={{int:filedesc}}==\n"
+                    + "{{Map\n"
+                    + " |title = ${title}\n"
+                    + " |description = ${description}\n"
+                    + " |legend = ${legend}\n"
+                    + " |author = ${author}\n"
+                    + " |date = ${date}\n"
+                    + " |source = ${source}\n"
+                    + " |permission = ${permission}\n"
+                    + " |map date = ${map_date}\n"
+                    + " |location = ${location}\n"
+                    + " |projection = ${projection}\n"
+                    + " |scale = ${scale}\n"
+                    + " |heading = ${heading}\n"
+                    + " |latitude = ${latitude}\n"
+                    + " |longitude = ${longitude}\n"
+                    + " |warp status = ${warp_status}\n"
+                    + " |set = ${set}\n"
+                    + " |sheet = ${sheet}\n"
+                    + " |type = ${type}\n"
+                    + " |language = ${language}\n"
+                    + " |publisher = ${publisher}\n"
+                    + " |printer = ${printer}\n"
+                    + " |print date = ${print_date}\n"
+                    + " |institution = ${institution}\n"
+                    + " |accession number = ${accession_number}\n"
+                    + " |dimensions = ${dimensions}\n"
+                    + " |medium = ${medium}\n"
+                    + " |inscriptions = ${inscriptions}\n"
+                    + " |notes = ${notes}\n"
+                    + " |other versions = ${other_versions}\n"
+                    + "}}\n\n"
+                    + "=={{int:license-header}}==\n"
+                    + "${license}${partnership}"
+                    + "\n\n"
+                    + "<#if categories ? has_content>\n"
+                    + "<#list categories ? split(\";\") as category>\n"
+                    + "[[Category:${category?trim}]]\n"
+                    + "</#list>\n"
+                    + "<#else>{{subst:unc}}\n"
+                    + "</#if>"
+            )
+    );
     TEMPLATES.put("Musical work",
             new Template("Musical work",
                     new TemplateField[]{
