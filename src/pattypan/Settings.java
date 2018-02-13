@@ -122,7 +122,7 @@ public final class Settings {
                     + " |medium = ${medium}\n"
                     + " |dimensions = ${dimensions}\n"
                     + " |institution = ${institution}\n"
-                    + " |department = ${departament}\n"
+                    + " |department = ${department}\n"
                     + " |place of discovery = ${place_of_discovery}\n"
                     + " |object history = ${object_history}\n"
                     + " |exhibition history = ${exhibition_history}\n"
