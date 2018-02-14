@@ -84,22 +84,23 @@ public class WikiButton extends Button {
 
   public WikiButton linkTo(String paneName, Stage stage) {
     this.setOnAction((ActionEvent event) -> {
-      goTo(paneName, stage);
+      goTo(paneName, stage, false);
     });
     return this;
   }
   
   public WikiButton linkTo(String paneName, Stage stage, boolean clearScenes) {
     this.setOnAction((ActionEvent event) -> {
-      if(clearScenes) {
-        Session.SCENES = new HashMap<>();
-      }
-      goTo(paneName, stage);
+      goTo(paneName, stage, clearScenes);
     });
     return this;
   }
   
-  public void goTo(String paneName, Stage stage) {
+  public void goTo(String paneName, Stage stage, boolean clearScenes) {
+    if (clearScenes) {
+      Session.SCENES = new HashMap<>();
+    }
+
     Scene scene = Session.SCENES.containsKey(paneName)
             ? Session.SCENES.get(paneName)
             : new Scene(getPaneByPaneName(paneName, stage), Util.WINDOW_WIDTH, Util.WINDOW_HEIGHT);
