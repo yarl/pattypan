@@ -133,7 +133,7 @@ public final class Util {
   private final static ArrayList<String> allowedExtentionImage = new ArrayList<>(
           Arrays.asList("djvu", "flac", "gif", "jpg", "jpeg", "mid",
                   "oga", "ogg","ogv", "opus", "pdf", "png", "svg", "tiff",
-                  "tif", "wav", "webm", "webp", "xcf", "mp3")
+                  "tif", "wav", "webm", "webp", "xcf", "mp3", "stl")
   );
 
   // https://commons.wikimedia.org/wiki/MediaWiki:Filename-prefix-blacklist
