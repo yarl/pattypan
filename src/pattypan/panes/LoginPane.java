@@ -72,7 +72,7 @@ public class LoginPane extends WikiPane {
     link.setOnAction(event -> {
       Util.openUrl("https://commons.wikimedia.org/wiki/Commons:Pattypan/Two-factor_authentication");
     });
-    
+
     passwordText.setOnKeyPressed((KeyEvent event) -> {
       if (event.getCode().equals(KeyCode.ENTER)) {
         logIn();

@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.Node;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Tooltip;
@@ -69,7 +68,7 @@ public class CheckPane extends WikiPane {
     addElement("check-intro", 40);
 
     Session.FILES_TO_UPLOAD.stream().map(uploadElement -> {
-      String name = uploadElement.getData("name");
+      String name = Util.getNormalizedName(uploadElement.getData("name"));
       Hyperlink label = new Hyperlink(name);
 
       label.setTooltip(new Tooltip(name));
@@ -82,11 +81,17 @@ public class CheckPane extends WikiPane {
     });
 
     addElementRow(10,
-            new Node[]{new WikiScrollPane(fileListContainer).setWidth(250), new WikiScrollPane(detailsContainer)},
+            new Node[]{
+              new WikiScrollPane(fileListContainer).setWidth(250),
+              new WikiScrollPane(detailsContainer)
+            },
             new Priority[]{Priority.SOMETIMES, Priority.SOMETIMES}
     );
 
-    setDetails(Session.FILES_TO_UPLOAD.get(0), (Hyperlink) fileListContainer.getChildren().get(0));
+    setDetails(
+            Session.FILES_TO_UPLOAD.get(0),
+            (Hyperlink) fileListContainer.getChildren().get(0)
+    );
 
     prevButton.linkTo("LoadPane", stage);
     nextButton.linkTo("LoginPane", stage);
@@ -133,8 +138,9 @@ public class CheckPane extends WikiPane {
    * @param ue
    */
   private void setDetails(UploadElement ue, Hyperlink label) {
+    String name = Util.getNormalizedName(ue.getData("name"));
 
-    WikiLabel title = new WikiLabel(ue.getData("name")).setClass("header").setAlign("left");
+    WikiLabel title = new WikiLabel(name).setClass("header").setAlign("left");
     WikiLabel path = new WikiLabel(ue.getData("path")).setAlign("left");
     Hyperlink pathURL = new Hyperlink(ue.getData("path"));
     Hyperlink preview = new Hyperlink(Util.text("check-preview"));
@@ -146,21 +152,22 @@ public class CheckPane extends WikiPane {
 
     preview.setOnAction(event -> {
       try {
-        Util.openUrl(Session.WIKI.getProtocol() + Session.WIKI.getDomain() + "/wiki/Special:ExpandTemplates"
+        Util.openUrl(Session.WIKI.getProtocol() + Session.WIKI.getDomain()
+                + "/wiki/Special:ExpandTemplates"
                 + "?wpRemoveComments=true"
                 + "&wpInput=" + URLEncoder.encode(ue.getWikicode(), "UTF-8")
-                + "&wpContextTitle=" + URLEncoder.encode(ue.getData("name"), "UTF-8"));
+                + "&wpContextTitle=" + URLEncoder.encode(name, "UTF-8"));
       } catch (UnsupportedEncodingException ex) {
-        Logger.getLogger(CheckPane.class.getName()).log(Level.SEVERE, null, ex);
+        Session.LOGGER.log(Level.SEVERE, null, ex);
       }
     });
-    
+
     pathURL.setOnAction(event -> {
       Util.openUrl(ue.getData("path"));
     });
 
     detailsContainer.getChildren().clear();
-    
+
     if (ue.getData("path").startsWith("https://") || ue.getData("path").startsWith("http://")) {
       detailsContainer.getChildren().addAll(title, pathURL, preview, wikitext);
     } else {

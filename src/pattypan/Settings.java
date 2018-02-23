@@ -34,14 +34,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import pattypan.Util;
 
 public final class Settings {
 
   private Settings() {};
 
   public static final String NAME = "pattypan";
-  public static final String VERSION = "17.12";
+  public static final String VERSION = "18.02";
   public static final String USERAGENT = NAME + "/" + VERSION + " (https://github.com/yarl/pattypan)";
 
   public static final Map<String, String> SETTINGS = new HashMap<>();
@@ -95,7 +96,7 @@ public final class Settings {
                       new TemplateField("medium", "Medium"),
                       new TemplateField("dimensions", "Dimensions"),
                       new TemplateField("institution", "Institution"),
-                      new TemplateField("departament", "Departament"),
+                      new TemplateField("department", "Department"),
                       new TemplateField("place_of_discovery", "Place of discovery"),
                       new TemplateField("object_history", "Object history"),
                       new TemplateField("exhibition_history", "Exhibition history"),
@@ -121,7 +122,7 @@ public final class Settings {
                     + " |medium = ${medium}\n"
                     + " |dimensions = ${dimensions}\n"
                     + " |institution = ${institution}\n"
-                    + " |department = ${departament}\n"
+                    + " |department = ${department}\n"
                     + " |place of discovery = ${place_of_discovery}\n"
                     + " |object history = ${object_history}\n"
                     + " |exhibition history = ${exhibition_history}\n"
@@ -213,6 +214,83 @@ public final class Settings {
                     + " |References = ${references}\n"
                     + " |Linkback = ${linkback}\n"
                     + " |Wikidata = ${wikidata}\n"
+                    + "}}\n\n"
+                    + "=={{int:license-header}}==\n"
+                    + "${license}${partnership}"
+                    + "\n\n"
+                    + "<#if categories ? has_content>\n"
+                    + "<#list categories ? split(\";\") as category>\n"
+                    + "[[Category:${category?trim}]]\n"
+                    + "</#list>\n"
+                    + "<#else>{{subst:unc}}\n"
+                    + "</#if>"
+            )
+    );
+    TEMPLATES.put("Map",
+            new Template("Map",
+                    new TemplateField[]{
+                      new TemplateField("title", "Title"),
+                        new TemplateField("description", "Description"),
+                        new TemplateField("legend", "Legend"),
+                        new TemplateField("author", "Author"),
+                        new TemplateField("date", "Date"),
+                        new TemplateField("source", "Source"),
+                        new TemplateField("permission", "Permission"),
+                        new TemplateField("map_date", "Map date"),
+                        new TemplateField("location", "Location"),
+                        new TemplateField("projection", "Projection"),
+                        new TemplateField("scale", "Scale"),
+                        new TemplateField("heading", "Heading"),
+                        new TemplateField("latitude", "Latitude"),
+                        new TemplateField("longitude", "Longitude"),
+                        new TemplateField("warp_status", "Warp status"),
+                        new TemplateField("set", "Set"),
+                        new TemplateField("sheet", "Sheet"),
+                        new TemplateField("type", "Type"),
+                        new TemplateField("language", "Language"),
+                        new TemplateField("publisher", "Publisher"),
+                        new TemplateField("printer", "Printer"),
+                        new TemplateField("print_date", "Print date"),
+                        new TemplateField("institution", "Institution"),
+                        new TemplateField("accession_number", "Accession number"),
+                        new TemplateField("dimensions", "Dimensions"),
+                        new TemplateField("medium", "Medium"),
+                        new TemplateField("inscriptions", "Inscriptions"),
+                        new TemplateField("notes", "Notes"),
+                        new TemplateField("other_versions", "Other versions"),
+                        new TemplateField("license", "License"),
+                        new TemplateField("partnership", "Partnership")
+                    }, "=={{int:filedesc}}==\n"
+                    + "{{Map\n"
+                    + " |title = ${title}\n"
+                    + " |description = ${description}\n"
+                    + " |legend = ${legend}\n"
+                    + " |author = ${author}\n"
+                    + " |date = ${date}\n"
+                    + " |source = ${source}\n"
+                    + " |permission = ${permission}\n"
+                    + " |map date = ${map_date}\n"
+                    + " |location = ${location}\n"
+                    + " |projection = ${projection}\n"
+                    + " |scale = ${scale}\n"
+                    + " |heading = ${heading}\n"
+                    + " |latitude = ${latitude}\n"
+                    + " |longitude = ${longitude}\n"
+                    + " |warp status = ${warp_status}\n"
+                    + " |set = ${set}\n"
+                    + " |sheet = ${sheet}\n"
+                    + " |type = ${type}\n"
+                    + " |language = ${language}\n"
+                    + " |publisher = ${publisher}\n"
+                    + " |printer = ${printer}\n"
+                    + " |print date = ${print_date}\n"
+                    + " |institution = ${institution}\n"
+                    + " |accession number = ${accession_number}\n"
+                    + " |dimensions = ${dimensions}\n"
+                    + " |medium = ${medium}\n"
+                    + " |inscriptions = ${inscriptions}\n"
+                    + " |notes = ${notes}\n"
+                    + " |other versions = ${other_versions}\n"
                     + "}}\n\n"
                     + "=={{int:license-header}}==\n"
                     + "${license}${partnership}"
@@ -344,27 +422,6 @@ public final class Settings {
      */
   }
 
-  /**
-   * Gets directory for local user settings
-   *
-   * @source http://stackoverflow.com/a/16660314/1418878
-   * @return path to local Pattypan directory
-   */
-  private static String getPropertiesDirectiry() {
-    String dir;
-    String OS = (System.getProperty("os.name")).toUpperCase();
-
-    if (OS.contains("WIN")) {
-      dir = System.getenv("AppData") + "/Pattypan";
-    } else if (OS.contains("NUX")) {
-      dir = System.getProperty("user.home") + "/.pattypan";
-    } else {
-      dir = System.getProperty("user.home");
-      dir += "/Library/Application Support/Pattypan";
-    }
-    return dir;
-  }
-
   public static String getSetting(String key) {
     return SETTINGS.get(key) != null ? SETTINGS.get(key) : "";
   }
@@ -381,7 +438,7 @@ public final class Settings {
     InputStream input = null;
 
     try {
-      File f = new File(getPropertiesDirectiry() + "/config.properties");
+      File f = new File(Util.getApplicationDirectory() + "/config.properties");
       input = new FileInputStream(f);
       prop.load(input);
 
@@ -392,15 +449,15 @@ public final class Settings {
       });
 
     } catch (FileNotFoundException ex) {
-      Logger.getLogger(Settings.class.getName()).log(Level.INFO, "Settings file not found, use default");
+      Session.LOGGER.log(Level.INFO, "Settings file not found, use default");
     } catch (IOException ex) {
-      Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
+      Session.LOGGER.log(Level.SEVERE, null, ex);
     } finally {
       if (input != null) {
         try {
           input.close();
         } catch (IOException ex) {
-          Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
+          Session.LOGGER.log(Level.SEVERE, null, ex);
         }
       }
     }
@@ -414,21 +471,21 @@ public final class Settings {
     OutputStream output = null;
 
     try {
-      new File(getPropertiesDirectiry()).mkdirs();
-      File f = new File(getPropertiesDirectiry() + "/config.properties");
+      new File(Util.getApplicationDirectory()).mkdirs();
+      File f = new File(Util.getApplicationDirectory() + "/config.properties");
       output = new FileOutputStream(f);
       SETTINGS.forEach((key, value) -> {
         prop.setProperty(key, value);
       });
       prop.store(output, null);
     } catch (IOException ex) {
-      Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
+      Session.LOGGER.log(Level.SEVERE, null, ex);
     } finally {
       if (output != null) {
         try {
           output.close();
         } catch (IOException ex) {
-          Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
+          Session.LOGGER.log(Level.SEVERE, null, ex);
         }
       }
     }

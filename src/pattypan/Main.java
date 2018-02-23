@@ -24,7 +24,6 @@
 package pattypan;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -34,12 +33,8 @@ import org.wikipedia.Wiki;
 import pattypan.panes.StartPane;
 
 public class Main extends Application {
-
-  private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
-
   @Override
   public void start(Stage stage) {
-    Settings.readProperties();
     Image logo = new Image(getClass().getResourceAsStream("/pattypan/resources/logo.png"));
 
     Scene scene = new Scene(new StartPane(stage), Settings.getSettingInt("windowWidth"), Settings.getSettingInt("windowHeight"));
@@ -52,6 +47,7 @@ public class Main extends Application {
     stage.setOnCloseRequest((WindowEvent we) -> {
       Settings.setSetting("windowWidth", (int) scene.getWidth() + "");
       Settings.setSetting("windowHeight", (int) scene.getHeight() + "");
+      Settings.setSetting("version", Settings.VERSION);
       Settings.saveProperties();
     });
   }
@@ -63,7 +59,6 @@ public class Main extends Application {
     String wiki = "commons.wikimedia.org";
     String protocol = "https://";
     String scriptPath = "/w";
-
     for (String arg : args) {
       String[] pair = arg.split("=");
       if (pair[0].contains("wiki")) {
@@ -75,11 +70,20 @@ public class Main extends Application {
       }
     }
 
-    LOGGER.log(Level.INFO,
+    Settings.readProperties();
+
+    Session.LOGGER.log(Level.INFO,
             "Wiki set as: {0}\nProtocol set as: {1}\nScript path set as: {2}",
             new String[]{wiki, protocol, scriptPath}
     );
-    
+
+    String os = System.getProperty("os.name");
+
+    Session.LOGGER.log(Level.INFO,
+            "Operating System: {0}\nPattypan Version: {1}",
+            new String[]{os, Settings.VERSION}
+    );
+
     Session.WIKI = new Wiki(wiki, scriptPath, protocol);
     launch(args);
   }
