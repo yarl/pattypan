@@ -244,16 +244,18 @@ public class UploadPane extends WikiPane {
         // for (UploadElement ue : Session.FILES_TO_UPLOAD) {
         for (; current < fileList.size(); current++) {
           UploadElement ue = fileList.get(current);
+          String name = Util.getNormalizedName(ue.getData("name"));
+          
           if (!stopRq) {
             updateMessage(String.format(
                     "UPLOAD_START | %s | %s",
-                    current + 1, ue.getData("name")
+                    current + 1, name
             ));
             try {
-              if (isFileNameTaken(ue.getData("name"))) {
+              if (isFileNameTaken(name)) {
                 updateMessage(String.format(
                         "UPLOAD_NAME_TAKEN | %s | %s",
-                        current + 1, ue.getData("name")
+                        current + 1, name
                 ));
                 Thread.sleep(500);
                 skipped++;
@@ -261,21 +263,21 @@ public class UploadPane extends WikiPane {
               }
 
               if (ue.getData("path").startsWith("https://") || ue.getData("path").startsWith("http://")) {
-                Session.WIKI.upload(ue.getUrl(), ue.getData("name"), ue.getWikicode(), summary);
+                Session.WIKI.upload(ue.getUrl(), name, ue.getWikicode(), summary);
               } else {
-                Session.WIKI.upload(ue.getFile(), ue.getData("name"), ue.getWikicode(), summary);
+                Session.WIKI.upload(ue.getFile(), name, ue.getWikicode(), summary);
               }
 
               Thread.sleep(500);
               updateMessage(String.format(
                       "UPLOAD_SUCCESS | %s | %s",
-                      current + 1, ue.getData("name")
+                      current + 1, name
               ));
               uploaded++;
             } catch (InterruptedException | IOException | LoginException ex) {
               updateMessage(String.format(
                       "UPLOAD_ERROR | %s | %s | %s",
-                      current + 1, ue.getData("name"), getMediaWikiError(ex)
+                      current + 1, name, getMediaWikiError(ex)
               ));
               try {
                 Thread.sleep(500);

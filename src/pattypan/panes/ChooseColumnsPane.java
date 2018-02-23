@@ -23,7 +23,6 @@
  */
 package pattypan.panes;
 
-import java.util.logging.Level;
 import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
@@ -160,7 +159,10 @@ public class ChooseColumnsPane extends WikiPane {
     ComboBox templateBox = new ComboBox();
     templateBox.getItems().addAll(Settings.TEMPLATES.keySet().toArray());
     templateBox.setOnAction((Event ev) -> {
-      String templateName = templateBox.getSelectionModel().getSelectedItem().toString();
+      String templateName = templateBox
+              .getSelectionModel()
+              .getSelectedItem()
+              .toString();
       Template t = Settings.TEMPLATES.get(templateName);
       wikicodeText.setText(t.wikicode);
     });
@@ -198,16 +200,30 @@ public class ChooseColumnsPane extends WikiPane {
 
     templateDescContainer.getChildren().clear();
     templateDescContainer.getChildren().add(new HBox(10,
-            new WikiLabel("{{" + template.name + "}}").setClass("header").setAlign("left"),
+            new WikiLabel("{{" + template.name + "}}")
+                    .setClass("header")
+                    .setAlign("left"),
             docLink
     ));
-    templateDescContainer.getChildren().add(new WikiLabel("choose-columns-template-intro").setAlign("left").setHeight(70));
+    templateDescContainer.getChildren().add(
+            new WikiLabel("choose-columns-template-intro")
+                    .setAlign("left")
+                    .setHeight(70));
 
     HBox headersContainer = new HBox(10);
     headersContainer.getChildren().addAll(
-            new WikiLabel("choose-columns-fields-name").setClass("bold").setWidth(200, 495).setHeight(35),
-            new WikiLabel("choose-columns-radio-buttons").setClass("bold").setWidth(150).setHeight(35),
-            new WikiLabel("choose-columns-value").setClass("bold").setWidth(50, 500).setHeight(35));
+            new WikiLabel("choose-columns-fields-name")
+                    .setClass("bold")
+                    .setWidth(200, 495)
+                    .setHeight(35),
+            new WikiLabel("choose-columns-radio-buttons")
+                    .setClass("bold")
+                    .setWidth(150)
+                    .setHeight(35),
+            new WikiLabel("choose-columns-value")
+                    .setClass("bold")
+                    .setWidth(50, 500)
+                    .setHeight(35));
     templateDescContainer.getChildren().add(headersContainer);
 
     for (TemplateField tf : template.variables) {

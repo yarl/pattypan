@@ -206,6 +206,10 @@ public final class Util {
     }
     return map;
   }
+  
+  public static String getNormalizedName(String name) {
+    return name.trim().replaceAll(" +", " ");
+  }
 
   public static boolean isFileAllowedToUpload(String name) {
     return allowedExtentionImage.indexOf(getExtFromFilename(name)) > -1;
