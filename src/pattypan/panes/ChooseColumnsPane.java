@@ -103,7 +103,7 @@ public class ChooseColumnsPane extends WikiPane {
         }
       }
 
-      nextButton.goTo("CreateFilePane", stage);
+      nextButton.goTo("CreateFilePane", stage, true);
     });
     showTemplateFields(Session.TEMPLATE);
     return this;
