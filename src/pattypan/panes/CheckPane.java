@@ -35,6 +35,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import pattypan.GalleryGenerator;
 import pattypan.Session;
 import pattypan.UploadElement;
 import pattypan.Util;
@@ -66,6 +67,9 @@ public class CheckPane extends WikiPane {
 
   private void setContent() {
     addElement("check-intro", 40);
+    
+    GalleryGenerator gg = new GalleryGenerator();
+    System.out.print(gg.getGallery());
 
     Session.FILES_TO_UPLOAD.stream().map(uploadElement -> {
       String name = Util.getNormalizedName(uploadElement.getData("name"));
