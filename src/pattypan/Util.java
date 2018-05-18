@@ -57,16 +57,19 @@ public final class Util {
 
   public static int WINDOW_WIDTH = 750;
   public static int WINDOW_HEIGHT = 550;
-  static ResourceBundle bundle = ResourceBundle.getBundle("pattypan/text/messages");
+  public static ResourceBundle defaultLanguageBundle = ResourceBundle.getBundle("pattypan/text/messages");
 
   public static String text(String key) {
     try {
-      String val = bundle.getString(key); 
+      String val = Session.LANGUAGE.getString(key);
       return new String(val.getBytes("ISO-8859-1"), "UTF-8");
-    } catch (final MissingResourceException ex) {
+    } catch (MissingResourceException | UnsupportedEncodingException ex) {
+      try {
+        String val = defaultLanguageBundle.getString(key);
+        return new String(val.getBytes("ISO-8859-1"), "UTF-8");
+      } catch (MissingResourceException | UnsupportedEncodingException exe) {
       return "";
-    } catch (UnsupportedEncodingException ex) {
-      return "";
+      }
     }
   }
 
