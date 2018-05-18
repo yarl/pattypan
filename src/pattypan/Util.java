@@ -31,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -60,8 +61,11 @@ public final class Util {
 
   public static String text(String key) {
     try {
-      return bundle.getString(key);
+      String val = bundle.getString(key); 
+      return new String(val.getBytes("ISO-8859-1"), "UTF-8");
     } catch (final MissingResourceException ex) {
+      return "";
+    } catch (UnsupportedEncodingException ex) {
       return "";
     }
   }
