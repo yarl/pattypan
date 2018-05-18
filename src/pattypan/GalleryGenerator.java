@@ -23,21 +23,44 @@
  */
 package pattypan;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import javax.security.auth.login.LoginException;
 
 public class GalleryGenerator {
 
   private ArrayList<String> fileNames = new ArrayList<>();
 
   public GalleryGenerator() {
+    fileNames.add("== " + Session.FILE.getName() + " ==");
     fileNames.add("<gallery>");
     Session.FILES_TO_UPLOAD.forEach((file) -> {
-      fileNames.add(file.getData("name"));
+      fileNames.add(file.getName());
     });
     fileNames.add("</gallery>");
 }
   
   public String getGallery() {
     return String.join("\n", fileNames);
+  }
+  
+  public void publish() {
+    String text = getGallery();
+    String title = Settings.getSetting("user") + "/gallery";
+    
+    try {
+      Session.WIKI.edit(title, text, "add gallery", -1);
+    } catch (IOException ex) {
+      Session.LOGGER.log(Level.WARNING,
+        "Error occurred during gallery upload: {0}",
+        new String[]{"no internet connection"}
+      );
+    } catch (LoginException ex) {
+      Session.LOGGER.log(Level.WARNING,
+        "Error occurred during gallery upload: {0}",
+        new String[]{"not logged in"}
+      );
+    }
   }
 }
