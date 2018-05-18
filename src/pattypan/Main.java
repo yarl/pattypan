@@ -37,7 +37,11 @@ public class Main extends Application {
   public void start(Stage stage) {
     Image logo = new Image(getClass().getResourceAsStream("/pattypan/resources/logo.png"));
 
-    Scene scene = new Scene(new StartPane(stage), Settings.getSettingInt("windowWidth"), Settings.getSettingInt("windowHeight"));
+    Scene scene = new Scene(
+            new StartPane(stage),
+            Settings.getSettingInt("windowWidth"),
+            Settings.getSettingInt("windowHeight")
+    );
     stage.setResizable(true);
     stage.setTitle("pattypan " + Settings.VERSION);
     stage.getIcons().add(logo);

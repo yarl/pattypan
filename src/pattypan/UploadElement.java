@@ -58,6 +58,10 @@ public final class UploadElement {
   public File getFile() {
     return new File(getData("path"));
   }
+  
+  public String getName() {
+    return Util.getNormalizedName(getData("name"));
+  }
 
   public URL getUrl() {
     try {

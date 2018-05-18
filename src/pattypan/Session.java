@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javafx.scene.Scene;
 import org.wikipedia.Wiki;
-import pattypan.LogManager;
 import java.util.logging.Logger;
 
 public final class Session {

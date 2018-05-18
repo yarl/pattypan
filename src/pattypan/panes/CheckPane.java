@@ -72,7 +72,7 @@ public class CheckPane extends WikiPane {
     System.out.print(gg.getGallery());
 
     Session.FILES_TO_UPLOAD.stream().map(uploadElement -> {
-      String name = Util.getNormalizedName(uploadElement.getData("name"));
+      String name = uploadElement.getName();
       Hyperlink label = new Hyperlink(name);
 
       label.setTooltip(new Tooltip(name));
@@ -142,7 +142,7 @@ public class CheckPane extends WikiPane {
    * @param ue
    */
   private void setDetails(UploadElement ue, Hyperlink label) {
-    String name = Util.getNormalizedName(ue.getData("name"));
+    String name = ue.getName();
 
     WikiLabel title = new WikiLabel(name).setClass("header").setAlign("left");
     WikiLabel path = new WikiLabel(ue.getData("path")).setAlign("left");
@@ -173,9 +173,13 @@ public class CheckPane extends WikiPane {
     detailsContainer.getChildren().clear();
 
     if (ue.getData("path").startsWith("https://") || ue.getData("path").startsWith("http://")) {
-      detailsContainer.getChildren().addAll(title, pathURL, preview, wikitext);
+      detailsContainer
+              .getChildren()
+              .addAll(title, pathURL, preview, wikitext);
     } else {
-      detailsContainer.getChildren().addAll(title, path, getScaledThumbnail(ue.getFile()), preview, wikitext);
+      detailsContainer
+              .getChildren()
+              .addAll(title, path, getScaledThumbnail(ue.getFile()), preview, wikitext);
     }
   }
 }
