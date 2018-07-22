@@ -31,6 +31,16 @@ java -jar pattypan.jar wiki="test2.wikipedia.org" protocol="https://" scriptPath
 
 ```
 
+### Additional information for Ubuntu, Debian and Fedora based distributions
+These linux distributions may require additional ```openjfx``` package. After installing Java on your system, download and install the ```openjfx``` package. You can install it by running:
+
+``` 
+sudo apt-get install openjfx
+``` 
+
+on your terminal.
+You can also check this link: https://pkgs.org/download/openjfx for more information on ```openjfx``` package for these distributions.
+
 Please note, that on test server file upload may be disabled for regular users. Admin account is suggested, you can request rights [here](https://test.wikipedia.org/wiki/Wikipedia:Requests/Permissions). If you have problems with program running, check [article on project wiki](https://github.com/yarl/pattypan/wiki/Run).
 
 ### License
