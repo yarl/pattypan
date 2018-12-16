@@ -132,7 +132,7 @@ public final class Util {
   /* file utils */
   private final static ArrayList<String> allowedExtentionImage = new ArrayList<>(
           Arrays.asList("djvu", "flac", "gif", "jpg", "jpeg", "mid",
-                  "oga", "ogg","ogv", "opus", "pdf", "png", "svg", "tiff",
+                  "mkv", "oga", "ogg","ogv", "opus", "pdf", "png", "svg", "tiff",
                   "tif", "wav", "webm", "webp", "xcf", "mp3", "stl")
   );
 
