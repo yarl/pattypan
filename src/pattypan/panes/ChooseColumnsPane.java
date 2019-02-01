@@ -142,7 +142,7 @@ public class ChooseColumnsPane extends WikiPane {
     wikicodeLink = new Hyperlink(Util.text("choose-columns-wikicode"));
     rightContainer.getChildren().addAll(
             new Region(),
-            new WikiLabel("Advanced").setClass("bold"),
+            new WikiLabel("choose-columns-advanced").setClass("bold"),
             wikicodeLink
     );
 
