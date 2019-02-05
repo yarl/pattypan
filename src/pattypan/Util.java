@@ -134,9 +134,9 @@ public final class Util {
   }
 
   /* file utils */
-  private final static ArrayList<String> allowedExtentionImage = new ArrayList<>(
+  private final static ArrayList<String> allowedFileExtension = new ArrayList<>(
           Arrays.asList("djvu", "flac", "gif", "jpg", "jpeg", "mid",
-                  "oga", "ogg","ogv", "opus", "pdf", "png", "svg", "tiff",
+                  "mkv", "oga", "ogg","ogv", "opus", "pdf", "png", "svg", "tiff",
                   "tif", "wav", "webm", "webp", "xcf", "mp3", "stl")
   );
 
@@ -148,7 +148,7 @@ public final class Util {
   );
 
   public static boolean stringHasValidFileExtension(String string) {
-    return allowedExtentionImage.parallelStream().anyMatch(string::endsWith);
+    return allowedFileExtension.parallelStream().anyMatch(string::endsWith);
   }
 
   public static boolean isPossibleBadFilename(String name) {
@@ -216,7 +216,7 @@ public final class Util {
   }
 
   public static boolean isFileAllowedToUpload(String name) {
-    return allowedExtentionImage.indexOf(getExtFromFilename(name)) > -1;
+    return allowedFileExtension.indexOf(getExtFromFilename(name)) > -1;
   }
 
   public static String readUrl(String urlString) throws Exception {
