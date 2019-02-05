@@ -149,6 +149,41 @@ public final class Settings {
             )
     );
     TEMPLATES.put(
+            "Art Photo",
+            new Template("Art Photo",
+                    new TemplateField[]{
+                      new TemplateField("wikidata", "Wikidata"),
+                      new TemplateField("artwork_license", "Artwork license"),
+                      new TemplateField("photo_description", "Photo description"),
+                      new TemplateField("photo_date", "Photo date"),
+                      new TemplateField("photographer", "Photographer"),
+                      new TemplateField("source", "Source"),
+                      new TemplateField("photo_license", "Photo license"),
+                      new TemplateField("other_versions", "Other versions"),
+                      new TemplateField("partnership", "Partnership")
+                    }, "=={{int:filedesc}}==\n"
+                    + "{{Art Photo\n"
+                    + " |wikidata = ${wikidata}\n"
+                    + " |artwork license = ${artwork_license}\n"
+                    + " |photo description = ${photo_description}\n"
+                    + " |photo date = ${photo_date}\n"
+                    + " |photographer = ${photographer}\n"
+                    + " |source = ${source}\n"
+                    + " |photo license = ${photo_license}\n"
+                    + " |other_versions = ${other_versions}\n"
+                    + "}}\n\n"
+                    + "=={{int:license-header}}==\n"
+                    + "${artwork_license}${photo_license}${partnership}"
+                    + "\n\n"
+                    + "<#if categories ? has_content>\n"
+                    + "<#list categories ? split(\";\") as category>\n"
+                    + "[[Category:${category?trim}]]\n"
+                    + "</#list>\n"
+                    + "<#else>{{subst:unc}}\n"
+                    + "</#if>"
+            )
+    );
+    TEMPLATES.put(
             "Book",
             new Template("Book",
                     new TemplateField[]{
