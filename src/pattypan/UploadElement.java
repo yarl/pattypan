@@ -24,10 +24,14 @@
 package pattypan;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public final class UploadElement {
 
@@ -57,6 +61,18 @@ public final class UploadElement {
 
   public File getFile() {
     return new File(getData("path"));
+  }
+  
+  public String getFileChecksum() {
+    File file = this.getFile();
+    try {
+      MessageDigest shaDigest = MessageDigest.getInstance("SHA-1");
+      String shaChecksum = Util.getFileChecksum(shaDigest, file);
+      return shaChecksum;
+    } catch (NoSuchAlgorithmException | IOException e) {
+      Session.LOGGER.log(Level.SEVERE, null, e);
+      return null;
+    }
   }
 
   public URL getUrl() {

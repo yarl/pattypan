@@ -3678,7 +3678,7 @@ public class Wiki implements Serializable
      *  @return a list of all live images the user has uploaded
      *  @throws IOException if a network error occurs
      */
-    public LogEntry[] getUploads(User user, OffsetDateTime start, OffsetDateTime end) throws IOException
+        public LogEntry[] getUploads(User user, OffsetDateTime start, OffsetDateTime end) throws IOException
     {
         StringBuilder url = new StringBuilder(query);
         url.append("list=allimages&aisort=timestamp&aiprop=timestamp%7Ccomment&aiuser=");
@@ -3711,6 +3711,30 @@ public class Wiki implements Serializable
         
         int size = uploads.size();
         log(Level.INFO, "getUploads", "Successfully retrieved uploads of " + user.getUsername() + " (" + size + " uploads)");
+        return uploads.toArray(new LogEntry[size]);
+    }
+    
+    public LogEntry[] getChecksumDuplicates(String checksum) throws IOException
+    {
+        StringBuilder url = new StringBuilder(query);
+        url.append("list=allimages&aisha1=");
+        url.append(encode(checksum, false));
+        
+        List<LogEntry> uploads = queryAPIResult("ai", url, "getChecksumDuplicates", (line, results) ->
+        {
+            for (int i = line.indexOf("<img "); i > 0; i = line.indexOf("<img ", ++i))
+            {
+                int b = line.indexOf("/>", i);
+                LogEntry le = parseLogEntry(line.substring(i, b));
+                le.type = UPLOAD_LOG;
+                le.action = "upload"; // unless it's an overwrite?
+                le.user = user;
+                results.add(le);
+            }
+        });
+        
+        int size = uploads.size();
+        log(Level.INFO, "getChecksumDuplicates", "Successfully retrieved files based on checksum " + checksum);
         return uploads.toArray(new LogEntry[size]);
     }
 

@@ -40,6 +40,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javax.security.auth.login.LoginException;
+import org.wikipedia.Wiki;
 import pattypan.Session;
 import pattypan.Settings;
 import pattypan.UploadElement;
@@ -120,6 +121,11 @@ public class UploadPane extends WikiPane {
           statusLabel.setText(Util.text("upload-log-uploading", "") + String.format(" (%s/%s) ", data[1], max));
         } else if (value.contains("UPLOAD_NAME_TAKEN")) {
           String text = String.format("[%s/%s] ", data[1], max) + Util.text("upload-log-error", Util.text("upload-log-error-name-taken"));
+          WikiLabel label = new WikiLabel(text).setAlign("left");
+          addInfo(label);
+          addInfo(new WikiLabel(""));
+        } else if (value.contains("FILE_DUPLICATE")) {
+          String text = String.format("[%s/%s] ", data[1], max) + Util.text("upload-log-error", Util.text("upload-log-error-file-duplicate", data[3]));
           WikiLabel label = new WikiLabel(text).setAlign("left");
           addInfo(label);
           addInfo(new WikiLabel(""));
@@ -234,6 +240,29 @@ public class UploadPane extends WikiPane {
       return false;
     }
   }
+  
+  private String isFileUploaded(UploadElement ue) {
+    String checksum = ue.getFileChecksum();
+    try {
+      Wiki.LogEntry[] entries = Session.WIKI.getChecksumDuplicates(checksum);
+      if(entries.length > 0) {
+        return entries[0].getTarget();
+      }
+      return null;
+    } catch (UnknownHostException ex) {
+      Session.LOGGER.log(Level.WARNING,
+              "Error occurred during file SHA1 check: {0}",
+              new String[]{"no internet connection"}
+      );
+      return null;
+    } catch (IOException ex) {
+      Session.LOGGER.log(Level.WARNING,
+              "Error occurred during file SHA1 check: {0}",
+              new String[]{ex.getLocalizedMessage()}
+      );
+      return null;
+    }
+  }
 
   private void uploadFiles(ArrayList<UploadElement> fileList) {
     Task task = new Task() {
@@ -256,6 +285,17 @@ public class UploadPane extends WikiPane {
                 updateMessage(String.format(
                         "UPLOAD_NAME_TAKEN | %s | %s",
                         current + 1, name
+                ));
+                Thread.sleep(500);
+                skipped++;
+                continue;
+              }
+              
+              String duplicate = isFileUploaded(ue);
+              if (duplicate != null) {
+                updateMessage(String.format(
+                        "FILE_DUPLICATE | %s | %s | %s",
+                        current + 1, name, duplicate
                 ));
                 Thread.sleep(500);
                 skipped++;

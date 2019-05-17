@@ -29,14 +29,17 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -60,8 +63,11 @@ public final class Util {
 
   public static String text(String key) {
     try {
-      return bundle.getString(key);
+      String val = bundle.getString(key); 
+      return new String(val.getBytes("ISO-8859-1"), "UTF-8");
     } catch (final MissingResourceException ex) {
+      return "";
+    } catch (UnsupportedEncodingException ex) {
       return "";
     }
   }
@@ -130,9 +136,9 @@ public final class Util {
   }
 
   /* file utils */
-  private final static ArrayList<String> allowedExtentionImage = new ArrayList<>(
+  private final static ArrayList<String> allowedFileExtension = new ArrayList<>(
           Arrays.asList("djvu", "flac", "gif", "jpg", "jpeg", "mid",
-                  "oga", "ogg","ogv", "opus", "pdf", "png", "svg", "tiff",
+                  "mkv", "oga", "ogg","ogv", "opus", "pdf", "png", "svg", "tiff",
                   "tif", "wav", "webm", "webp", "xcf", "mp3", "stl")
   );
 
@@ -144,7 +150,7 @@ public final class Util {
   );
 
   public static boolean stringHasValidFileExtension(String string) {
-    return allowedExtentionImage.parallelStream().anyMatch(string::endsWith);
+    return allowedFileExtension.parallelStream().anyMatch(string::endsWith);
   }
 
   public static boolean isPossibleBadFilename(String name) {
@@ -207,13 +213,46 @@ public final class Util {
     return map;
   }
   
+  // @TODO: remove fancy chars
   public static String getNormalizedName(String name) {
     return name.trim().replaceAll(" +", " ");
   }
 
   public static boolean isFileAllowedToUpload(String name) {
-    return allowedExtentionImage.indexOf(getExtFromFilename(name)) > -1;
+    return allowedFileExtension.indexOf(getExtFromFilename(name)) > -1;
   }
+  
+  // @source: https://howtodoinjava.com/java/io/how-to-generate-sha-or-md5-file-checksum-hash-in-java/
+  public static String getFileChecksum(MessageDigest digest, File file) throws IOException {
+    //Get file input stream for reading the file content
+    FileInputStream fis = new FileInputStream(file);
+     
+    //Create byte array to read data in chunks
+    byte[] byteArray = new byte[1024];
+    int bytesCount = 0;
+      
+    //Read file data and update in message digest
+    while ((bytesCount = fis.read(byteArray)) != -1) {
+        digest.update(byteArray, 0, bytesCount);
+    };
+     
+    //close the stream; We don't need it now.
+    fis.close();
+     
+    //Get the hash's bytes
+    byte[] bytes = digest.digest();
+     
+    //This bytes[] has bytes in decimal format;
+    //Convert it to hexadecimal format
+    StringBuilder sb = new StringBuilder();
+    for(int i=0; i< bytes.length ;i++)
+    {
+        sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+    }
+     
+    //return complete hash
+   return sb.toString();
+}
 
   public static String readUrl(String urlString) throws Exception {
     BufferedReader reader = null;
