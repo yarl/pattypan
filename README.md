@@ -43,6 +43,20 @@ sudo apt-get install openjfx
 on your terminal.
 You can also check this link: https://pkgs.org/download/openjfx for more information on ```openjfx``` package for these distributions.
 
+Starting with Ubuntu 18.10 (and around the same time in Debian Sid), openjfx version 8 is no more shipped with the distribution. Though it is possible to force the openjfx to stay in version 8, and run pattypan, this is pretty much a hack. If you still wish to proceed, you can gain access to the Ubuntu 18.04 repository by adding the following line to your `/etc/apt/sources.list` file:
+
+```
+deb-src http://fr.archive.ubuntu.com/ubuntu/ bionic universe multiverse
+``` 
+
+You can then run these commands to perfom the installation and pin these versions:
+```
+apt purge openjfx
+apt install openjfx=8u161-b12-1ubuntu2 libopenjfx-jni=8u161-b12-1ubuntu2 libopenjfx-java=8u161-b12-1ubuntu2
+apt-mark hold openjfx libopenjfx-jni libopenjfx-java
+```
+
+
 ### License
 Copyright (c) 2016 Paweł Marynowski.
 
