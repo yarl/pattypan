@@ -7682,7 +7682,7 @@ public class Wiki implements Serializable
     {
         String headerName;
         for (int i = 1; (headerName = u.getHeaderFieldKey(i)) != null; i++)
-            if (headerName.equals("Set-Cookie"))
+            if (headerName.equalsIgnoreCase("Set-Cookie"))
             {
                 String cookie = u.getHeaderField(i);
                 cookie = cookie.substring(0, cookie.indexOf(';'));
