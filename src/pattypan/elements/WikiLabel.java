@@ -23,8 +23,6 @@
  */
 package pattypan.elements;
 
-import com.sun.javafx.tk.FontLoader;
-import com.sun.javafx.tk.Toolkit;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.text.Text;
