@@ -23,10 +23,9 @@
  */
 package pattypan.elements;
 
-import com.sun.javafx.tk.FontLoader;
-import com.sun.javafx.tk.Toolkit;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import pattypan.Util;
 
@@ -63,8 +62,9 @@ public class WikiLabel extends Label {
   }
   
   public WikiLabel setTranslateByHalf(boolean right) {
-    FontLoader fontLoader = Toolkit.getToolkit().getFontLoader();
-    double textWidth = fontLoader.computeStringWidth(this.getText(), this.getFont());
+    Text text = new Text(this.getText());
+    text.setFont(this.getFont());
+    double textWidth = text.getBoundsInLocal().getWidth();
     this.setTranslateX(textWidth * 0.5 * (right ? 1 : -1));
     return this;
   }
