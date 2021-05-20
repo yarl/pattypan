@@ -193,9 +193,10 @@ public final class Util {
   }
 
   public static File[] getFilesAllowedToUpload(File directory, String ext) {
-    return directory.listFiles((File dir, String name)
-            -> name.toLowerCase().endsWith(ext)
-    );
+    File[] files = directory.listFiles((File dir, String name) -> name.toLowerCase().endsWith(ext));
+    Arrays.sort(files);
+    return files;
+
   }
 
   public static Map<String, Integer> getFilesByExtention(File[] files) {
