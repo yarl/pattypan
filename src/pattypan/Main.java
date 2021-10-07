@@ -84,7 +84,7 @@ public class Main extends Application {
             new String[]{os, Settings.VERSION}
     );
 
-    Session.WIKI = new Wiki(wiki, scriptPath, protocol);
+    Session.WIKI = Wiki.newSession(wiki, scriptPath, protocol);
     launch(args);
   }
 }
