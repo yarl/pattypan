@@ -3,3 +3,5 @@ store
 dist
 nbproject\private
 /nbproject/private/
+bin
+pattypan.jar

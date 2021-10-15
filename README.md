@@ -9,18 +9,12 @@ __[:arrow_down: Download](https://github.com/yarl/pattypan/releases)__
 ----
 
 ### Build and run
-Program is being written using [NetBeans IDE](https://netbeans.org/) and [Apache Ant](https://ant.apache.org/) is used for building. In order to download and build source code, do following:
+[Apache Ant](https://ant.apache.org/) is used for building Pattypan. In order to download and build source code, do the following:
 
 ```
 git clone https://github.com/yarl/pattypan.git
 cd pattypan
-ant package-for-store
-```
-You will find compiled `.jar` file in `store` directory.
-
-```
-cd store
-java -jar pattypan.jar
+ant compile && ant jar
 ```
 
 You can also set test server or any other server:
