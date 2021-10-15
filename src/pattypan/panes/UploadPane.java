@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -224,7 +225,7 @@ public class UploadPane extends WikiPane {
    */
   private boolean isFileNameTaken(String name) {
     try {
-      Map map = Session.WIKI.getPageInfo("File:" + name);
+      Map map = Session.WIKI.getPageInfo(List.of("File:" + name)).get(0);
       return (boolean) map.get("exists");
     } catch (UnknownHostException ex) {
       Session.LOGGER.log(Level.WARNING,
@@ -238,29 +239,6 @@ public class UploadPane extends WikiPane {
               new String[]{ex.getLocalizedMessage()}
       );
       return false;
-    }
-  }
-  
-  private String isFileUploaded(UploadElement ue) {
-    String checksum = ue.getFileChecksum();
-    try {
-      Wiki.LogEntry[] entries = Session.WIKI.getChecksumDuplicates(checksum);
-      if(entries.length > 0) {
-        return entries[0].getTarget();
-      }
-      return null;
-    } catch (UnknownHostException ex) {
-      Session.LOGGER.log(Level.WARNING,
-              "Error occurred during file SHA1 check: {0}",
-              new String[]{"no internet connection"}
-      );
-      return null;
-    } catch (IOException ex) {
-      Session.LOGGER.log(Level.WARNING,
-              "Error occurred during file SHA1 check: {0}",
-              new String[]{ex.getLocalizedMessage()}
-      );
-      return null;
     }
   }
 
@@ -285,17 +263,6 @@ public class UploadPane extends WikiPane {
                 updateMessage(String.format(
                         "UPLOAD_NAME_TAKEN | %s | %s",
                         current + 1, name
-                ));
-                Thread.sleep(500);
-                skipped++;
-                continue;
-              }
-              
-              String duplicate = isFileUploaded(ue);
-              if (duplicate != null) {
-                updateMessage(String.format(
-                        "FILE_DUPLICATE | %s | %s | %s",
-                        current + 1, name, duplicate
                 ));
                 Thread.sleep(500);
                 skipped++;
