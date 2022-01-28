@@ -9,12 +9,12 @@ __[:arrow_down: Download](https://github.com/yarl/pattypan/releases)__
 ----
 
 ### Build and run
-[Apache Ant](https://ant.apache.org/) is used for building Pattypan. In order to download and build source code, do the following:
+[Apache Ant](https://ant.apache.org/) is used for building Pattypan. You need to have JDK 11 or later installed as well as an download of OpenJFX. In order to download and build source code, do the following:
 
 ```
 git clone https://github.com/yarl/pattypan.git
 cd pattypan
-ant compile && ant jar
+ant compile -DopenjfxSDKPath="/path-to-openjfx-sdk/" && ant jar
 ```
 
 You can also set test server or any other server:

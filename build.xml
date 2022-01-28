@@ -8,9 +8,12 @@
   </path>
 
   <target name="compile">
+  <property name="openjfxSDKPath" value="/usr/share/openjfx/lib/" />
     <mkdir dir="bin"/>
     <javac includeantruntime="false" srcdir="src" destdir="bin">
       <classpath refid="classpath" />
+      <compilerarg line="--module-path ${openjfxSDKPath}"/>
+      <compilerarg line="--add-modules javafx.web"/>
     </javac>
     <copy todir="bin/pattypan/resources">
       <fileset dir="src/pattypan/resources"/>
