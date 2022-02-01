@@ -1,5 +1,7 @@
 <project default="compile" basedir=".">
   <property name="lib.dir" location="lib" />
+  <property environment="env"/>
+  <property name="openjfxSDKPath" value="${env.PATH_TO_FX}"/>
 
   <path id="classpath">
     <fileset dir="lib">
@@ -8,31 +10,47 @@
   </path>
 
   <target name="compile">
-  <property name="openjfxSDKPath" value="/usr/share/openjfx/lib/" />
     <mkdir dir="bin"/>
     <javac includeantruntime="false" srcdir="src" destdir="bin">
       <classpath refid="classpath" />
       <compilerarg line="--module-path ${openjfxSDKPath}"/>
       <compilerarg line="--add-modules javafx.web"/>
     </javac>
-    <copy todir="bin/pattypan/resources">
-      <fileset dir="src/pattypan/resources"/>
-    </copy>
-        <copy todir="bin/pattypan/style">
-      <fileset dir="src/pattypan/style"/>
-    </copy>
-        <copy todir="bin/pattypan/text">
-      <fileset dir="src/pattypan/text"/>
-    </copy>
   </target>
 
   <target name="jar">
+    <copy todir="bin/pattypan">
+      <fileset dir="src/pattypan/" >
+        <include name="resources/**"/>
+        <include name="style/**"/>
+        <include name="text/**"/>
+      </fileset>
+    </copy>
+    <unzip dest="bin">
+      <fileset dir="${openjfxSDKPath}">
+        <include name="javafx.base.jar"/>
+        <include name="javafx.graphics.jar"/>
+        <include name="javafx.controls.jar"/>
+        <include name="javafx.swing.jar"/>
+      </fileset>
+      <patternset>
+        <exclude name="META-INF/MANIFEST.MF"/>
+        <exclude name="module-info.class"/>
+      </patternset>
+    </unzip>
+    <copy todir="bin">
+      <fileset dir="${openjfxSDKPath}">
+        <include name="libprism*.so"/>
+        <include name="libjavafx*.so"/>
+        <include name="libglass*.so"/>
+        <include name="libdecora_sse.so"/>
+      </fileset>
+    </copy>
     <jar destfile="pattypan.jar" basedir="bin" includes="**/*">
       <manifest>
         <attribute name="Class-Path" value="${lib.dir}"/>
-        <attribute name="Main-Class" value="pattypan.Main"/>
+        <attribute name="Main-Class" value="pattypan.Launcher"/>
       </manifest>
-
       <zipgroupfileset dir="${lib.dir}"/>
     </jar>
   </target>
