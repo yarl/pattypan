@@ -9,14 +9,17 @@ __[:arrow_down: Download](https://github.com/yarl/pattypan/releases)__
 ----
 
 ### Build and run
-[Apache Ant](https://ant.apache.org/) is used for building Pattypan. You need to have JDK 11 or later installed as well as [a download of OpenJFX](https://gluonhq.com/products/javafx/). In order to download and build source code, do the following:
+[Apache Ant](https://ant.apache.org/) is used for building Pattypan. You need to have JDK 11 or later installed as well as [a download of OpenJFX](https://gluonhq.com/products/javafx/) for each platform you want to support. In order to download and build source code, do the following:
 
 ```
 git clone https://github.com/yarl/pattypan.git
 cd pattypan
-export PATH_TO_FX=path-to-javafx-sdk/lib
-ant compile && ant jar
+ant
 ```
+
+This will run the default `build` target. It assumes that the current directory contains the OpenJFX SDK ZIP(s) and will unpack the required files to the correct locations. The resulting JAR will support Linux, Windows or both. The ZIPs present dictates what platforms will be supported. Note that the ZIPs should have their default name to be included.
+
+A temporary directory will be used during the build process and removed afterwards. It's default path is *tmp/* and can be set using `ant -Dtmp=...`
 
 You can also set test server or any other server:
 

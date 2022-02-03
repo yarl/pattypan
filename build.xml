@@ -1,7 +1,7 @@
-<project default="compile" basedir=".">
+<project default="build" basedir=".">
+  <target name="build" depends="prepareJavfx, compile, jar, clean"/>
   <property name="lib.dir" location="lib" />
-  <property environment="env"/>
-  <property name="openjfxSDKPath" value="${env.PATH_TO_FX}"/>
+  <property name="tmp" location="tmp" />
 
   <path id="classpath">
     <fileset dir="lib">
@@ -9,15 +9,90 @@
     </fileset>
   </path>
 
-  <target name="clean">
-    <delete dir="bin"/>
+  <target name="prepareJavfx">
+    <mkdir dir="${tmp}"/>
+    <unzip dest="${tmp}">
+      <fileset dir=".">
+        <include name="openjfx-*_linux-*_bin-sdk.zip"/>
+      </fileset>
+      <patternset>
+        <include name="**/javafx.base.jar"/>
+        <include name="**/javafx.graphics.jar"/>
+        <include name="**/javafx.controls.jar"/>
+        <include name="**/javafx.web.jar"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
+    <unzip dest="bin">
+      <fileset dir="${tmp}">
+        <include name="javafx.base.jar"/>
+        <include name="javafx.graphics.jar"/>
+        <include name="javafx.controls.jar"/>
+      </fileset>
+      <patternset>
+        <exclude name="META-INF/MANIFEST.MF"/>
+        <exclude name="module-info.class"/>
+      </patternset>
+    </unzip>
+    <unzip dest="bin">
+      <fileset dir=".">
+        <include name="openjfx-*_linux-*_bin-sdk.zip"/>
+      </fileset>
+      <patternset>
+        <include name="**/libprism*.so"/>
+        <include name="**/libjavafx*.so"/>
+        <include name="**/libglass*.so"/>
+        <include name="**/libdecora_sse.so"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
+
+    <unzip dest="${tmp}">
+      <fileset dir=".">
+        <include name="openjfx-*_windows-*_bin-sdk.zip"/>
+      </fileset>
+      <patternset>
+        <include name="**/javafx.base.jar"/>
+        <include name="**/javafx.graphics.jar"/>
+        <include name="**/javafx.controls.jar"/>
+        <include name="**/javafx.web.jar"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
+    <unzip dest="bin">
+      <fileset dir="${tmp}">
+        <include name="javafx.base.jar"/>
+        <include name="javafx.graphics.jar"/>
+        <include name="javafx.controls.jar"/>
+      </fileset>
+      <patternset>
+        <exclude name="META-INF/MANIFEST.MF"/>
+        <exclude name="module-info.class"/>
+      </patternset>
+    </unzip>
+    <unzip dest="bin">
+      <fileset dir=".">
+        <include name="openjfx-*_windows-*_bin-sdk.zip"/>
+      </fileset>
+      <patternset>
+        <include name="**/prism*.dll"/>
+        <include name="**/javafx*.dll"/>
+        <include name="**/glass.dll"/>
+        <include name="**/decora_sse.dll"/>
+        <include name="**/api-ms-win-core-console-l1-1-0.dll"/>
+        <include name="**/api-ms-win-core-console-l1-2-0.dll"/>
+        <include name="**/msvcp140.dll"/>
+        <include name="**/vcruntime140_1.dll"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
   </target>
 
-  <target name="compile" depends="clean">
+  <target name="compile">
     <mkdir dir="bin"/>
     <javac includeantruntime="false" srcdir="src" destdir="bin">
       <classpath refid="classpath" />
-      <compilerarg line="--module-path ${openjfxSDKPath}"/>
+      <compilerarg line="--module-path ${tmp}"/>
       <compilerarg line="--add-modules javafx.web"/>
     </javac>
   </target>
@@ -30,26 +105,6 @@
         <include name="text/**"/>
       </fileset>
     </copy>
-    <unzip dest="bin">
-      <fileset dir="${openjfxSDKPath}">
-        <include name="javafx.base.jar"/>
-        <include name="javafx.graphics.jar"/>
-        <include name="javafx.controls.jar"/>
-        <include name="javafx.swing.jar"/>
-      </fileset>
-      <patternset>
-        <exclude name="META-INF/MANIFEST.MF"/>
-        <exclude name="module-info.class"/>
-      </patternset>
-    </unzip>
-    <copy todir="bin">
-      <fileset dir="${openjfxSDKPath}">
-        <include name="libprism*.so"/>
-        <include name="libjavafx*.so"/>
-        <include name="libglass*.so"/>
-        <include name="libdecora_sse.so"/>
-      </fileset>
-    </copy>
     <jar destfile="pattypan.jar" basedir="bin" includes="**/*">
       <manifest>
         <attribute name="Class-Path" value="${lib.dir}"/>
@@ -57,5 +112,10 @@
       </manifest>
       <zipgroupfileset dir="${lib.dir}"/>
     </jar>
+  </target>
+
+  <target name="clean">
+    <delete dir="${tmp}"/>
+    <delete dir="bin"/>
   </target>
 </project>
