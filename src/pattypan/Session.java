@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 import javafx.scene.Scene;
 import org.wikipedia.Wiki;
 import pattypan.LogManager;
@@ -53,6 +54,8 @@ public final class Session {
 
   public static Wiki WIKI = new Wiki("commons.wikimedia.org");
   public static ArrayList<UploadElement> FILES_TO_UPLOAD = new ArrayList<>();
+
+  public static ResourceBundle LANGUAGE = ResourceBundle.getBundle("pattypan/text/messages");
 
   static {
     WIKI.setUserAgent(Settings.USERAGENT);

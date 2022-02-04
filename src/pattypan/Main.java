@@ -23,6 +23,7 @@
  */
 package pattypan;
 
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -59,6 +60,7 @@ public class Main extends Application {
     String wiki = "commons.wikimedia.org";
     String protocol = "https://";
     String scriptPath = "/w";
+    String lang = "";
     for (String arg : args) {
       String[] pair = arg.split("=");
       if (pair[0].contains("wiki")) {
@@ -67,14 +69,16 @@ public class Main extends Application {
         protocol = pair[1];
       } else if (pair[0].contains("scriptPath")) {
         scriptPath = pair[1];
+      } else if (pair[0].contains("lang")) {
+        lang = pair[1];
       }
     }
 
     Settings.readProperties();
 
     Session.LOGGER.log(Level.INFO,
-            "Wiki set as: {0}\nProtocol set as: {1}\nScript path set as: {2}",
-            new String[]{wiki, protocol, scriptPath}
+            "Wiki set as: {0}\nProtocol set as: {1}\nScript path set as: {2}\nLanguage set as: {3}",
+            new String[]{wiki, protocol, scriptPath, lang}
     );
 
     String os = System.getProperty("os.name");
@@ -84,6 +88,7 @@ public class Main extends Application {
             new String[]{os, Settings.VERSION}
     );
 
+    Session.LANGUAGE = ResourceBundle.getBundle("pattypan/text/messages" + lang);
     Session.WIKI = new Wiki(wiki, scriptPath, protocol);
     launch(args);
   }
