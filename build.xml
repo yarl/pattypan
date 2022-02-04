@@ -86,6 +86,41 @@
       </patternset>
       <mapper type="flatten"/>
     </unzip>
+
+    <unzip dest="${tmp}">
+      <fileset dir=".">
+        <include name="openjfx-*_osx-*_bin-sdk.zip"/>
+      </fileset>
+      <patternset>
+        <include name="**/javafx.base.jar"/>
+        <include name="**/javafx.graphics.jar"/>
+        <include name="**/javafx.controls.jar"/>
+        <include name="**/javafx.web.jar"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
+    <unzip dest="bin">
+      <fileset dir="${tmp}">
+        <include name="javafx.base.jar"/>
+        <include name="javafx.graphics.jar"/>
+        <include name="javafx.controls.jar"/>
+      </fileset>
+      <patternset>
+        <exclude name="META-INF/MANIFEST.MF"/>
+        <exclude name="module-info.class"/>
+      </patternset>
+    </unzip>
+    <unzip dest="bin">
+      <fileset dir=".">
+        <include name="openjfx-*_osx-*_bin-sdk.zip"/>
+      </fileset>
+      <patternset>
+        <include name="**/libprism*.dylib"/>
+        <include name="**/libjavafx*.dylib"/>
+        <include name="**/libglass.dylib"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
   </target>
 
   <target name="compile">
