@@ -1,79 +1,154 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- You may freely edit this file. See commented blocks below for --><!-- some examples of how to customize the build. --><!-- (If you delete it and reopen the project it will be recreated.) --><!-- By default, only the Clean and Build commands use this build script. --><project name="pattypan" default="default" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
-    <description>Builds, tests, and runs the project pattypan.</description>
-    <import file="nbproject/build-impl.xml"/>
-    <!--
+<project default="build" basedir=".">
+  <target name="build" depends="prepareJavfx, compile, jar, clean"/>
+  <property name="lib.dir" location="lib" />
+  <property name="tmp" location="tmp" />
 
-    There exist several targets which are by default empty and which can be 
-    used for execution of your tasks. These targets are usually executed 
-    before and after some main targets. Those of them relevant for JavaFX project are: 
+  <path id="classpath">
+    <fileset dir="lib">
+      <include name="**/*.jar" />
+    </fileset>
+  </path>
 
-      -pre-init:                 called before initialization of project properties
-      -post-init:                called after initialization of project properties
-      -pre-compile:              called before javac compilation
-      -post-compile:             called after javac compilation
-      -pre-compile-test:         called before javac compilation of JUnit tests
-      -post-compile-test:        called after javac compilation of JUnit tests
-      -pre-jfx-jar:              called before FX SDK specific <fx:jar> task
-      -post-jfx-jar:             called after FX SDK specific <fx:jar> task
-      -pre-jfx-deploy:           called before FX SDK specific <fx:deploy> task
-      -post-jfx-deploy:          called after FX SDK specific <fx:deploy> task
-      -pre-jfx-native:           called just after -pre-jfx-deploy if <fx:deploy> runs in native packaging mode
-      -post-jfx-native:          called just after -post-jfx-deploy if <fx:deploy> runs in native packaging mode
-      -post-clean:               called after cleaning build products
+  <target name="prepareJavfx">
+    <mkdir dir="${tmp}"/>
+    <unzip dest="${tmp}">
+      <fileset dir=".">
+        <include name="openjfx-*_linux-*_bin-sdk.zip"/>
+      </fileset>
+      <patternset>
+        <include name="**/javafx.base.jar"/>
+        <include name="**/javafx.graphics.jar"/>
+        <include name="**/javafx.controls.jar"/>
+        <include name="**/javafx.web.jar"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
+    <unzip dest="bin">
+      <fileset dir="${tmp}">
+        <include name="javafx.base.jar"/>
+        <include name="javafx.graphics.jar"/>
+        <include name="javafx.controls.jar"/>
+      </fileset>
+      <patternset>
+        <exclude name="META-INF/MANIFEST.MF"/>
+        <exclude name="module-info.class"/>
+      </patternset>
+    </unzip>
+    <unzip dest="bin">
+      <fileset dir=".">
+        <include name="openjfx-*_linux-*_bin-sdk.zip"/>
+      </fileset>
+      <patternset>
+        <include name="**/libprism*.so"/>
+        <include name="**/libjavafx*.so"/>
+        <include name="**/libglass*.so"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
 
-    (Targets beginning with '-' are not intended to be called on their own.)
+    <unzip dest="${tmp}">
+      <fileset dir=".">
+        <include name="openjfx-*_windows-*_bin-sdk.zip"/>
+      </fileset>
+      <patternset>
+        <include name="**/javafx.base.jar"/>
+        <include name="**/javafx.graphics.jar"/>
+        <include name="**/javafx.controls.jar"/>
+        <include name="**/javafx.web.jar"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
+    <unzip dest="bin">
+      <fileset dir="${tmp}">
+        <include name="javafx.base.jar"/>
+        <include name="javafx.graphics.jar"/>
+        <include name="javafx.controls.jar"/>
+      </fileset>
+      <patternset>
+        <exclude name="META-INF/MANIFEST.MF"/>
+        <exclude name="module-info.class"/>
+      </patternset>
+    </unzip>
+    <unzip dest="bin">
+      <fileset dir=".">
+        <include name="openjfx-*_windows-*_bin-sdk.zip"/>
+      </fileset>
+      <patternset>
+        <include name="**/prism*.dll"/>
+        <include name="**/javafx*.dll"/>
+        <include name="**/glass.dll"/>
+        <include name="**/api-ms-win-core-console-l1-1-0.dll"/>
+        <include name="**/api-ms-win-core-console-l1-2-0.dll"/>
+        <include name="**/msvcp140.dll"/>
+        <include name="**/vcruntime140_1.dll"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
 
-    Example of inserting a HTML postprocessor after javaFX SDK deployment:
+    <unzip dest="${tmp}">
+      <fileset dir=".">
+        <include name="openjfx-*_osx-*_bin-sdk.zip"/>
+      </fileset>
+      <patternset>
+        <include name="**/javafx.base.jar"/>
+        <include name="**/javafx.graphics.jar"/>
+        <include name="**/javafx.controls.jar"/>
+        <include name="**/javafx.web.jar"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
+    <unzip dest="bin">
+      <fileset dir="${tmp}">
+        <include name="javafx.base.jar"/>
+        <include name="javafx.graphics.jar"/>
+        <include name="javafx.controls.jar"/>
+      </fileset>
+      <patternset>
+        <exclude name="META-INF/MANIFEST.MF"/>
+        <exclude name="module-info.class"/>
+      </patternset>
+    </unzip>
+    <unzip dest="bin">
+      <fileset dir=".">
+        <include name="openjfx-*_osx-*_bin-sdk.zip"/>
+      </fileset>
+      <patternset>
+        <include name="**/libprism*.dylib"/>
+        <include name="**/libjavafx*.dylib"/>
+        <include name="**/libglass.dylib"/>
+      </patternset>
+      <mapper type="flatten"/>
+    </unzip>
+  </target>
 
-        <target name="-post-jfx-deploy">
-            <basename property="jfx.deployment.base" file="${jfx.deployment.jar}" suffix=".jar"/>
-            <property name="jfx.deployment.html" location="${jfx.deployment.dir}${file.separator}${jfx.deployment.base}.html"/>
-            <custompostprocess>
-                <fileset dir="${jfx.deployment.html}"/>
-            </custompostprocess>
-        </target>
+  <target name="compile">
+    <mkdir dir="bin"/>
+    <javac includeantruntime="false" srcdir="src" destdir="bin">
+      <classpath refid="classpath" />
+      <compilerarg line="--module-path ${tmp}"/>
+      <compilerarg line="--add-modules javafx.web"/>
+    </javac>
+  </target>
 
-    Example of calling an Ant task from JavaFX SDK. Note that access to JavaFX SDK Ant tasks must be
-    initialized; to ensure this is done add the dependence on -check-jfx-sdk-version target:
-
-        <target name="-post-jfx-jar" depends="-check-jfx-sdk-version">
-            <echo message="Calling jar task from JavaFX SDK"/>
-            <fx:jar ...>
-                ...
-            </fx:jar>
-        </target>
-
-    For more details about JavaFX SDK Ant tasks go to
-    http://docs.oracle.com/javafx/2/deployment/jfxpub-deployment.htm
-
-    For list of available properties check the files
-    nbproject/build-impl.xml and nbproject/jfx-impl.xml.
-
-    -->
-  <target name="package-for-store" depends="jar">
-    <property name="store.jar.name" value="pattypan"/>
-
-    <!-- don't edit below this line -->
-    <property name="store.dir" value="store"/>
-    <property name="store.jar" value="${store.dir}/${store.jar.name}.jar"/>
-
-    <echo message="Packaging ${application.title} into a single JAR at ${store.jar}"/>
-    <delete dir="${store.dir}"/>
-    <mkdir dir="${store.dir}"/>
-
-    <jar destfile="${store.dir}/temp_final.jar" filesetmanifest="skip">
-      <zipgroupfileset dir="${dist.dir}" includes="*.jar"/>
-      <zipgroupfileset dir="lib" includes="*.jar"/>
-
+  <target name="jar">
+    <copy todir="bin/pattypan">
+      <fileset dir="src/pattypan/" >
+        <include name="resources/**"/>
+        <include name="style/**"/>
+        <include name="text/**"/>
+      </fileset>
+    </copy>
+    <jar destfile="pattypan.jar" basedir="bin" includes="**/*">
       <manifest>
-        <attribute name="Main-Class" value="pattypan.Main"/>
+        <attribute name="Class-Path" value="${lib.dir}"/>
+        <attribute name="Main-Class" value="pattypan.Launcher"/>
       </manifest>
+      <zipgroupfileset dir="${lib.dir}"/>
     </jar>
+  </target>
 
-    <zip destfile="${store.jar}">
-      <zipfileset src="${store.dir}/temp_final.jar"
-                  excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
-    </zip>
-    <delete file="${store.dir}/temp_final.jar"/>
+  <target name="clean">
+    <delete dir="${tmp}"/>
+    <delete dir="bin"/>
   </target>
 </project>

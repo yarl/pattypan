@@ -9,19 +9,17 @@ __[:arrow_down: Download](https://github.com/yarl/pattypan/releases)__
 ----
 
 ### Build and run
-Program is being written using [NetBeans IDE](https://netbeans.org/) and [Apache Ant](https://ant.apache.org/) is used for building. In order to download and build source code, do following:
+[Apache Ant](https://ant.apache.org/) is used for building Pattypan. You need to have JDK 11 or later installed as well as [a download of OpenJFX](https://gluonhq.com/products/javafx/) for each platform you want to support. In order to download and build source code, do the following:
 
 ```
 git clone https://github.com/yarl/pattypan.git
 cd pattypan
-ant package-for-store
+ant
 ```
-You will find compiled `.jar` file in `store` directory.
 
-```
-cd store
-java -jar pattypan.jar
-```
+This will run the default `build` target. It assumes that the current directory contains the OpenJFX SDK ZIP(s) and will unpack the required files to the correct locations. The resulting JAR will support Linux, Windows or both. The ZIPs present dictates what platforms will be supported. Note that the ZIPs should have their default name to be included.
+
+A temporary directory will be used during the build process and removed afterwards. It's default path is *tmp/* and can be set using `ant -Dtmp=...`
 
 You can also set test server or any other server:
 
@@ -32,30 +30,6 @@ java -jar pattypan.jar wiki="test2.wikipedia.org" protocol="https://" scriptPath
 ```
 
 Please note, that on test server file upload may be disabled for regular users. Admin account is suggested, you can request rights [here](https://test.wikipedia.org/wiki/Wikipedia:Requests/Permissions). If you have problems with program running, check [article on project wiki](https://github.com/yarl/pattypan/wiki/Run).
-
-### Additional information for Ubuntu, Debian and Fedora based distributions
-These linux distributions may require additional ```openjfx``` package. After installing Java on your system, download and install the ```openjfx``` package. You can install it by running:
-
-``` 
-sudo apt-get install openjfx
-``` 
-
-on your terminal.
-You can also check this link: https://pkgs.org/download/openjfx for more information on ```openjfx``` package for these distributions.
-
-Starting with Ubuntu 18.10 (and around the same time in Debian Sid), openjfx version 8 is no more shipped with the distribution. Though it is possible to force the openjfx to stay in version 8, and run pattypan, this is pretty much a hack. If you still wish to proceed, you can gain access to the Ubuntu 18.04 repository by adding the following line to your `/etc/apt/sources.list` file:
-
-```
-deb-src http://fr.archive.ubuntu.com/ubuntu/ bionic universe multiverse
-``` 
-
-You can then run these commands to perfom the installation and pin these versions:
-```
-apt purge openjfx
-apt install openjfx=8u161-b12-1ubuntu2 libopenjfx-jni=8u161-b12-1ubuntu2 libopenjfx-java=8u161-b12-1ubuntu2
-apt-mark hold openjfx libopenjfx-jni libopenjfx-java
-```
-
 
 ### License
 Copyright (c) 2016 Paweł Marynowski.
