@@ -1,5 +1,5 @@
 build
-store
-dist
-nbproject\private
-/nbproject/private/
+bin
+tmp
+pattypan.jar
+*.zip

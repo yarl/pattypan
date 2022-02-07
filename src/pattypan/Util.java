@@ -27,12 +27,12 @@ import edu.stanford.ejalbert.BrowserLauncher;
 import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
 import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import java.awt.Desktop;
+import java.awt.EventQueue;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -63,11 +63,8 @@ public final class Util {
 
   public static String text(String key) {
     try {
-      String val = bundle.getString(key); 
-      return new String(val.getBytes("ISO-8859-1"), "UTF-8");
+      return bundle.getString(key);
     } catch (final MissingResourceException ex) {
-      return "";
-    } catch (UnsupportedEncodingException ex) {
       return "";
     }
   }
@@ -103,11 +100,13 @@ public final class Util {
   }
 
   public static void openDirectory(Path path) {
-    try {
-      Desktop.getDesktop().open(new File(path.toString()));
-    } catch (IllegalArgumentException | IOException ex) {
-      Session.LOGGER.log(Level.WARNING, null, ex);
-    }
+    EventQueue.invokeLater(() -> {
+      try {
+        Desktop.getDesktop().open(new File(path.toString()));
+      } catch (IllegalArgumentException | IOException ex) {
+        Session.LOGGER.log(Level.WARNING, null, ex);
+      }
+    });
   }
 
   /* row and column utils */
