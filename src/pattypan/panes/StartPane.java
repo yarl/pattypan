@@ -23,16 +23,18 @@
  */
 package pattypan.panes;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.net.UnknownHostException;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import javafx.geometry.Pos;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.GridPane;
@@ -158,7 +160,7 @@ public class StartPane extends GridPane {
     ArrayList<String> versions = new ArrayList<>();
     String json = Util.readUrl("https://api.github.com/repos/yarl/pattypan/releases");
 
-    JsonArray releases = new JsonParser().parse(json).getAsJsonArray();
+    JsonArray releases = JsonParser.parseString(json).getAsJsonArray();
     for (JsonElement element : releases) {
       JsonObject release = element.getAsJsonObject();
       boolean draft = release.get("draft").getAsBoolean();

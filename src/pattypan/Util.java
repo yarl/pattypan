@@ -23,19 +23,17 @@
  */
 package pattypan;
 
-import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import java.awt.Desktop;
 import java.awt.EventQueue;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,6 +48,10 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import edu.stanford.ejalbert.BrowserLauncher;
+import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
+import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import javafx.geometry.HPos;
 import javafx.scene.layout.ColumnConstraints;
 
@@ -255,22 +257,18 @@ public final class Util {
 }
 
   public static String readUrl(String urlString) throws Exception {
-    BufferedReader reader = null;
     try {
-      URL url = new URL(urlString);
-      reader = new BufferedReader(new InputStreamReader(url.openStream()));
-      StringBuilder buffer = new StringBuilder();
-      int read;
-      char[] chars = new char[1024];
-      while ((read = reader.read(chars)) != -1) {
-        buffer.append(chars, 0, read);
-      }
+      HttpClient client = HttpClient.newHttpClient();
 
-      return buffer.toString();
-    } finally {
-      if (reader != null) {
-        reader.close();
-      }
+      HttpRequest request = HttpRequest.newBuilder(
+            URI.create(urlString))
+        .header("user-agent", Settings.USERAGENT)
+        .build();
+
+      var response = client.send(request, BodyHandlers.ofString());
+      return response.body();
+    } catch (Exception e) {
+      throw new Exception("Error while getting JSON from " + urlString);
     }
   }
 
