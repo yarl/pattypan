@@ -150,12 +150,22 @@ public final class Util {
             "SANY", "SAM")
   );
 
-  public static boolean stringHasValidFileExtension(String string) {
+  // https://www.mediawiki.org/wiki/Manual:Page_title
+  private final static ArrayList<String> invalidFilenameCharacters = new ArrayList<>(
+    Arrays.asList("#", "<", ">", "[", "]", "|", "{", "}")
+  );
+
+
+  public static boolean hasValidFileExtension(String string) {
     return allowedFileExtension.parallelStream().anyMatch(string::endsWith);
   }
 
-  public static boolean isPossibleBadFilename(String name) {
+  public static boolean hasPossibleBadFilenamePrefix(String name) {
     return filenamePrefixBlacklist.parallelStream().anyMatch(name::startsWith);
+  }
+
+  public static boolean hasInvalidFilenameCharacters(String name) {
+    return invalidFilenameCharacters.parallelStream().anyMatch(name::contains);
   }
 
   public static String getNameFromFilename(String filename) {
