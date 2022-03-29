@@ -163,7 +163,7 @@ public class LoadPane extends WikiPane {
           }
 
           // when uploaded from URL the extension is not automatically added
-          if (!Util.stringHasValidFileExtension(description.get("name"))) {
+          if (!Util.hasValidFileExtension(description.get("name"))) {
             throw new Exception("filename does not include a valid file extension");
           }
         } else {
@@ -172,8 +172,12 @@ public class LoadPane extends WikiPane {
           }
         }
 
-        if (Util.isPossibleBadFilename(description.get("name"))) {
-          warnings.add(description.get("name") + ": filename shouldn't have name from camera (DSC, DSCF, etc");
+        if (Util.hasPossibleBadFilenamePrefix(description.get("name"))) {
+          warnings.add(description.get("name") + ": filename shouldn't have name from camera (DSC, DSCF, etc)");
+        }
+
+        if (Util.hasInvalidFilenameCharacters(description.get("name"))) {
+          throw new Exception(description.get("name") + ": filename shouldn't contain invalid characters (#, ], {, etc)");
         }
 
         Set<String> keys = Util.getKeysByValue(description, "");

@@ -23,19 +23,17 @@
  */
 package pattypan;
 
-import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import java.awt.Desktop;
 import java.awt.EventQueue;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,6 +48,10 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
+import edu.stanford.ejalbert.BrowserLauncher;
+import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
+import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import javafx.geometry.HPos;
 import javafx.scene.layout.ColumnConstraints;
 
@@ -148,12 +150,22 @@ public final class Util {
             "SANY", "SAM")
   );
 
-  public static boolean stringHasValidFileExtension(String string) {
+  // https://www.mediawiki.org/wiki/Manual:Page_title
+  private final static ArrayList<String> invalidFilenameCharacters = new ArrayList<>(
+    Arrays.asList("#", "<", ">", "[", "]", "|", "{", "}")
+  );
+
+
+  public static boolean hasValidFileExtension(String string) {
     return allowedFileExtension.parallelStream().anyMatch(string::endsWith);
   }
 
-  public static boolean isPossibleBadFilename(String name) {
+  public static boolean hasPossibleBadFilenamePrefix(String name) {
     return filenamePrefixBlacklist.parallelStream().anyMatch(name::startsWith);
+  }
+
+  public static boolean hasInvalidFilenameCharacters(String name) {
+    return invalidFilenameCharacters.parallelStream().anyMatch(name::contains);
   }
 
   public static String getNameFromFilename(String filename) {
@@ -192,9 +204,10 @@ public final class Util {
   }
 
   public static File[] getFilesAllowedToUpload(File directory, String ext) {
-    return directory.listFiles((File dir, String name)
-            -> name.toLowerCase().endsWith(ext)
-    );
+    File[] files = directory.listFiles((File dir, String name) -> name.toLowerCase().endsWith(ext));
+    Arrays.sort(files);
+    return files;
+
   }
 
   public static Map<String, Integer> getFilesByExtention(File[] files) {
@@ -254,22 +267,18 @@ public final class Util {
 }
 
   public static String readUrl(String urlString) throws Exception {
-    BufferedReader reader = null;
     try {
-      URL url = new URL(urlString);
-      reader = new BufferedReader(new InputStreamReader(url.openStream()));
-      StringBuilder buffer = new StringBuilder();
-      int read;
-      char[] chars = new char[1024];
-      while ((read = reader.read(chars)) != -1) {
-        buffer.append(chars, 0, read);
-      }
+      HttpClient client = HttpClient.newHttpClient();
 
-      return buffer.toString();
-    } finally {
-      if (reader != null) {
-        reader.close();
-      }
+      HttpRequest request = HttpRequest.newBuilder(
+            URI.create(urlString))
+        .header("user-agent", Settings.USERAGENT)
+        .build();
+
+      var response = client.send(request, BodyHandlers.ofString());
+      return response.body();
+    } catch (Exception e) {
+      throw new Exception("Error while getting JSON from " + urlString);
     }
   }
 

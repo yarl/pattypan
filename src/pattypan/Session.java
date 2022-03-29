@@ -46,15 +46,12 @@ public final class Session {
 
   public static Logger LOGGER = new LogManager().logger;
 
+  public static Wiki WIKI;
+
   public static String METHOD = "template";
   public static String TEMPLATE = "Artwork";
   public static String WIKICODE = "";
   public static ArrayList<String> VARIABLES = new ArrayList<>(Arrays.asList("path", "name"));
 
-  public static Wiki WIKI = Wiki.newSession("commons.wikimedia.org");
   public static ArrayList<UploadElement> FILES_TO_UPLOAD = new ArrayList<>();
-
-  static {
-    WIKI.setUserAgent(Settings.USERAGENT);
-  }
 }
