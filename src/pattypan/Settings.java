@@ -35,8 +35,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
-import pattypan.Util;
-
 public final class Settings {
 
   private Settings() {};
@@ -432,6 +430,47 @@ public final class Settings {
                     + " |source = ${source}\n"
                     + " |permission = ${permission}\n"
                     + " |other_versions = ${other_versions}\n"
+                    + "}}\n\n"
+                    + "=={{int:license-header}}==\n"
+                    + "${license}${partnership}"
+                    + "\n\n"
+                    + "<#if categories ? has_content>\n"
+                    + "<#list categories ? split(\";\") as category>\n"
+                    + "[[Category:${category?trim}]]\n"
+                    + "</#list>\n"
+                    + "<#else>{{subst:unc}}\n"
+                    + "</#if>"
+            )
+    );
+
+    
+    TEMPLATES.put("Specimen",
+            new Template("Specimen",
+                    new TemplateField[]{
+                      new TemplateField("taxon", "Taxon"),
+                      new TemplateField("authority", "Authority"),
+                      new TemplateField("institution", "Institution"),
+                      new TemplateField("accession number", "Accession number"),
+                      new TemplateField("gender", "Gender"),
+                      new TemplateField("cultivar", "Cultivar"),
+                      new TemplateField("photographer", "Photographer"),
+                      new TemplateField("source", "Source"),
+                      new TemplateField("date", "Date"),
+                      new TemplateField("description", "Description"),
+                      new TemplateField("permission", "Permission"),
+                    }, "=={{int:filedesc}}==\n"
+                    + "{{Specimen\n"
+                    + " |taxon = ${taxon}\n"
+                    + " |authority = ${authority}\n"
+                    + " |institution = ${institution}\n"
+                    + " |accession number = ${accession_number}\n"
+                    + " |gender = ${gender}\n"
+                    + " |cultivar = ${cultivar}\n"
+                    + " |photographer = ${photographer}\n"
+                    + " |source = ${source}\n"
+                    + " |date = ${date}\n"
+                    + " |description = ${description}\n"
+                    + " |permission = ${permission}\n"
                     + "}}\n\n"
                     + "=={{int:license-header}}==\n"
                     + "${license}${partnership}"
