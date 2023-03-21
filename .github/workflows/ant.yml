@@ -1,0 +1,45 @@
+name: Make self-contained Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+    - v*
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Java runtime
+      uses: actions/setup-java@v3
+      with:
+        distribution: zulu
+        java-version: 17
+        java-package: jdk+fx
+    - name: Build with Ant
+      run: ant -noinput -buildfile build.xml compile jar
+    - name: Fetch 7-zip SFX
+      run: |
+        curl -LO https://www.7-zip.org/a/lzma2201.7z
+        7z e '-i!bin/7zSD.sfx' lzma2201.7z
+    - name: Download Java runtime for executable
+      uses: actions/setup-java@v3
+      with:
+        distribution: zulu
+        java-version: 17
+        java-package: jre+fx
+    - name: Create archive
+      run: |
+        mkdir pattypan-exe
+        cp -r ${{ env.JAVA_HOME }} pattypan-exe/java
+        cp pattypan.jar pattypan-exe
+        cp bundle/run.bat pattypan-exe
+        cd pattypan-exe
+        7z a -mx1 ../pattypan.7z *
+    - name: Create executable
+      run: cmd /c copy /b 7zSD.sfx + bundle\7z-sfx.cfg + pattypan.7z pattypan.exe
+    - name: Make release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: pattypan.exe
