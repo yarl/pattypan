@@ -34,11 +34,11 @@ jobs:
         mkdir pattypan-exe
         cp -r ${{ env.JAVA_HOME }} pattypan-exe/java
         cp pattypan.jar pattypan-exe
-        cp bundle/run.bat pattypan-exe
+        cp windows/run.bat pattypan-exe
         cd pattypan-exe
         7z a -mx1 ../pattypan.7z *
     - name: Create executable
-      run: cmd /c copy /b 7zSD.sfx + bundle\7z-sfx.cfg + pattypan.7z pattypan.exe
+      run: cmd /c copy /b 7zSD.sfx + windows\7z-sfx.cfg + pattypan.7z pattypan.exe
     - name: Make release
       uses: softprops/action-gh-release@v1
       with:

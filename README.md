@@ -4,7 +4,7 @@ Tool that simplifies [Wikimedia Commons](https://commons.wikimedia.org/) batch f
 
 For more information on usage, see [Commons:Pattypan](https://commons.wikimedia.org/wiki/Commons:Pattypan).
 
-__[:arrow_down: Download](https://github.com/Wikimedia-Sverige/pattypan/releases)__
+__[:arrow_down: Download](https://github.com/yarl/pattypan/releases)__
 
 * Download the EXE file from downloads linked above.
 * Launch the EXE file.
