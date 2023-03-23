@@ -6,6 +6,8 @@ For more information on usage, see [Commons:Pattypan](https://commons.wikimedia.
 
 __[:arrow_down: Download](https://github.com/yarl/pattypan/releases)__
 
+----
+
 ### Build and run
 [Apache Ant](https://ant.apache.org/) is used for building Pattypan. You need to have JDK 11 or later installed as well as [a download of OpenJFX](https://gluonhq.com/products/javafx/) for each platform you want to support. In order to download and build source code, do the following:
 
