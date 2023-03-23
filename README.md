@@ -6,12 +6,6 @@ For more information on usage, see [Commons:Pattypan](https://commons.wikimedia.
 
 __[:arrow_down: Download](https://github.com/yarl/pattypan/releases)__
 
-* Download the EXE file from downloads linked above.
-* Launch the EXE file.
-  * You may see a popup saying "Windows protected your PC" and a text about the file not being recognised. Select "More info" ([image](readme-images/windows-protected-your-pc-more-info.png)) and then "Run anyway".
-* You will see a popup from User Account Control asking if you want to run. Select "Yes".
-* After closing Pattypan the first time you may see a popup saying "This program might not have installed correctly". Select "This program installed correctly" to not see it again.
-
 ### Build and run
 [Apache Ant](https://ant.apache.org/) is used for building Pattypan. You need to have JDK 11 or later installed as well as [a download of OpenJFX](https://gluonhq.com/products/javafx/) for each platform you want to support. In order to download and build source code, do the following:
 
