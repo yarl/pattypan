@@ -30,7 +30,9 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -40,13 +42,12 @@ import javafx.scene.layout.Region;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import jxl.CellView;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
-import jxl.write.Label;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
-import jxl.write.WriteException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import pattypan.Session;
 import pattypan.Settings;
 import pattypan.Template;
@@ -103,7 +104,7 @@ public class CreateFilePane extends WikiPane {
         createSpreadsheet();
         showOpenFileButton();
         Settings.saveProperties();
-      } catch (IOException | BiffException | WriteException ex) {
+      } catch (IOException  ex) {
         addElement(new WikiLabel("create-file-error"));
         Session.LOGGER.log(Level.WARNING, 
             "Error occurred during creation of spreadsheet file: {0}",
@@ -135,20 +136,24 @@ public class CreateFilePane extends WikiPane {
     nextButton.setVisible(true);
   }
 
-  private void autoSizeColumn(int column, WritableSheet sheet) {
-    CellView cell = sheet.getColumnView(column);
-    cell.setAutosize(true);
-    sheet.setColumnView(column, cell);
+  private void autoSizeColumn(int column, Sheet sheet) {
+    sheet.autoSizeColumn(column);
   }
 
-  private void createSpreadsheet() throws IOException, BiffException, WriteException {
-    File f = new File(Session.DIRECTORY, fileName.getText() + ".xls");
-    WritableWorkbook workbook = Workbook.createWorkbook(f);
+  private void createSpreadsheet() throws IOException {
+    File f = new File(Session.DIRECTORY, fileName.getText() + ".xlsx");
+    // Autosize appears to only be supported for OOXML workbooks, so making this specific instead of generic
+    //    boolean xml = true;
+    //    final Workbook workbook = xml ? new SXSSFWorkbook() : new HSSFWorkbook();
+    final SXSSFWorkbook workbook = new SXSSFWorkbook();
 
     createDataSheet(workbook);
     createTemplateSheet(workbook);
 
-    workbook.write();
+    try (OutputStream os = new FileOutputStream(f)){
+      workbook.write(os);
+      os.flush();
+    }
     workbook.close();
     Session.FILE = f;
   }
@@ -156,22 +161,24 @@ public class CreateFilePane extends WikiPane {
   /**
    *
    * @param workbook
-   * @throws WriteException
    */
-  private void createDataSheet(WritableWorkbook workbook) throws WriteException {
-    WritableSheet sheet = workbook.createSheet("Data", 0);
+  private void createDataSheet(SXSSFWorkbook workbook) {
+    SXSSFSheet sheet = workbook.createSheet("Data");
 
     // first row (header)
+    Row header = sheet.createRow(0);
     int column = 0;
     for (String variable : Session.VARIABLES) {
-      sheet.addCell(new Label(column++, 0, variable));
+      Cell c = header.createCell(column++);
+      c.setCellValue(variable);
     }
 
     // next rows with path and name
     int row = 1;
     for (File file : Session.FILES) {
-      sheet.addCell(new Label(0, row, file.getAbsolutePath()));
-      sheet.addCell(new Label(1, row++, Util.getNameFromFilename(file.getName())));
+      Row cells = sheet.createRow(row++);
+      cells.createCell(0, CellType.STRING).setCellValue(file.getAbsolutePath());
+      cells.createCell(1, CellType.STRING).setCellValue(Util.getNameFromFilename(file.getName()));
     }
 
     if (Session.METHOD.equals("template")) {
@@ -181,7 +188,8 @@ public class CreateFilePane extends WikiPane {
           column = Session.VARIABLES.indexOf(tf.name);
           row = 1;
           for (File file : Session.FILES) {
-            sheet.addCell(new Label(column, row++, tf.value));
+            // TODO: We may not have the cells created yet here. Let's see what happens
+            sheet.getRow(row++).getCell(column).setCellValue(tf.value);
           }
         }
       }
@@ -191,11 +199,13 @@ public class CreateFilePane extends WikiPane {
     if (column >= 0 && !Settings.getSetting("exifDate").isEmpty()) {
       row = 1;
       for (File file : Session.FILES) {
-        sheet.addCell(new Label(column, row++, getExifDate(file)));
+        // TODO: We may not have the cells created yet here. Let's see what happens
+        sheet.getRow(row++).getCell(column).setCellValue(getExifDate(file));
       }
     }
 
-    for (int num = 0; num < sheet.getColumns(); num++) {
+    sheet.trackAllColumnsForAutoSizing();
+    for (int num = 0; num < sheet.getRow(0).getLastCellNum(); num++) {
       autoSizeColumn(num, sheet);
     }
   }
@@ -203,20 +213,22 @@ public class CreateFilePane extends WikiPane {
   /**
    *
    * @param workbook
-   * @throws WriteException
    */
-  private void createTemplateSheet(WritableWorkbook workbook) throws WriteException {
-    WritableSheet templateSheet = workbook.createSheet("Template", 1);
-    templateSheet.addCell(new Label(0, 0, "'" + Session.WIKICODE));
-    //                                    ^^
+  private void createTemplateSheet(SXSSFWorkbook workbook)  {
+    SXSSFSheet templateSheet = workbook.createSheet("Template");
+    Row row = templateSheet.createRow(0);
+    Cell cell = row.createCell(0);
+    cell.setCellValue("'" + Session.WIKICODE);
+    //                 ^^
     // leading apostrophe prevents turning wikitext into formula in Excel
 
+    templateSheet.trackAllColumnsForAutoSizing();
     autoSizeColumn(0, templateSheet);
   }
 
   /**
    *
-   * @param filePath
+   * @param file
    * @return
    */
   private String getExifDate(File file) {
