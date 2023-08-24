@@ -266,7 +266,7 @@ public final class Util {
    return sb.toString();
 }
 
-  public static String readUrl(String urlString) throws Exception {
+  public static String readUrl(String urlString) throws IOException {
     try {
       HttpClient client = HttpClient.newHttpClient();
 
@@ -277,8 +277,8 @@ public final class Util {
 
       var response = client.send(request, BodyHandlers.ofString());
       return response.body();
-    } catch (Exception e) {
-      throw new Exception("Error while getting JSON from " + urlString);
+    } catch (IOException | InterruptedException e) {
+      throw new IOException("Error while getting JSON from " + urlString, e);
     }
   }
 
