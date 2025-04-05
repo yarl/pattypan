@@ -61,7 +61,7 @@ public final class Util {
 
   public static int WINDOW_WIDTH = 750;
   public static int WINDOW_HEIGHT = 550;
-  static ResourceBundle bundle = ResourceBundle.getBundle("pattypan/text/messages");
+  static ResourceBundle bundle = ResourceBundle.getBundle("messages");
 
   public static String text(String key) {
     try {

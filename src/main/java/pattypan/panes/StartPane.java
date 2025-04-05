@@ -51,7 +51,7 @@ import pattypan.elements.WikiLabel;
 
 public class StartPane extends GridPane {
 
-  String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
+  String css = getClass().getResource("/style.css").toExternalForm();
   Stage stage;
 
   Hyperlink bugLink = new Hyperlink(Util.text("start-bug-report"));

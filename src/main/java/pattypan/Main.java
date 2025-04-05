@@ -35,7 +35,7 @@ import pattypan.panes.StartPane;
 public class Main extends Application {
   @Override
   public void start(Stage stage) {
-    Image logo = new Image(getClass().getResourceAsStream("/pattypan/resources/logo.png"));
+    Image logo = new Image(getClass().getResourceAsStream("/logo.png"));
 
     Scene scene = new Scene(new StartPane(stage), Settings.getSettingInt("windowWidth"), Settings.getSettingInt("windowHeight"));
     stage.setResizable(true);

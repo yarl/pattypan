@@ -1,0 +1,134 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.wikimedia.pattypan</groupId>
+    <artifactId>pattypan</artifactId>
+    <version>22.03</version>
+    <packaging>jar</packaging>
+
+    <name>Pattypan</name>
+    <description>Image upload tool for Wikimedia Commons</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <javafx.version>17.0.10</javafx.version> <!-- JavaFX version compatible with Java 11+ -->
+    </properties>
+
+    <dependencies>
+        <!-- OpenJFX -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <!-- Other Dependencies -->
+        <dependency>
+            <groupId>com.drewnoakes</groupId>
+            <artifactId>metadata-extractor</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.adobe.xmp</groupId>
+            <artifactId>xmpcore</artifactId>
+            <version>5.1.3</version> <!-- Check if newer version exists -->
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.jexcelapi</groupId>
+            <artifactId>jxl</artifactId>
+            <version>2.6.12</version> <!-- Common version for jxl.jar -->
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.9.0</version> <!-- Check if newer version exists -->
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.32</version> <!-- Assumed recent stable version -->
+        </dependency>
+        <dependency>
+            <groupId>edu.stanford.ejalbert</groupId>
+            <artifactId>BrowserLauncher2</artifactId>
+            <version>1.3</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <release>11</release>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>pattypan.Launcher</mainClass>
+                                </transformer>
+                            </transformers>
+                            <!-- Prevent inclusion of native libs from javafx, as they need specific handling -->
+                            <artifactSet>
+                                 <excludes>
+                                    <exclude>org.openjfx:javafx-*:*</exclude>
+                                 </excludes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- JavaFX Plugin for handling native libs and running -->
+             <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version> <!-- Check for latest version -->
+                <configuration>
+                    <mainClass>pattypan.Launcher</mainClass>
+                    <!-- Optional: Specify modules if needed beyond auto-detection -->
+                     <!-- <modules> -->
+                     <!--     <module>javafx.controls</module> -->
+                     <!--     <module>javafx.web</module> -->
+                     <!-- </modules> -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project> 
