@@ -38,7 +38,7 @@ import pattypan.Util;
 
 public class WikiPane extends BorderPane {
 
-  String css = getClass().getResource("/pattypan/style/style.css").toExternalForm();
+  String css = getClass().getResource("/style.css").toExternalForm();
   Stage stage;
 
   public HBox topContainer = new HBox();

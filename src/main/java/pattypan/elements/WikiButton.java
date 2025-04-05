@@ -117,7 +117,7 @@ public class WikiButton extends Button {
   }
   
   public WikiButton setIcon(String name) {
-    Image image = new Image(getClass().getResourceAsStream("/pattypan/resources/" + name));
+    Image image = new Image(getClass().getResourceAsStream("/" + name));
     ImageView iv = new ImageView(image);
 
     this.setGraphic(iv);

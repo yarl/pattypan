@@ -1,5 +1,2 @@
-build
-bin
-tmp
-pattypan.jar
-*.zip
+/target/
+dependency-reduced-pom.xml
