@@ -46,7 +46,7 @@ public class LoginPane extends WikiPane {
 
   Stage stage;
 
-  Hyperlink link = new Hyperlink(Util.text("login-2fa"));
+  Hyperlink link = new Hyperlink(Util.text("login-instruction"));
   WikiTextField loginText = new WikiTextField("").setPlaceholder("login-login-field").setWidth(300);
   WikiPasswordField passwordText = new WikiPasswordField().setPlaceholder("login-password-field").setWidth(300);
   WikiButton loginButton = new WikiButton("login-login-button").setWidth(300);
@@ -88,7 +88,7 @@ public class LoginPane extends WikiPane {
   }
 
   private void setContent() {
-    TextFlow flow = new TextFlow(new Text(Util.text("login-intro")), link);
+    TextFlow flow = new TextFlow(link);
     flow.setTextAlignment(TextAlignment.CENTER);
     addElement(flow);
 
