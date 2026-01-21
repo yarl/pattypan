@@ -23,18 +23,22 @@
  */
 package pattypan.panes;
 
-import freemarker.core.InvalidReferenceException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
@@ -43,13 +47,17 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import jxl.Cell;
-import jxl.CellType;
-import jxl.DateCell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.WorkbookSettings;
-import jxl.read.biff.BiffException;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.FileMagic;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import pattypan.Session;
 import pattypan.Settings;
 import pattypan.UploadElement;
@@ -236,10 +244,9 @@ public class LoadPane extends WikiPane {
    * @throws Exception when essential headers are missing
    */
   private void readHeaders(Sheet sheet) throws Exception {
-    int columns = sheet.getColumns();
-    ArrayList<String> cols = new ArrayList<>();
-    for (int col = 0; col < columns; col++) {
-      cols.add(sheet.getCell(col, 0).getContents());
+    List<String> cols = new ArrayList<>();
+    for (Cell c : sheet.getRow(0)) {
+      cols.add(c.getStringCellValue());
     }
 
     if (cols.isEmpty()) {
@@ -264,18 +271,22 @@ public class LoadPane extends WikiPane {
     formatDate.setTimeZone(TimeZone.getTimeZone("UTC"));
     formatDateHour.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-    Cell valueCell = sheet.getCell(column, row);
-    String value;
+    Cell valueCell = sheet.getRow(row).getCell(column);
+    String value = null;
 
-    if (valueCell.getType() == CellType.DATE) {
-      DateCell dateCell = (DateCell) valueCell;
+    if (valueCell != null) {
+      if (valueCell.getCellType() == CellType.NUMERIC && DateUtil.isCellDateFormatted(valueCell)) {
+      Date date = DateUtil.getJavaDate(valueCell.getNumericCellValue());
+      // FIXME: Restore more sophisticated date handling
+      value = formatDate.format(date);
       //@TODO: more elegant hour detection
-      value = dateCell.getContents().contains(":")
-              ? formatDateHour.format(dateCell.getDate())
-              : formatDate.format(dateCell.getDate());
-    } else {
-      value = sheet.getCell(column, row).getContents().trim();
-    }
+//      value = dateCell.getContents().contains(":")
+//              ? formatDateHour.format(dateCell.getDate())
+//              : formatDate.format(dateCell.getDate());
+        } else {
+          value = valueCell.getStringCellValue().trim();
+        }
+      }
     return value;
   }
 
@@ -294,9 +305,7 @@ public class LoadPane extends WikiPane {
       readSpreadSheet();
     } catch (IOException ex) {
       addInfo("File error: there are problems opening file. It may be corrupted.");
-    } catch (BiffException ex) {
-      addInfo("File error: file needs to be saved in binnary format. Please save your file in \"Excel 97-2003 format\"");
-    } catch (InvalidReferenceException ex) {
+    } catch (TemplateException ex) {
       addInfo("File error: variables mismatch. Column headers variables must match wikitemplate variables.");
     } catch (Exception ex) {
       addInfo(ex.getMessage());
@@ -312,14 +321,27 @@ public class LoadPane extends WikiPane {
    */
   private ArrayList<Map<String, String>> readDescriptions(Sheet sheet) {
     ArrayList<Map<String, String>> descriptions = new ArrayList<>();
-    int rows = sheet.getRows();
-    int columns = sheet.getColumns();
+    int rows = sheet.getLastRowNum();
+    int columns = sheet.getRow(0).getLastCellNum();
 
+    // Collect header labels
+    String[] labels = new String[columns];
+    Row cells = sheet.getRow(0);
+    for (int col = 0; col < columns; col++) {
+      Cell cell = cells.getCell(col);
+      if (cell != null) {
+        String value = cell.getStringCellValue();
+        labels[col] = value;
+      } else {
+        labels[col] = null;
+      }
+    }
     for (int row = 1; row < rows; row++) {
       Map<String, String> description = new HashMap();
+      cells  = sheet.getRow(row);
       for (int column = 0; column < columns; column++) {
-        String label = sheet.getCell(column, 0).getContents().trim();
-        if (label.isEmpty()) {
+        String label = labels[column];
+        if (label == null || label.isEmpty()) {
           continue;
         }
         String value = getCellValue(sheet, column, row);
@@ -333,17 +355,19 @@ public class LoadPane extends WikiPane {
   /**
    * Reads spreadsheet stored in Session.FILE.
    */
-  private void readSpreadSheet() throws BiffException, IOException, Exception {
+  private void readSpreadSheet() throws IOException, TemplateException, Exception {
     infoContainer.getChildren().clear();
     Session.SCENES.remove("CheckPane");
 
-    WorkbookSettings ws = new WorkbookSettings();
-    ws.setEncoding("Cp1252");
+    InputStream inputStream = new BufferedInputStream(new FileInputStream(Session.FILE));
+    Workbook wb = FileMagic.valueOf(inputStream) == FileMagic.OOXML ? new XSSFWorkbook(inputStream)
+            : new HSSFWorkbook(new POIFSFileSystem(inputStream));
+
+//    ws.setEncoding("Cp1252"); // FIXME
 
     try {
-      Workbook workbook = Workbook.getWorkbook(Session.FILE, ws);
-      Sheet dataSheet = workbook.getSheet(0);
-      Sheet templateSheet = workbook.getSheet(1);
+      Sheet dataSheet = wb.getSheetAt(0);
+      Sheet templateSheet = wb.getSheetAt(1);
       readHeaders(dataSheet);
       addFilesToUpload(readDescriptions(dataSheet), readTemplate(templateSheet));
     } catch (IndexOutOfBoundsException ex) {
@@ -362,7 +386,7 @@ public class LoadPane extends WikiPane {
    */
   private Template readTemplate(Sheet sheet) throws Exception {
     try {
-      String text = sheet.getCell(0, 0).getContents();
+      String text = sheet.getRow(0).getCell(0).getStringCellValue();
       return new Template("wikitemplate", new StringReader(text), cfg);
     } catch (ArrayIndexOutOfBoundsException ex) {
       throw new Exception("Error: template in spreadsheet looks empty. Check if wikitemplate is present in second tab of your spreadsheet (first row and first column).");
