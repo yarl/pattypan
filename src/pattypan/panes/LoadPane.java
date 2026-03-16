@@ -50,6 +50,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.read.biff.BiffException;
+import pattypan.PattypanException;
 import pattypan.Session;
 import pattypan.Settings;
 import pattypan.UploadElement;
@@ -152,23 +153,23 @@ public class LoadPane extends WikiPane {
 
       try {
         if (description.get("path").isEmpty()) {
-          throw new Exception("empty path");
+          throw new PattypanException("empty path");
         }
         if (description.get("name").isEmpty()) {
-          throw new Exception("empty name");
+          throw new PattypanException("empty name");
         }
         if (description.get("path").startsWith("https://") || description.get("path").startsWith("http://")) {
           if (!Util.validUrl(description.get("path"))) {
-            throw new Exception("invalid URL");
+            throw new PattypanException("invalid URL");
           }
 
           // when uploaded from URL the extension is not automatically added
           if (!Util.hasValidFileExtension(description.get("name"))) {
-            throw new Exception("filename does not include a valid file extension");
+            throw new PattypanException("filename does not include a valid file extension");
           }
         } else {
           if (!checkIfFileExist(description.get("path"))) {
-            throw new Exception("file not found");
+            throw new PattypanException("file not found");
           }
         }
 
@@ -177,7 +178,7 @@ public class LoadPane extends WikiPane {
         }
 
         if (Util.hasInvalidFilenameCharacters(description.get("name"))) {
-          throw new Exception(description.get("name") + ": filename shouldn't contain invalid characters (#, ], {, etc)");
+          throw new PattypanException(description.get("name") + ": filename shouldn't contain invalid characters (#, ], {, etc)");
         }
 
         Set<String> keys = Util.getKeysByValue(description, "");
@@ -195,12 +196,12 @@ public class LoadPane extends WikiPane {
         }
 
         if (wikicode.isEmpty()) {
-          throw new Exception("Error: empty template!");
+          throw new PattypanException("Error: empty template!");
         }
 
         Session.FILES_TO_UPLOAD.add(new UploadElement(description, wikicode));
 
-      } catch (Exception ex) {
+      } catch (Throwable ex) {
         errors.add(namePath + " " + ex.getMessage());
       }
     }
@@ -243,10 +244,10 @@ public class LoadPane extends WikiPane {
     }
 
     if (cols.isEmpty()) {
-      throw new Exception("Header error: columns not found!");
+      throw new PattypanException("Header error: columns not found!");
     }
     if (!cols.contains("path") || !cols.contains("name")) {
-      throw new Exception("Header error: found " + cols.size() + " headers but 'path' and/or 'name' headers are missing");
+      throw new PattypanException("Header error: found " + cols.size() + " headers but 'path' and/or 'name' headers are missing");
     }
   }
 
@@ -298,7 +299,7 @@ public class LoadPane extends WikiPane {
       addInfo("File error: file needs to be saved in binnary format. Please save your file in \"Excel 97-2003 format\"");
     } catch (InvalidReferenceException ex) {
       addInfo("File error: variables mismatch. Column headers variables must match wikitemplate variables.");
-    } catch (Exception ex) {
+    } catch (Throwable ex) {
       addInfo(ex.getMessage());
     }
   }
@@ -347,7 +348,7 @@ public class LoadPane extends WikiPane {
       readHeaders(dataSheet);
       addFilesToUpload(readDescriptions(dataSheet), readTemplate(templateSheet));
     } catch (IndexOutOfBoundsException ex) {
-      throw new Exception("Error: your spreadsheet should have minimum two tabs.");
+      throw new PattypanException("Error: your spreadsheet should have minimum two tabs.");
     }
 
     reloadButton.setDisable(false);
@@ -365,7 +366,7 @@ public class LoadPane extends WikiPane {
       String text = sheet.getCell(0, 0).getContents();
       return new Template("wikitemplate", new StringReader(text), cfg);
     } catch (ArrayIndexOutOfBoundsException ex) {
-      throw new Exception("Error: template in spreadsheet looks empty. Check if wikitemplate is present in second tab of your spreadsheet (first row and first column).");
+      throw new PattypanException("Error: template in spreadsheet looks empty. Check if wikitemplate is present in second tab of your spreadsheet (first row and first column).");
     }
   }
 
