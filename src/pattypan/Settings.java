@@ -51,6 +51,7 @@ public final class Settings {
   static {
     SETTINGS.put("path", "");
     SETTINGS.put("user", "");
+    SETTINGS.put("throttle", "10000");
     SETTINGS.put("windowWidth", "800");
     SETTINGS.put("windowHeight", "600");
     SETTINGS.put("exifDate", "");
