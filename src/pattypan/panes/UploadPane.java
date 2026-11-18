@@ -24,6 +24,7 @@
 package pattypan.panes;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -208,13 +209,50 @@ public class UploadPane extends WikiPane {
    * @param error raw MediaWiki error
    * @return error string
    */
-  private String getMediaWikiError(Exception error) {
-    final Pattern errorPattern = Pattern.compile("info=\"(.*?)\"");
-    Matcher m = errorPattern.matcher(error.getLocalizedMessage());
-    while (m.find()) {
-      return m.group(1);
+  private String getMediaWikiError(Throwable error) {
+    String message = error.getLocalizedMessage();
+    if (message == null) {
+      return error.toString();
     }
-    return error.getLocalizedMessage();
+    final Pattern errorPattern = Pattern.compile("info=\"(.*?)\"");
+    Matcher m = errorPattern.matcher(message);
+    while (m.find()) {
+      return decode(m.group(1));
+    }
+    return isUnexpected(error) ? error.toString() : message;
+  }
+
+  /**
+   * Strips entity references like &quot; from the supplied string.
+   *
+   * @source org.wikipedia.Wiki#decode
+   * @param in the string to remove URL encoding from
+   * @return that string without URL encoding
+   */
+  private String decode(String in) {
+    // Remove entity references. Oddly enough, URLDecoder doesn't nuke these.
+    in = in.replace("&lt;", "<").replace("&gt;", ">"); // html tags
+    in = in.replace("&quot;", "\"");
+    in = in.replace("&#039;", "'");
+    in = in.replace("&amp;", "&");
+    return in;
+  }
+
+  /**
+   * Check if an error is one that should not occur in normal use
+   *
+   * "Unexpected" errors signal bugs or invalid states, while "Expected" ones
+   * cover anticipated failures such as network or permission problems.
+   *
+   * @param error error to check
+   * @return true if the error is unexpected
+   */
+  private boolean isUnexpected(Throwable error) {
+    return !(error instanceof IOException
+            || error instanceof UncheckedIOException
+            || error instanceof LoginException
+            || error instanceof SecurityException
+            || error instanceof InterruptedException);
   }
 
   /**
@@ -281,7 +319,17 @@ public class UploadPane extends WikiPane {
                       current + 1, name
               ));
               uploaded++;
-            } catch (InterruptedException | IOException | LoginException ex) {
+            } catch (Throwable ex) {
+              // A catchall 'Throwable' is caught so unexpected errors don't
+              // cause the upload loop to hang. Any errors that we don't expect
+              // in normal use are dumped as a stacktrace.
+              if (isUnexpected(ex)) {
+                Session.LOGGER.log(
+                        Level.SEVERE,
+                        String.format("Unexpected error while uploading [%s]", name),
+                        ex
+                );
+              }
               updateMessage(String.format(
                       "UPLOAD_ERROR | %s | %s | %s",
                       current + 1, name, getMediaWikiError(ex)
